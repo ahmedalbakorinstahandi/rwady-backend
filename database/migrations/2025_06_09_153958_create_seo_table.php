@@ -15,8 +15,8 @@ return new class extends Migration
 
         Schema::create('seo', function (Blueprint $table) {
             $table->id();
-            $table->string('meta_title');
-            $table->text('meta_description');
+            $table->text('meta_title');
+            $table->longText('meta_description');
             $table->text('keywords');
             $table->string('image', 100);
             $table->unsignedBigInteger('seoable_id');

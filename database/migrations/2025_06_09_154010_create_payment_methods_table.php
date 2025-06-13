@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->string('icon', 100);
-            $table->text('description');
+            $table->longText('description');
             $table->string('key', 20);
             $table->timestamps();
             $table->softDeletes();

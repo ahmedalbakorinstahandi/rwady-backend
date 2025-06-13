@@ -15,7 +15,7 @@ return new class extends Migration
 
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('code');
+            $table->string('code', 100);
             $table->enum('type', ["fixed","percentage"]);
             $table->float('amount');
             $table->boolean('is_active');

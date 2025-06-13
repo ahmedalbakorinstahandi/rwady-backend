@@ -15,6 +15,9 @@ return new class extends Migration
 
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
+            $table->text('title');
+            $table->longText('description');
+            $table->text('button_text');
             $table->string('image', 100);
             $table->boolean('is_popup');
             $table->string('link', 500);

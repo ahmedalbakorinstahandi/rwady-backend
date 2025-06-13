@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('Orders');
             $table->float('amount');
-            $table->text('description');
+            $table->longText('description');
             $table->enum('status', ["pending","completed","failed"]);
             $table->boolean('is_refund')->default(false);
             $table->enum('method', ["credit_card","installment","tranfer","cash"]);

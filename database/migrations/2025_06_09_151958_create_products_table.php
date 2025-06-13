@@ -19,13 +19,13 @@ return new class extends Migration
             $table->text('name');
             $table->longText('description');
             $table->boolean('view_in_home')->default(false);
-            $table->string('ribbon_text', 20)->nullable();
+            $table->string('ribbon_text', 40)->nullable();
             $table->string('ribbon_color', 10)->nullable();
-            $table->float('price')->default('0');
+            $table->float('price')->default(0);
             $table->float('price_after_discount')->nullable();
             $table->dateTime('price_discount_start')->nullable();
             $table->dateTime('price_discount_end')->nullable();
-            $table->float('cost_price')->default('0');
+            $table->float('cost_price')->default(0);
             $table->float('cost_price_after_discount')->nullable();
             $table->dateTime('cost_price_discount_start')->nullable();
             $table->dateTime('cost_price_discount_end')->nullable();
@@ -43,8 +43,8 @@ return new class extends Migration
             $table->float('shipping_rate_single')->nullable();
             $table->float('shipping_rate_multi')->nullable();
             $table->unsignedBigInteger('related_category_id')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::enableForeignKeyConstraints();
