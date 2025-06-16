@@ -49,4 +49,11 @@ return [
         'updated_successfully' => 'Banner updated successfully',
         'deleted_successfully' => 'Banner deleted successfully',
     ],
+
+    'featured_section' => [
+        'not_found' => 'Featured section not found',
+        'created_successfully' => 'Featured section created successfully',
+        'updated_successfully' => 'Featured section updated successfully',
+        'deleted_successfully' => 'Featured section deleted successfully',
+    ],
 ];

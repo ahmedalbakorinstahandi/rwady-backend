@@ -48,4 +48,11 @@ return [
         'updated_successfully' => 'تم تحديث البانر بنجاح',
         'deleted_successfully' => 'تم حذف البانر بنجاح',
     ],
+
+    'featured_section' => [
+        'not_found' => 'القسم المميز غير موجود',
+        'created_successfully' => 'تم إنشاء القسم المميز بنجاح',
+        'updated_successfully' => 'تم تحديث القسم المميز بنجاح',
+        'deleted_successfully' => 'تم حذف القسم المميز بنجاح',
+    ],
 ];

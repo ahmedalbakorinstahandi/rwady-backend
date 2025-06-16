@@ -30,7 +30,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // ✅
             [
                 'title' => [
                     'en' => 'Category',
@@ -47,7 +47,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // ✅
             [
                 'title' => [
                     'en' => 'Most Sold',
@@ -64,7 +64,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // ✅ 
             [
                 'title' => [
                     'en' => 'Video',
@@ -81,7 +81,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // 🚫
             [
                 'title' => [
                     'en' => 'Recommended',
@@ -98,7 +98,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // ✅
             [
                 'title' => [
                     'en' => 'New Products',
@@ -115,7 +115,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // ✅
             [
                 'title' => [
                     'en' => 'Featured',
@@ -132,7 +132,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ], // 🚫
             [
                 'title' => [
                     'en' => 'Brand',
@@ -149,8 +149,8 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-            
+            ], // ✅
+
         ];
 
         foreach ($sections as $section) {

@@ -4,6 +4,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -39,5 +40,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [BannerController::class, 'create']);
         Route::put('/{id}', [BannerController::class, 'update']);
         Route::delete('/{id}', [BannerController::class, 'delete']);
+    });
+
+    Route::prefix('featured-sections')->group(function () {
+        Route::get('/', [FeaturedSectionController::class, 'index']);
+        Route::get('/{id}', [FeaturedSectionController::class, 'show']);
+        Route::post('/', [FeaturedSectionController::class, 'create']);
+        Route::put('/{id}', [FeaturedSectionController::class, 'update']);
+        Route::delete('/{id}', [FeaturedSectionController::class, 'delete']);
     });
 });

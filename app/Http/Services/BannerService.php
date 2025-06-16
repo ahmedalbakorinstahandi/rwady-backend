@@ -16,7 +16,7 @@ class BannerService
         $searchFields = ['title', 'description', 'button_text', 'link'];
         $numericFields = [];
         $dateFields = ['start_date', 'end_date', 'created_at'];
-        $exactMatchFields = ['is_popup', 'is_active'];
+        $exactMatchFields = ['is_popup', 'availability'];
         $inFields = [];
 
         $query = BannerPermission::filterIndex($query);
