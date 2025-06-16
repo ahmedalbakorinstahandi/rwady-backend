@@ -38,7 +38,7 @@ class BrandService
     {
         $brand = Brand::where('id', $id)->first();
         if (!$brand) {
-            MessageService::abort(404, 'brand.not_found');
+            MessageService::abort(404, 'messages.brand.not_found');
         }
         $brand->load(['seo']);
         return $brand;
