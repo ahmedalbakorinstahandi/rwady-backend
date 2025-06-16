@@ -40,7 +40,7 @@ class HomeSection extends Model
     }
     public function getShowMorePathAttribute()
     {
-        return $this->can_show_more ? $this->show_more_path : null;
+        return $this->can_show_more ? $this->attributes['show_more_path'] : null;
     }
 
 

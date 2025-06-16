@@ -6,7 +6,7 @@ class ProductPermission
 {
     public static function filterIndex($query)
     {
-        $query->where('is_active', true);
+        $query->where('availability‍', true);
 
         return $query;
     }
