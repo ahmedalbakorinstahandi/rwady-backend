@@ -168,6 +168,6 @@ class ProductService
             ]);
         }
 
-        return $product;
+        return $product->fresh();
     }
 }
