@@ -41,6 +41,7 @@ class ProductController extends Controller
             [
                 'success' => true,
                 'data' => $product,
+                'resource' => ProductResource::class,
                 'status' => 200,
             ]
         );
