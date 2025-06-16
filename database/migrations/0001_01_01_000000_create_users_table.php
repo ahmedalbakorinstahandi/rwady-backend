@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->bigInteger('name');
+            $table->string('name');
             $table->string('phone', 20);
             $table->string('avatar', 100)->nullable();
             $table->enum('status', ["active","banned"]);
