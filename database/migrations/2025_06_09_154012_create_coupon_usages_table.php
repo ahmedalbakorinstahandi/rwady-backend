@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('coupon_usages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('coupon_id');
-            $table->foreign('coupon_id')->references('id')->on('Coupons');
+            $table->foreignId('coupon_id')->constrained('coupons')->onDelete('cascade');
             $table->unsignedBigInteger('order_id');
-            $table->foreign('order_id')->references('id')->on('Orders');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('discount_type', ["discount_type_type"]);
             $table->float('discount_value');
             $table->timestamps();

@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('category_products', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('Categories');
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('Products');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('product_colors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('Products');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->string('color');
             $table->timestamps();
             $table->softDeletes();

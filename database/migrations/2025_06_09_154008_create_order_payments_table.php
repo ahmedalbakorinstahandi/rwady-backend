@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('order_payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->foreign('order_id')->references('id')->on('Orders');
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->float('amount');
             $table->longText('description');
             $table->enum('status', ["pending","completed","failed"]);

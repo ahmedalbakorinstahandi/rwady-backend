@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status', ["pending","in_progress","shipping","completed","cancelled"]);
             $table->float('payment_fees')->nullable();
             $table->text('notes')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

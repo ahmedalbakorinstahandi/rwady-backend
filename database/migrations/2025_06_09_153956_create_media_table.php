@@ -20,9 +20,9 @@ return new class extends Migration
             $table->enum('source', ["file","link"]);
             $table->bigInteger('orders');
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('Products');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedBigInteger('product_color_id')->nullable();
-            $table->foreign('product_color_id')->references('id')->on('ProductColors');
+            $table->foreign('product_color_id')->references('id')->on('product_colors');
             $table->timestamps();
             $table->softDeletes();
         });
