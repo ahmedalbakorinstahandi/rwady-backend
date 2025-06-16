@@ -15,7 +15,7 @@ class CreateProductRequest extends BaseFormRequest
             'description' => LanguageService::translatableFieldRules('nullable|string'),
             'ribbon_text' => LanguageService::translatableFieldRules('nullable|string|max:15'),
             'ribbon_color' => 'nullable|string|max:10',
-            'view_in_home' => 'nullable|boolean',
+            'is_recommended' => 'nullable|boolean',
             'price' => 'nullable|numeric|min:0',
             'price_after_discount' => 'nullable|numeric|min:0',
             'price_discount_start' => 'nullable|date',

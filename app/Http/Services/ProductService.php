@@ -170,4 +170,154 @@ class ProductService
 
         return $product->fresh();
     }
+
+    public function update($data, $product)
+    {
+        $data = LanguageService::prepareTranslatableData($data, $product);
+
+        $product->update($data);
+
+        if (isset($data['images'])) {
+            $existingImages = $product->media()->where('type', 'image')->pluck('path')->toArray();
+            $newImages = collect($data['images'])->pluck('path')->toArray();
+
+            // Remove images that are no longer present
+            $imagesToDelete = array_diff($existingImages, $newImages);
+            if (!empty($imagesToDelete)) {
+                $product->media()->whereIn('path', $imagesToDelete)->where('type', 'image')->delete();
+            }
+
+            // Add only new images that don't exist
+            $imagesToAdd = array_diff($newImages, $existingImages);
+            foreach ($data['images'] as $image) {
+                if (in_array($image['path'], $imagesToAdd)) {
+                    $media = $product->media()->create([
+                        'path' => $image['path'],
+                        'type' => 'image', 
+                        'source' => 'file',
+                        'orders' => 0,
+                    ]);
+                    OrderHelper::assign($media);
+                }
+            }
+        }
+
+        if (isset($data['videos'])) {
+            $existingVideos = $product->media()->where('type', 'video')->pluck('path')->toArray();
+            $newVideos = collect($data['videos'])->pluck('link')->toArray();
+
+            // Remove videos that are no longer present
+            $videosToDelete = array_diff($existingVideos, $newVideos);
+            if (!empty($videosToDelete)) {
+                $product->media()->whereIn('path', $videosToDelete)->where('type', 'video')->delete();
+            }
+
+            // Add only new videos that don't exist
+            $videosToAdd = array_diff($newVideos, $existingVideos);
+            foreach ($data['videos'] as $video) {
+                if (in_array($video['link'], $videosToAdd)) {
+                    $media = $product->media()->create([
+                        'path' => $video['link'],
+                        'type' => 'video',
+                        'source' => 'link',
+                        'orders' => 0,
+                    ]);
+                    OrderHelper::assign($media);
+                }
+            }
+        }
+
+        if (isset($data['categories'])) {
+            $existingCategories = $product->categories()->pluck('category_id')->toArray();
+            $newCategories = $data['categories'];
+
+            // Remove categories that are no longer present
+            $categoriesToDelete = array_diff($existingCategories, $newCategories);
+            if (!empty($categoriesToDelete)) {
+                $product->categories()->whereIn('category_id', $categoriesToDelete)->delete();
+            }
+
+            // Add only new categories that don't exist
+            $categoriesToAdd = array_diff($newCategories, $existingCategories);
+            foreach ($categoriesToAdd as $categoryId) {
+                $product->categories()->create([
+                    'category_id' => $categoryId,
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
+
+        if (isset($data['brands'])) {
+            $existingBrands = $product->brands()->pluck('brand_id')->toArray();
+            $newBrands = $data['brands'];
+
+            // Remove brands that are no longer present
+            $brandsToDelete = array_diff($existingBrands, $newBrands);
+            if (!empty($brandsToDelete)) {
+                $product->brands()->whereIn('brand_id', $brandsToDelete)->delete();
+            }
+
+            // Add only new brands that don't exist
+            $brandsToAdd = array_diff($newBrands, $existingBrands);
+            foreach ($brandsToAdd as $brandId) {
+                $product->brands()->create([
+                    'brand_id' => $brandId,
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
+
+        if (isset($data['colors'])) {
+            $existingColors = $product->colors()->pluck('color')->toArray();
+            $newColors = $data['colors'];
+
+            // Remove colors that are no longer present
+            $colorsToDelete = array_diff($existingColors, $newColors);
+            if (!empty($colorsToDelete)) {
+                $product->colors()->whereIn('color', $colorsToDelete)->delete();
+            }
+
+            // Add only new colors that don't exist
+            $colorsToAdd = array_diff($newColors, $existingColors);
+            foreach ($colorsToAdd as $color) {
+                $product->colors()->create([
+                    'color' => $color,
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
+
+        if (isset($data['related_products'])) {
+            $existingRelatedProducts = $product->relatedProducts()->pluck('related_product_id')->toArray();
+            $newRelatedProducts = $data['related_products'];
+
+            // Remove related products that are no longer present
+            $relatedProductsToDelete = array_diff($existingRelatedProducts, $newRelatedProducts);
+            if (!empty($relatedProductsToDelete)) {
+                $product->relatedProducts()->whereIn('related_product_id', $relatedProductsToDelete)->delete();
+            }
+
+            // Add only new related products that don't exist
+            $relatedProductsToAdd = array_diff($newRelatedProducts, $existingRelatedProducts);
+            foreach ($relatedProductsToAdd as $relatedProductId) {
+                $product->relatedProducts()->create([
+                    'related_product_id' => $relatedProductId,
+                    'product_id' => $product->id,
+                ]);
+            }
+        }
+
+        if (isset($data['seo'])) {
+            $product->seo()->updateOrCreate([
+                'seoable_type' => Product::class,
+                'seoable_id' => $product->id,
+            ], [
+                'meta_title' => $data['seo']['meta_title'],
+                'meta_description' => $data['seo']['meta_description'],
+                'keywords' => $data['seo']['keywords'],
+                'image' => $data['seo']['image'],
+            ]);
+        }
+        return $product->fresh();
+    }
 }

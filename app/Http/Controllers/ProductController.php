@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Services\ProductService;
 use App\Services\ResponseService;
@@ -54,6 +55,23 @@ class ProductController extends Controller
                 'success' => true,
                 'data' => $product,
                 'status' => 201,
+                'resource' => ProductResource::class,
+            ]
+        );
+    }
+
+    public function update(UpdateProductRequest $request, int $id)
+    {
+
+        $product = $this->productService->show($id);
+
+        $product = $this->productService->update($request->validated(), $product);
+
+        return  ResponseService::response(
+            [
+                'success' => true,
+                'data' => $product,
+                'status' => 200,
                 'resource' => ProductResource::class,
             ]
         );
