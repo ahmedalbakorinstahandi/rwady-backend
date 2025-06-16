@@ -83,7 +83,7 @@ class Product extends Model
     protected function description(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('description'),
+            get: fn(?string $value) => $this->getAllTranslations('description'),
         );
     }
 
