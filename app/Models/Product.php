@@ -90,7 +90,7 @@ class Product extends Model
     protected function ribbonText(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('ribbon_text'),
+            get: fn(?string $value) => $this->getAllTranslations('ribbon_text'),
         );
     }
 
