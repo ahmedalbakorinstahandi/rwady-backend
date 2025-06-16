@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Permissions\ProductPermission;
 use App\Models\Product;
 use App\Services\FilterService;
+use App\Services\LanguageService;
 use App\Services\MessageService;
 use App\Services\OrderHelper;
 use Illuminate\Support\Str;
@@ -87,6 +88,9 @@ class ProductService
         if (!isset($data['sku'])) {
             $data['sku'] = Str::random(10);
         }
+
+
+        $data = LanguageService::prepareTranslatableData($data, new Product);
 
 
         $product = Product::create($data);
