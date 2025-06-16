@@ -97,6 +97,8 @@ class ProductService
             $data['stock_unlimited'] = false;
         }
 
+        
+
 
         $data = LanguageService::prepareTranslatableData($data, new Product);
 

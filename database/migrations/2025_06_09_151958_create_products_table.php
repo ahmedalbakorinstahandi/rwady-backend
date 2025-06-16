@@ -29,7 +29,7 @@ return new class extends Migration
             $table->float('cost_price_after_discount')->nullable();
             $table->dateTime('cost_price_discount_start')->nullable();
             $table->dateTime('cost_price_discount_end')->nullable();
-            $table->boolean('availability‍')->default(true);
+            $table->boolean('availability')->default(true);
             $table->bigInteger('stock')->default(0);
             $table->boolean('stock_unlimited')->default(false);
             $table->enum('out_of_stock', ["show_on_storefront","hide_from_storefront","show_and_allow_pre_order"])->default("show_on_storefront");

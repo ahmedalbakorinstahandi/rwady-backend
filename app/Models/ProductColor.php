@@ -12,10 +12,7 @@ class ProductColor extends Model
 
     protected $fillable = [
         'product_id',
-        'color_name',
-        'color_code',
-        'stock',
-        'is_active',
+        'color',
     ];
 
     protected $casts = [
