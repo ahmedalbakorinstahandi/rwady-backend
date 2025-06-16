@@ -89,6 +89,14 @@ class ProductService
             $data['sku'] = Str::random(10);
         }
 
+        if (empty($data['out_of_stock'])) {
+            $data['out_of_stock'] = "show_on_storefront";
+        }
+
+        if (empty($data['stock_unlimited'])) {
+            $data['stock_unlimited'] = false;
+        }
+
 
         $data = LanguageService::prepareTranslatableData($data, new Product);
 
@@ -175,6 +183,8 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
+
+
         $product->update($data);
 
         if (isset($data['images'])) {
@@ -193,7 +203,7 @@ class ProductService
                 if (in_array($image['path'], $imagesToAdd)) {
                     $media = $product->media()->create([
                         'path' => $image['path'],
-                        'type' => 'image', 
+                        'type' => 'image',
                         'source' => 'file',
                         'orders' => 0,
                     ]);

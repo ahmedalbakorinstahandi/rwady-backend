@@ -32,7 +32,7 @@ return new class extends Migration
             $table->boolean('availability‍')->default(true);
             $table->bigInteger('stock')->default(0);
             $table->boolean('stock_unlimited')->default(false);
-            $table->enum('out_of_stock', ["show_on_storefront","hide_from_storefront","show_and_allow_pre_order"]);
+            $table->enum('out_of_stock', ["show_on_storefront","hide_from_storefront","show_and_allow_pre_order"])->default("show_on_storefront");
             $table->integer('minimum_purchase')->nullable();
             $table->integer('maximum_purchase')->nullable();
             $table->float('weight')->nullable();
