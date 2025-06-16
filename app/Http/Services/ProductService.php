@@ -85,7 +85,7 @@ class ProductService
     public function create($data)
     {
 
-        if (!isset($data['sku'])) {
+        if (empty($data['sku'])) {
             $data['sku'] = Str::random(10);
         }
 
