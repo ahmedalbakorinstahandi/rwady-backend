@@ -24,8 +24,12 @@ class Product extends Model
         'sku',
         'price',
         'price_after_discount',
+        'price_discount_start',
+        'price_discount_end',
         'cost_price',
         'cost_price_after_discount',
+        'cost_price_discount_start',
+        'cost_price_discount_end',
         'stock',
         'minimum_purchase',
         'maximum_purchase',
@@ -40,10 +44,6 @@ class Product extends Model
         'availability',
         'stock_unlimited',
         'out_of_stock',
-        'price_discount_start',
-        'price_discount_end',
-        'cost_price_discount_start',
-        'cost_price_discount_end',
         'ribbon_text',
         'ribbon_color',
         'related_category_id'
@@ -72,6 +72,7 @@ class Product extends Model
         'price_discount_end' => 'datetime',
         'cost_price_discount_start' => 'datetime',
         'cost_price_discount_end' => 'datetime',
+        'out_of_stock' => 'string',
     ];
 
     protected function name(): Attribute
