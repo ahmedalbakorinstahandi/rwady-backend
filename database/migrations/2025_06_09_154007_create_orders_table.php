@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('code');
-            $table->enum('status', ["pending","in_progress","shipping","completed","cancelled"]);
+            $table->enum('status', ["pending", "in_progress", "shipping", "completed", "cancelled"]);
             $table->float('payment_fees')->nullable();
             $table->text('notes')->nullable();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });

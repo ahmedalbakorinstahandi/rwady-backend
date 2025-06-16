@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->enum('discount_type', ["discount_type_type"]);
             $table->float('discount_value');
             $table->timestamps();
