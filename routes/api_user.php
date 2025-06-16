@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
@@ -13,9 +14,7 @@ Route::prefix('user')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
 
-
-
-
-
+        Route::get('/me', [UserController::class, 'getMyData']);
+        Route::put('/me', [UserController::class, 'updateMyData']);
     });
 });
