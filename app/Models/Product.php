@@ -139,9 +139,9 @@ class Product extends Model
         return $this->belongsToMany(Product::class, 'related_product_items', 'product_id', 'related_product_id');
     }
 
-    public function media(): MorphMany
+    public function media(): HasMany
     {
-        return $this->morphMany(Media::class, 'model');
+        return $this->hasMany(Media::class);
     }
 
     public function seo()

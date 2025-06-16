@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -17,12 +18,14 @@ class Media extends Model
         'source',
         'orders',
         'product_id',
-        'product_color_id',
+        'product_color_id'
     ];
 
+    
 
-    public function model(): MorphTo
+
+    public function product(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Product::class);
     }
 }
