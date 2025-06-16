@@ -21,7 +21,22 @@ class Media extends Model
         'product_color_id'
     ];
 
-    
+    protected $casts = [
+        'source' => 'string',
+        'orders' => 'integer',
+    ];
+
+
+    // path is a url
+    protected $appends = ['url'];
+    public function getUrlAttribute()
+    {
+        if ($this->source == 'file') {
+            return url($this->path);
+        } else {
+            return $this->path;
+        }
+    }
 
 
     public function product(): BelongsTo
