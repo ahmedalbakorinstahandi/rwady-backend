@@ -17,4 +17,8 @@ return [
     'otp_sent' => 'OTP sent to your phone',
     'otp_verified' => 'OTP verified',
     'otp_not_valid' => 'OTP not valid',
+
+    'phone' => [
+        'invalid' => 'Phone number is invalid',
+    ],
 ];

@@ -4,12 +4,18 @@ namespace App\Http\Services;
 
 use App\Models\User;
 use App\Services\MessageService;
+use App\Services\PhoneService;
 
 class AuthService
 {
     public function login($data)
     {
-        $user = User::where('phone', $data['phone'])->first();
+
+        $phone = PhoneService::parsePhoneParts($data['phone']);
+
+        $full_phone = $phone['country_code'] . $phone['national_number'];
+
+        $user = User::where('phone', $full_phone)->first();
 
         $otp = rand(100000, 999999);
         $otp_expire_at = now()->addMinutes(10);
@@ -18,7 +24,7 @@ class AuthService
             if ($data['role'] == 'customer') {
                 $user = User::create([
                     'name' => '',
-                    'phone' => $data['phone'],
+                    'phone' => $full_phone,
                     'status' => 'active',
                     'role' => 'customer',
                     'otp' => $otp,
@@ -35,7 +41,6 @@ class AuthService
             if ($user->status == 'banned') {
                 MessageService::abort(400, 'messages.user.banned');
             } else {
-
                 $user->update([
                     'otp' => $otp,
                     'otp_expire_at' => $otp_expire_at,
