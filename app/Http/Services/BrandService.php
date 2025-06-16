@@ -83,4 +83,4 @@ class BrandService
         $brand->products()->detach();
         $brand->delete();
     }
-} 
+}

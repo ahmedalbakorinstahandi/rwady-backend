@@ -42,9 +42,9 @@ class Brand extends Model
         return url($this->image);
     }
 
-    public function products(): HasMany
+    public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'brand_products', 'brand_id', 'product_id');
     }
 
     public function brandProducts(): BelongsToMany
