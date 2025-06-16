@@ -105,6 +105,9 @@ class ProductService
 
         $product = Product::create($data);
 
+        $product->sku = $product->id;
+        $product->save();
+
         if (isset($data['images'])) {
             foreach ($data['images'] as $image) {
                 $media = $product->media()->create([
