@@ -15,6 +15,7 @@ class MessageService
                 [
                     'success' => false,
                     'message' => trans($message, $replace),
+                    'key' => $message,
                 ],
                 $status
             )

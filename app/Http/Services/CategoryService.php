@@ -38,24 +38,43 @@ class CategoryService
     {
         $category = Category::where('id', $id)->first();
         if (!$category) {
-            MessageService::abort(404, 'category.not_found');
+            MessageService::abort(404, 'messages.category.not_found');
         }
-        $category->load(['parent', 'children', 'products', 'seo']);
+
+        $category->load([
+            'parent',
+            // 'children',
+            // 'products',
+            'seo'
+        ]);
+
+        $category->loadCount('products');
+
         return $category;
     }
 
     public function create($data)
     {
         $data = LanguageService::prepareTranslatableData($data, new Category);
+
         $category = Category::create($data);
-        return $category->fresh();
+
+
+        $category = $this->show($category->id);
+
+
+        return $category;
     }
 
     public function update($data, $category)
     {
         $data = LanguageService::prepareTranslatableData($data, $category);
+
         $category->update($data);
-        return $category->fresh();
+
+        $category = $this->show($category->id);
+
+        return $category;
     }
 
     public function delete($category)
@@ -64,4 +83,4 @@ class CategoryService
         $category->children()->delete();
         $category->delete();
     }
-} 
+}
