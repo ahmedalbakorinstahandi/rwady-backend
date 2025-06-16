@@ -59,6 +59,15 @@ class CategoryService
 
         $category = Category::create($data);
 
+        if (isset($data['seo'])) {
+            $category->seo()->create([
+                'meta_title' => $data['seo']['meta_title'] ?? null,
+                'meta_description' => $data['seo']['meta_description'] ?? null,
+                'keywords' => $data['seo']['keywords'] ?? null,
+                'image' => $data['seo']['image'] ?? null,
+            ]);
+        }
+
 
         $category = $this->show($category->id);
 
@@ -71,6 +80,19 @@ class CategoryService
         $data = LanguageService::prepareTranslatableData($data, $category);
 
         $category->update($data);
+
+        if (isset($data['seo'])) {
+
+            $category->seo()->updateOrCreate([
+                'seoable_type' => Category::class,
+                'seoable_id' => $category->id,
+            ], [
+                'meta_title' => $data['seo']['meta_title'] ?? null,
+                'meta_description' => $data['seo']['meta_description'] ?? null,
+                'keywords' => $data['seo']['keywords'] ?? null,
+                'image' => $data['seo']['image'] ?? null,
+            ]);
+        }
 
         $category = $this->show($category->id);
 
