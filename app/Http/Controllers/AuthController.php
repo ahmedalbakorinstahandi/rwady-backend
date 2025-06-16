@@ -36,9 +36,22 @@ class AuthController extends Controller
 
         return ResponseService::response([
             'success' => true,
-            'message' => trans('messages.otp_verified'),
+            'message' => 'messages.otp_verified',
             'data' => $data,
             'status' => 200,
+        ]);
+    }
+
+    public function logout()
+    {
+
+        $token = request()->bearerToken();
+
+        $this->authService->logout($token);
+
+        return ResponseService::response([
+            'status' => 200,
+            'message' => 'auth.user_logged_out_successfully',
         ]);
     }
 }

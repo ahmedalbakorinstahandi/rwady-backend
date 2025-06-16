@@ -22,4 +22,6 @@ return [
     ],
 
     'user_not_found' => 'المستخدم غير موجود',
+
+    'user_logged_out_successfully' => 'تم تسجيل الخروج بنجاح',
 ];

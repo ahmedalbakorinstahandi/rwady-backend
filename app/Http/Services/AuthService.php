@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Models\User;
 use App\Services\MessageService;
 use App\Services\PhoneService;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
@@ -33,7 +34,7 @@ class AuthService
                     'language' => request()->header('Accept-Language', 'en')
                 ]);
 
-                return trans('messages.otp_sent');
+                return 'messages.otp_sent';
             } else {
                 MessageService::abort(400, 'messages.unauthorized');
             }
@@ -45,7 +46,7 @@ class AuthService
                     'otp' => $otp,
                     'otp_expire_at' => $otp_expire_at,
                 ]);
-                return trans('messages.otp_sent');
+                return 'messages.otp_sent';
             }
         }
     }
@@ -75,5 +76,14 @@ class AuthService
         } else {
             MessageService::abort(400, 'messages.otp_not_valid');
         }
+    }
+
+    public function logout($token)
+    {
+        $personalAccessToken = PersonalAccessToken::findToken($token);
+
+        // FirebaseService::unsubscribeFromAllTopic($personalAccessToken->tokenable);
+
+        return $personalAccessToken->delete();
     }
 }

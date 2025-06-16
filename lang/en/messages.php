@@ -23,4 +23,6 @@ return [
     ],
 
     'user_not_found' => 'User not found',
+
+    'user_logged_out_successfully' => 'User logged out successfully',
 ];
