@@ -51,7 +51,7 @@ class AuthController extends Controller
 
         return ResponseService::response([
             'status' => 200,
-            'message' => 'auth.user_logged_out_successfully',
+            'message' => 'messages.user_logged_out_successfully',
         ]);
     }
 }
