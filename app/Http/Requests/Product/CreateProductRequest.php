@@ -45,7 +45,7 @@ class CreateProductRequest extends BaseFormRequest
             'brands.*' => 'required|exists:brands,id,deleted_at,NULL',
 
             'colors' => 'nullable|array',
-            'colors.*' => 'required|string|regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
+            'colors.*' =>'required|string|regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
 
             'images' => 'nullable|array',
             'images.*.path' => 'required|string|max:500',
