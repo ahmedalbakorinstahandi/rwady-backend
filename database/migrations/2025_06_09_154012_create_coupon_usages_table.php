@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('coupon_usages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('coupon_id');
-            $table->foreignId('coupon_id')->constrained('coupons')->onDelete('cascade');
+            $table->foreign('coupon_id')->references('id')->on('coupons');
             $table->unsignedBigInteger('order_id');
-            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->enum('discount_type', ["discount_type_type"]);
