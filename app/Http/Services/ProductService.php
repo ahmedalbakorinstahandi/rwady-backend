@@ -162,12 +162,7 @@ class ProductService
         }
 
         if (isset($data['related_products'])) {
-            foreach ($data['related_products'] as $related_product) {
-                $product->relatedProducts()->create([
-                    'related_product_id' => $related_product,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $product->relatedProducts()->sync($data['related_products']);
         }
 
         if (isset($data['seo'])) {
