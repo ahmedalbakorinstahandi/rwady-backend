@@ -108,7 +108,7 @@ class ProductService
         if (isset($data['images'])) {
             foreach ($data['images'] as $image) {
                 $media = $product->media()->create([
-                    'path' => $image['path'],
+                    'path' => $image,
                     'type' => 'image',
                     'source' => 'file',
                     'orders' => 0,
@@ -122,7 +122,7 @@ class ProductService
 
             foreach ($data['videos'] as $video) {
                 $media = $product->media()->create([
-                    'path' => $video['link'],
+                    'path' => $video,
                     'type' => 'video',
                     'source' => 'link',
                     'orders' => 0,
@@ -191,7 +191,7 @@ class ProductService
 
         if (isset($data['images'])) {
             $existingImages = $product->media()->where('type', 'image')->pluck('path')->toArray();
-            $newImages = collect($data['images'])->pluck('path')->toArray();
+            $newImages = $data['images'];
 
             // Remove images that are no longer present
             $imagesToDelete = array_diff($existingImages, $newImages);
@@ -202,9 +202,9 @@ class ProductService
             // Add only new images that don't exist
             $imagesToAdd = array_diff($newImages, $existingImages);
             foreach ($data['images'] as $image) {
-                if (in_array($image['path'], $imagesToAdd)) {
+                if (in_array($image, $imagesToAdd)) {
                     $media = $product->media()->create([
-                        'path' => $image['path'],
+                        'path' => $image,
                         'type' => 'image',
                         'source' => 'file',
                         'orders' => 0,
@@ -216,7 +216,7 @@ class ProductService
 
         if (isset($data['videos'])) {
             $existingVideos = $product->media()->where('type', 'video')->pluck('path')->toArray();
-            $newVideos = collect($data['videos'])->pluck('link')->toArray();
+            $newVideos = $data['videos'];
 
             // Remove videos that are no longer present
             $videosToDelete = array_diff($existingVideos, $newVideos);
@@ -227,9 +227,9 @@ class ProductService
             // Add only new videos that don't exist
             $videosToAdd = array_diff($newVideos, $existingVideos);
             foreach ($data['videos'] as $video) {
-                if (in_array($video['link'], $videosToAdd)) {
+                if (in_array($video, $videosToAdd)) {
                     $media = $product->media()->create([
-                        'path' => $video['link'],
+                        'path' => $video,
                         'type' => 'video',
                         'source' => 'link',
                         'orders' => 0,

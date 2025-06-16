@@ -70,10 +70,10 @@ class UpdateProductRequest extends BaseFormRequest
             ],
 
             'images' => 'nullable|array',
-            'images.*.path' => 'required|string|max:500',
+            'images.*' => 'required|string|max:500',
 
             'videos' => 'nullable|array',
-            'videos.*.link' => 'required|string|max:500',
+            'videos.*' => 'required|string|max:500',
 
             'seo' => 'nullable|array',
             'seo.meta_title' => LanguageService::translatableFieldRules('nullable|string|max:255'),
@@ -83,7 +83,7 @@ class UpdateProductRequest extends BaseFormRequest
 
             'related_category_id' => 'nullable|exists:categories,id,deleted_at,NULL',
             'related_products' => 'nullable|array',
-            'related_products.*' => 'required|exists:products,id,deleted_at,NULL,is_active,1',
+            'related_products.*' => 'required|exists:products,id,deleted_at,NULL',
         ];
     }
 }

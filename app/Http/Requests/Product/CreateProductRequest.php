@@ -70,10 +70,10 @@ class CreateProductRequest extends BaseFormRequest
             ],
 
             'images' => 'nullable|array',
-            'images.*.path' => 'required|string|max:500',
+            'images.*' => 'required|string|max:500',
 
             'videos' => 'nullable|array',
-            'videos.*.link' => 'required|string|max:500',
+            'videos.*' => 'required|string|max:500',
 
             'seo' => 'nullable|array',
             'seo.meta_title' => LanguageService::translatableFieldRules('nullable|string|max:255'),
