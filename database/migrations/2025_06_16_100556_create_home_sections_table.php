@@ -30,6 +30,7 @@ return new class extends Migration
                     'featured_sections',
                 ]
             );
+            $table->unsignedBigInteger('item_id')->nullable();
             $table->enum('status', ['static', 'dynamic'])->default('static');
             $table->integer('limit')->nullable();
             $table->boolean('can_show_more')->default(false);

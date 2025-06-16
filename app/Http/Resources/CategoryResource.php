@@ -12,16 +12,12 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug,
             'description' => $this->description,
+            'parent_id' => $this->parent_id,
             'image' => $this->image,
-            'is_active' => $this->is_active,
-            'order' => $this->order,
-            'parent' => new CategoryResource($this->whenLoaded('parent')),
-            'children' => CategoryResource::collection($this->whenLoaded('children')),
-            'products' => ProductResource::collection($this->whenLoaded('products')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'availability' => $this->availability,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 } 

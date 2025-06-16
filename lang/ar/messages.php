@@ -27,4 +27,11 @@ return [
     'user_not_found' => 'المستخدم غير موجود',
 
     'user_logged_out_successfully' => 'تم تسجيل الخروج بنجاح',
+
+    'category' => [
+        'not_found' => 'التصنيف غير موجود',
+        'created_successfully' => 'تم إنشاء التصنيف بنجاح',
+        'updated_successfully' => 'تم تحديث التصنيف بنجاح',
+        'deleted_successfully' => 'تم حذف التصنيف بنجاح',
+    ],
 ];

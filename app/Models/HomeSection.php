@@ -18,6 +18,7 @@ class HomeSection extends Model
         'title',
         'show_title',
         'type',
+        'item_id',
         'status',
         'limit',
         'can_show_more',

@@ -28,4 +28,11 @@ return [
     'user_not_found' => 'User not found',
 
     'user_logged_out_successfully' => 'User logged out successfully',
+
+    'category' => [
+        'not_found' => 'Category not found',
+        'created_successfully' => 'Category created successfully',
+        'updated_successfully' => 'Category updated successfully',
+        'deleted_successfully' => 'Category deleted successfully',
+    ],
 ];
