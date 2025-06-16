@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('home_sections', function (Blueprint $table) {
             $table->id();
             $table->text('title');
+            $table->boolean('show_title')->default(true);
             $table->enum(
                 'type',
                 [

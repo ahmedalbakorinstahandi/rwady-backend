@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('sku');
             $table->text('name');
             $table->longText('description');
-            $table->boolean('view_in_home')->default(false);
+            $table->boolean('is_recommended')->default(false);
             $table->string('ribbon_text', 40)->nullable();
             $table->string('ribbon_color', 10)->nullable();
             $table->float('price')->default(0);
