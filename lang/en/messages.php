@@ -35,4 +35,11 @@ return [
         'updated_successfully' => 'Category updated successfully',
         'deleted_successfully' => 'Category deleted successfully',
     ],
+
+    'brand' => [
+        'not_found' => 'Brand not found',
+        'created_successfully' => 'Brand created successfully',
+        'updated_successfully' => 'Brand updated successfully',
+        'deleted_successfully' => 'Brand deleted successfully',
+    ],
 ];

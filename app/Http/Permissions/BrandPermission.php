@@ -4,7 +4,7 @@ namespace App\Http\Permissions;
 
 use App\Models\User;
 
-class CategoryPermission
+class BrandPermission
 {
     public static function filterIndex($query)
     {

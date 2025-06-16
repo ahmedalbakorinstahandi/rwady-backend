@@ -3,11 +3,21 @@
 namespace App\Http\Requests\Brand;
 
 use App\Http\Requests\BaseFormRequest;
+use App\Services\LanguageService;
 
 class UpdateBrandRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'name' => LanguageService::translatableFieldRules('nullable|string|max:255'),
+            'image' => 'nullable|string|max:255',
+            'availability' => 'nullable|boolean',
+            'seo' => 'nullable|array',
+            'seo.meta_title' => 'nullable|string|max:255',
+            'seo.meta_description' => 'nullable|string',
+            'seo.keywords' => 'nullable|string|max:255',
+            'seo.image' => 'nullable|string|max:255',
+        ];
     }
-} 
+}

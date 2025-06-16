@@ -2,26 +2,44 @@
 
 namespace App\Models;
 
+use App\Traits\LanguageTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Brand extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, LanguageTrait, HasTranslations;
 
     protected $fillable = [
         'name',
-        'slug',
-        'description',
-        'logo',
-        'is_active',
+        'image',
+        'availability',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'availability' => 'boolean',
     ];
+
+    public $translatable = ['name'];
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => $this->getAllTranslations('name'),
+        );
+    }
+
+    // image is a url
+    protected $appends = ['image_url'];
+    public function getImageUrlAttribute()
+    {
+        return url($this->image);
+    }
 
     public function products(): HasMany
     {
@@ -32,4 +50,4 @@ class Brand extends Model
     {
         return $this->belongsToMany(Product::class, 'brand_products');
     }
-} 
+}

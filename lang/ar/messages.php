@@ -34,4 +34,11 @@ return [
         'updated_successfully' => 'تم تحديث التصنيف بنجاح',
         'deleted_successfully' => 'تم حذف التصنيف بنجاح',
     ],
+
+    'brand' => [
+        'not_found' => 'الماركة غير موجودة',
+        'created_successfully' => 'تم إنشاء الماركة بنجاح',
+        'updated_successfully' => 'تم تحديث الماركة بنجاح',
+        'deleted_successfully' => 'تم حذف الماركة بنجاح',
+    ],
 ];

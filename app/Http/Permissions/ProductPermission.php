@@ -2,11 +2,17 @@
 
 namespace App\Http\Permissions;
 
+use App\Models\User;
+
 class ProductPermission
 {
     public static function filterIndex($query)
     {
-        $query->where('availability', true);
+        $user = User::auth();
+
+        if ($user && !$user->isAdmin()) {
+            $query->where('availability', true);
+        }
 
         return $query;
     }

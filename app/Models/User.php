@@ -30,6 +30,7 @@ class User extends Authenticatable
         'otp',
         'otp_expire_at',
     ];
+    
 
 
     protected function casts(): array
@@ -38,6 +39,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin()
+    {
+        return $this->role == 'admin';
     }
 
     public function getAvatarAttribute($value)
