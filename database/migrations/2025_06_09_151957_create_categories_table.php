@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('name');
             $table->longText('description')->nullable();
             $table->string('image', 500)->nullable();
-            $table->boolean('availability‍')->default(true);
+            $table->boolean('availability')->default(true);
             $table->unsignedBigInteger('parent_id')->nullable()->index();
 
             $table->foreign('parent_id')

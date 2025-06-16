@@ -42,7 +42,7 @@ class ProductService
         ];
         $exactMatchFields = [
             'view_in_home',
-            'availability‍',
+            'availability',
             'stock_unlimited',
             'out_of_stock',
             'shipping_type',
