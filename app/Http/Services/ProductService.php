@@ -303,23 +303,7 @@ class ProductService
         }
 
         if (isset($data['related_products'])) {
-            $existingRelatedProducts = $product->relatedProducts()->pluck('related_product_id')->toArray();
-            $newRelatedProducts = $data['related_products'];
-
-            // Remove related products that are no longer present
-            $relatedProductsToDelete = array_diff($existingRelatedProducts, $newRelatedProducts);
-            if (!empty($relatedProductsToDelete)) {
-                $product->relatedProducts()->whereIn('related_product_id', $relatedProductsToDelete)->delete();
-            }
-
-            // Add only new related products that don't exist
-            $relatedProductsToAdd = array_diff($newRelatedProducts, $existingRelatedProducts);
-            foreach ($relatedProductsToAdd as $relatedProductId) {
-                $product->relatedProducts()->create([
-                    'related_product_id' => $relatedProductId,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $product->relatedProducts()->sync($data['related_products']);
         }
 
         if (isset($data['seo'])) {
