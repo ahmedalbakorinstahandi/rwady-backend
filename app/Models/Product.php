@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Product extends Model
 {
@@ -144,8 +145,8 @@ class Product extends Model
         return $this->hasMany(Media::class);
     }
 
-    public function seo()
+    public function seo(): MorphOne
     {
-        return $this->morphOne(Seo::class, 'model');
+        return $this->morphOne(Seo::class, 'seoable');
     }
 }
