@@ -11,7 +11,6 @@ class UserService
 
         $user = User::auth();
 
-        $user->load('addresses');
 
 
         return $user;
@@ -23,8 +22,6 @@ class UserService
         $user = User::auth();
 
         $user->update($data);
-
-        $user->load('addresses');
 
         return $user;
     }
