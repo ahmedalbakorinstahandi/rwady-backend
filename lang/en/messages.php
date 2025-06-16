@@ -42,4 +42,11 @@ return [
         'updated_successfully' => 'Brand updated successfully',
         'deleted_successfully' => 'Brand deleted successfully',
     ],
+
+    'banner' => [
+        'not_found' => 'Banner not found',
+        'created_successfully' => 'Banner created successfully',
+        'updated_successfully' => 'Banner updated successfully',
+        'deleted_successfully' => 'Banner deleted successfully',
+    ],
 ];

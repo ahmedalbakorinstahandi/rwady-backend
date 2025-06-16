@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
@@ -30,5 +31,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [BrandController::class, 'create']);
         Route::put('/{id}', [BrandController::class, 'update']);
         Route::delete('/{id}', [BrandController::class, 'delete']);
+    });
+
+    Route::prefix('banners')->group(function () {
+        Route::get('/', [BannerController::class, 'index']);
+        Route::get('/{id}', [BannerController::class, 'show']);
+        Route::post('/', [BannerController::class, 'create']);
+        Route::put('/{id}', [BannerController::class, 'update']);
+        Route::delete('/{id}', [BannerController::class, 'delete']);
     });
 });

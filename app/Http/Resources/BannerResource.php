@@ -13,15 +13,16 @@ class BannerResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'link' => $this->link,
             'button_text' => $this->button_text,
-            'is_active' => $this->is_active,
-            'order' => $this->order,
+            'image' => $this->image,
+            'image_url' => $this->image_url,
+            'is_popup' => $this->is_popup,
+            'link' => $this->link,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'media' => MediaResource::collection($this->whenLoaded('media')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'availability' => $this->availability,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 } 

@@ -41,4 +41,11 @@ return [
         'updated_successfully' => 'تم تحديث الماركة بنجاح',
         'deleted_successfully' => 'تم حذف الماركة بنجاح',
     ],
+
+    'banner' => [
+        'not_found' => 'البانر غير موجود',
+        'created_successfully' => 'تم إنشاء البانر بنجاح',
+        'updated_successfully' => 'تم تحديث البانر بنجاح',
+        'deleted_successfully' => 'تم حذف البانر بنجاح',
+    ],
 ];
