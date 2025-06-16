@@ -63,18 +63,3 @@ class AuthService
         }
     }
 }
-
-
-// Schema::create('users', function (Blueprint $table) {
-//     $table->bigInteger('name');
-//     $table->string('phone', 20);
-//     $table->string('avatar', 100)->nullable();
-//     $table->enum('status', ["active","banned"]);
-//     $table->enum('role', ["customer","admin"]);
-//     $table->string('otp', 10)->nullable();
-//     $table->timestamp('otp_expire_at')->nullable();
-//     $table->boolean('is_verified')->default(false);
-//     $table->string('language', 5);
-//     $table->timestamps();
-//     $table->softDeletes();
-// });
