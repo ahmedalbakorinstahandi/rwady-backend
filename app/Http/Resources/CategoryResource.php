@@ -16,6 +16,11 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parent_id,
             'image' => $this->image,
             'availability' => $this->availability,
+            'products_count' => $this->products_count,
+            'parent' => new CategoryResource($this->whenLoaded('parent')),
+            'children' => CategoryResource::collection($this->whenLoaded('children')),
+            'products' => ProductResource::collection($this->whenLoaded('products')),
+            'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
