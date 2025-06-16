@@ -19,7 +19,8 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('Products');
             $table->unsignedBigInteger('brand_id');
             $table->foreign('brand_id')->references('id')->on('Brands');
-            $table->timestamp('created_at');
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::enableForeignKeyConstraints();
