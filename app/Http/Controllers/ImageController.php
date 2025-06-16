@@ -16,7 +16,7 @@ class ImageController extends Controller
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:8192',
-            'folder' => 'required|string|in:users,listings',
+            'folder' => 'required|string|in:users,banners,featured_sections,products,categories,brands',
         ]);
 
         $imageName = ImageService::storeImage($request->image, $request->folder);
