@@ -56,7 +56,18 @@ class CreateProductRequest extends BaseFormRequest
             'brands.*' => 'required|exists:brands,id,deleted_at,NULL',
 
             'colors' => 'nullable|array',
-            'colors.*' => 'required|string|regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
+            'colors.*' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!is_null($value) && !is_string($value)) {
+                        $fail('The ' . $attribute . ' must be a string.');
+                    }
+                    if (!is_null($value) && !preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $value)) {
+                        $fail('The ' . $attribute . ' must be a valid hex color.');
+                    }
+                }
+            ],
 
             'images' => 'nullable|array',
             'images.*.path' => 'required|string|max:500',
