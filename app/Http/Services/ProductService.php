@@ -178,6 +178,8 @@ class ProductService
             ]);
         }
 
+        $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+
         return $product->fresh();
     }
 
@@ -330,6 +332,9 @@ class ProductService
                 'image' => $data['seo']['image'],
             ]);
         }
+
+        $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+
         return $product->fresh();
     }
 
