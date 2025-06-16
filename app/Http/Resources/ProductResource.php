@@ -39,7 +39,7 @@ class ProductResource extends JsonResource
             'ribbon_text' => $this->ribbon_text,
             'ribbon_color' => $this->ribbon_color,
             'related_category_id' => $this->related_category_id,
-            'category' => new CategoryResource($this->whenLoaded('category')),
+            'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brand' => new BrandResource($this->whenLoaded('brand')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),

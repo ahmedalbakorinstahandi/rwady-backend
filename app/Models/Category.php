@@ -18,7 +18,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'description', 
+        'description',
         'image',
         'availability',
         'parent_id',
@@ -51,9 +51,11 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    public function products(): HasMany
+
+
+    public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'category_products', 'category_id', 'product_id');
     }
 
     public function seo(): MorphOne

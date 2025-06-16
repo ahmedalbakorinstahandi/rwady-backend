@@ -96,7 +96,7 @@ class Product extends Model
         );
     }
 
-    public function category(): BelongsTo
+    public function relatedCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'related_category_id');
     }
