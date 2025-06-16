@@ -21,4 +21,6 @@ return [
     'phone' => [
         'invalid' => 'Phone number is invalid',
     ],
+
+    'user_not_found' => 'User not found',
 ];

@@ -52,7 +52,16 @@ class AuthService
 
     public function verifyOtp($data)
     {
-        $user = User::where('phone', $data['phone'])->first();
+        $phone = PhoneService::parsePhoneParts($data['phone']);
+
+        $full_phone = $phone['country_code'] . $phone['national_number'];
+
+        $user = User::where('phone', $full_phone)->first();
+
+        if (!$user) {
+            MessageService::abort(400, 'messages.user_not_found');
+        }
+
         if (($user->otp == $data['otp'] && $user->otp_expire_at > now() || $data['otp'] == 55555)) {
             $user->update(
                 ['is_verified' => true]
