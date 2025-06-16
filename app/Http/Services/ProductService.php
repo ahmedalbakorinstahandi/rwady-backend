@@ -97,7 +97,7 @@ class ProductService
             $data['stock_unlimited'] = false;
         }
 
-        
+
 
 
         $data = LanguageService::prepareTranslatableData($data, new Product);
@@ -178,9 +178,12 @@ class ProductService
             ]);
         }
 
+        $product = $product->fresh();
+
         $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
-        return $product->fresh();
+
+        return $product;
     }
 
     public function update($data, $product)
@@ -326,16 +329,20 @@ class ProductService
                 'seoable_type' => Product::class,
                 'seoable_id' => $product->id,
             ], [
-                'meta_title' => $data['seo']['meta_title'],
-                'meta_description' => $data['seo']['meta_description'],
-                'keywords' => $data['seo']['keywords'],
-                'image' => $data['seo']['image'],
+                'meta_title' => $data['seo']['meta_title'] ?? null,
+                'meta_description' => $data['seo']['meta_description'] ?? null,
+                'keywords' => $data['seo']['keywords'] ?? null,
+                'image' => $data['seo']['image'] ?? null,
             ]);
         }
 
+        $product = $product->fresh();
+
         $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
-        return $product->fresh();
+
+
+        return $product;
     }
 
     public function delete($product)
