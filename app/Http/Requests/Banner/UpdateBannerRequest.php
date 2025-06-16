@@ -15,7 +15,7 @@ class UpdateBannerRequest extends BaseFormRequest
             'button_text' => LanguageService::translatableFieldRules('nullable|string|max:255'),
             'image' => 'nullable|string|max:100',
             'is_popup' => 'nullable|boolean',
-            'link' => 'nullable|string|max:500',
+            'link' => 'nullable|string|url',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'availability' => 'nullable|boolean',

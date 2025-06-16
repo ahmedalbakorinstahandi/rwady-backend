@@ -15,7 +15,7 @@ class CreateBannerRequest extends BaseFormRequest
             'button_text' => LanguageService::translatableFieldRules('required|string|max:255'),
             'image' => 'required|string|max:100',
             'is_popup' => 'required|boolean',
-            'link' => 'required|string|max:500',
+            'link' => 'required|string|url',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'availability' => 'nullable|boolean',

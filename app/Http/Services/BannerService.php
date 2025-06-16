@@ -45,6 +45,9 @@ class BannerService
 
     public function create($data)
     {
+
+        $data = LanguageService::prepareTranslatableData($data, new Banner);
+
         $banner = Banner::create($data);
 
         // $banner = $this->show($banner->id);
@@ -54,6 +57,8 @@ class BannerService
 
     public function update($data, $banner)
     {
+        $data = LanguageService::prepareTranslatableData($data, $banner);
+
         $banner->update($data);
 
         // $banner = $this->show($banner->id);
@@ -65,4 +70,4 @@ class BannerService
     {
         $banner->delete();
     }
-} 
+}
