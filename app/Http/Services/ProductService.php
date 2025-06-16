@@ -320,4 +320,17 @@ class ProductService
         }
         return $product->fresh();
     }
+
+    public function delete($product)
+    {
+
+        $product->media()->delete();
+        $product->seo()->delete();
+        $product->categories()->delete();
+        $product->brands()->delete();
+        $product->colors()->delete();
+        $product->relatedProducts()->delete();
+
+        $product->delete();
+    }
 }

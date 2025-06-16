@@ -3,6 +3,9 @@
 return [
     'product' => [
         'not_found' => 'المنتج غير موجود',
+        'created_successfully' => 'تم إنشاء المنتج بنجاح',
+        'updated_successfully' => 'تم تحديث المنتج بنجاح',
+        'deleted_successfully' => 'تم حذف المنتج بنجاح',
     ],
     'you_are_not_logged_in_Please_log_in_first' => 'يجب عليك تسجيل الدخول للمتابعة',
     'route_not_found' => 'الرابط غير موجود',

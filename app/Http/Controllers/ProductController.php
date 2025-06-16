@@ -54,6 +54,7 @@ class ProductController extends Controller
             [
                 'success' => true,
                 'data' => $product,
+                'message' => 'messages.product.created_successfully',
                 'status' => 201,
                 'resource' => ProductResource::class,
             ]
@@ -71,8 +72,23 @@ class ProductController extends Controller
             [
                 'success' => true,
                 'data' => $product,
+                'message' => 'messages.product.updated_successfully',
                 'status' => 200,
                 'resource' => ProductResource::class,
+            ]
+        );
+    }
+
+    public function delete(int $id)
+    {
+        $product = $this->productService->show($id);
+        $this->productService->delete($product);
+
+        return  ResponseService::response(
+            [
+                'success' => true,
+                'message' => 'messages.product.deleted_successfully',
+                'status' => 200,
             ]
         );
     }

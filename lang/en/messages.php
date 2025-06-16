@@ -3,6 +3,9 @@
 return [
     'product' => [
         'not_found' => 'Product not found',
+        'created_successfully' => 'Product created successfully',
+        'updated_successfully' => 'Product updated successfully',
+        'deleted_successfully' => 'Product deleted successfully',
     ],
 
     'you_are_not_logged_in_Please_log_in_first' => 'You are not logged in, please log in first',
