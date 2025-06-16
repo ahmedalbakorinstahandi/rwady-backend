@@ -50,7 +50,7 @@ class BrandService
         $brand = Brand::create($data);
 
         if (isset($data['seo'])) {
-            $brand->seo()->create([
+            $brand->seo()->updateOrCreate([
                 'seoable_type' => Brand::class,
                 'seoable_id' => $brand->id,
             ], $data['seo']);
