@@ -15,10 +15,10 @@ return new class extends Migration
 
         Schema::create('seo', function (Blueprint $table) {
             $table->id();
-            $table->text('meta_title');
-            $table->longText('meta_description');
-            $table->text('keywords');
-            $table->string('image', 100);
+            $table->text('meta_title')->nullable();
+            $table->longText('meta_description')->nullable();
+            $table->text('keywords')->nullable();
+            $table->string('image', 100)->nullable();
             $table->unsignedBigInteger('seoable_id');
             $table->string('seoable_type');
             $table->timestamps();

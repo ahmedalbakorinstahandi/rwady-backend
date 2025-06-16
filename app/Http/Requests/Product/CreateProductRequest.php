@@ -76,8 +76,10 @@ class CreateProductRequest extends BaseFormRequest
             'videos.*' => 'required|string|max:500',
 
             'seo' => 'nullable|array',
-            'seo.meta_title' => LanguageService::translatableFieldRules('nullable|string|max:255'),
-            'seo.meta_description' => LanguageService::translatableFieldRules('nullable|string'),
+            // 'seo.meta_title' => LanguageService::translatableFieldRules('nullable|string|max:255'),
+            // 'seo.meta_description' => LanguageService::translatableFieldRules('nullable|string'),
+            'seo.meta_title' => 'nullable|string|max:255',
+            'seo.meta_description' => 'nullable|string',
             'seo.keywords' =>  'nullable|string|max:255',
             'seo.image' => 'nullable|string|max:100',
 

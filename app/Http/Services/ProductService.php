@@ -169,10 +169,10 @@ class ProductService
 
         if (isset($data['seo'])) {
             $product->seo()->create([
-                'meta_title' => $data['seo']['meta_title'],
-                'meta_description' => $data['seo']['meta_description'],
-                'keywords' => $data['seo']['keywords'],
-                'image' => $data['seo']['image'],
+                'meta_title' => $data['seo']['meta_title'] ?? null,
+                'meta_description' => $data['seo']['meta_description'] ?? null,
+                'keywords' => $data['seo']['keywords'] ?? null,
+                'image' => $data['seo']['image'] ?? null,
                 'seoable_type' => Product::class,
                 'seoable_id' => $product->id,
             ]);
