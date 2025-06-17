@@ -81,7 +81,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ], // 🚫
+            ], // ✅
             [
                 'title' => [
                     'en' => 'Recommended',
@@ -132,7 +132,7 @@ class HomeSectionSeeder extends Seeder
                 'data' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ], // 🚫
+            ], // ✅
             [
                 'title' => [
                     'en' => 'Brand',
