@@ -10,11 +10,17 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+        $relatedProducts = $this->whenLoaded('relatedProducts', function() {
+            return $this->relatedProducts;
+        }, collect([]));
+        
+        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function() {
+            return $this->relatedCategoryProducts; 
+        }, collect([]));
 
-        $relatedProducts = $this->whenLoaded('relatedProducts') ?? collect([]);
-        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts') ?? collect([]);
-
-        $relatedProducts = $relatedProducts->merge($relatedCategoryProducts);
+        $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue 
+            ? collect([])
+            : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
 
         return [
             'id' => $this->id,
