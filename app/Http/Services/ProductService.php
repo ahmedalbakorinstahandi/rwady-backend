@@ -15,7 +15,7 @@ class ProductService
 {
     public function index(array $filters = [])
     {
-        $query = Product::query();
+        $query = Product::query()->with(['media', 'colors']);
 
         $searchFields = ['name', 'description', 'sku'];
         $numericFields = [

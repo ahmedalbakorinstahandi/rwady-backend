@@ -7,6 +7,7 @@ use App\Http\Resources\BrandResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FeaturedSectionResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\SettingResource;
 use App\Models\Banner;
 use App\Models\HomeSection;
 use App\Models\Setting;
@@ -69,13 +70,13 @@ class HomeSectionService
 
             if ($homeSection->type === 'most_sold_products') {
                 $productService = new ProductService();
-                    $products = $productService->index(['limit' => $homeSection->limit, 'most_sold' => 1]);
+                $products = $productService->index(['limit' => $homeSection->limit, 'most_sold' => 1]);
                 $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'video') {
                 $videoUrl = Setting::where('key', 'video_url')->first();
-                $homeSection->data = $videoUrl;
+                $homeSection->data = new SettingResource($videoUrl);
             }
 
             return $homeSection;

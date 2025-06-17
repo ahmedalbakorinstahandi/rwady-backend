@@ -13,6 +13,7 @@ class CategoryService
     public function index(array $filters = [])
     {
         $query = Category::query();
+
         $searchFields = ['name', 'description'];
         $numericFields = [];
         $dateFields = ['created_at'];
