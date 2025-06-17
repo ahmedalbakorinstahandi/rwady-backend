@@ -41,6 +41,7 @@ class ProductService
             'created_at',
         ];
         $exactMatchFields = [
+            'id',
             'view_in_home',
             'availability',
             'stock_unlimited',
@@ -49,6 +50,26 @@ class ProductService
             'related_category_id'
         ];
         $inFields = [];
+
+        if (isset($filters['category_id'])) {
+            $query->whereHas('categories', function ($query) use ($filters) {
+                $query->where('category_id', $filters['category_id']);
+            });
+        }
+
+        if (isset($filters['brand_id'])) {
+            $query->whereHas('brands', function ($query) use ($filters) {
+                $query->where('brand_id', $filters['brand_id']);
+            });
+        }
+
+        if (isset($filters['is_recommended'])) {
+            $query->where('is_recommended', $filters['is_recommended']);
+        }
+
+        if (isset($filters['most_sold'])) {
+            $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
+        }
 
 
         $query = ProductPermission::filterIndex($query);
