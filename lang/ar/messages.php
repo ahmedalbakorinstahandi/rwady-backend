@@ -55,4 +55,11 @@ return [
         'updated_successfully' => 'تم تحديث القسم المميز بنجاح',
         'deleted_successfully' => 'تم حذف القسم المميز بنجاح',
     ],
+
+    'home_section' => [
+        'not_found' => 'القسم الرئيسي غير موجود',
+        'created_successfully' => 'تم إنشاء القسم الرئيسي بنجاح',
+        'updated_successfully' => 'تم تحديث القسم الرئيسي بنجاح',
+        'deleted_successfully' => 'تم حذف القسم الرئيسي بنجاح',
+    ],
 ];

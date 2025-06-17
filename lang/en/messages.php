@@ -56,4 +56,11 @@ return [
         'updated_successfully' => 'Featured section updated successfully',
         'deleted_successfully' => 'Featured section deleted successfully',
     ],
+
+    'home_section' => [
+        'not_found' => 'Home section not found',
+        'created_successfully' => 'Home section created successfully',
+        'updated_successfully' => 'Home section updated successfully',
+        'deleted_successfully' => 'Home section deleted successfully',
+    ],
 ];
