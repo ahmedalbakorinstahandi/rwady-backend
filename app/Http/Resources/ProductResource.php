@@ -55,7 +55,11 @@ class ProductResource extends JsonResource
             //         ProductResource::collection($this->whenLoaded('relatedCategoryProducts'))->resolve()
             //     ]
             // ),
-            'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts'))->merge(ProductResource::collection($this->whenLoaded('relatedCategoryProducts')))->resolve(),
+            'related_products' => $this->whenLoaded('relatedProducts', function () {
+                return ProductResource::collection($this->relatedProducts)
+                    ->merge(ProductResource::collection($this->relatedCategoryProducts))
+                    ->values();
+            }),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
