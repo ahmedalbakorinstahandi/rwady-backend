@@ -103,6 +103,9 @@ class CategoryController extends Controller
         return ResponseService::response([
             'success' => true,
             'message' => 'messages.category.products_assigned_successfully',
+            'data' => [
+                'products_count' => $category->products()->count(),
+            ],
             'status' => 200,
         ]);
     }
@@ -116,6 +119,9 @@ class CategoryController extends Controller
         return ResponseService::response([
             'success' => true,
             'message' => 'messages.category.products_unassigned_successfully',
+            'data' => [
+                'products_count' => $category->products()->count(),
+            ],
             'status' => 200,
         ]);
     }

@@ -130,6 +130,6 @@ class CategoryService
 
     public function unassignProductsFromCategory($category, $productIds)
     {
-        $category->products()->detach($productIds);
+        $category->products()->detach(array_map('intval', $productIds));
     }
 }

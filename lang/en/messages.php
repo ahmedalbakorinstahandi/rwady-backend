@@ -34,6 +34,8 @@ return [
         'created_successfully' => 'Category created successfully',
         'updated_successfully' => 'Category updated successfully',
         'deleted_successfully' => 'Category deleted successfully',
+        'products_assigned_successfully' => 'Products assigned successfully',
+        'products_unassigned_successfully' => 'Products unassigned successfully',
     ],
 
     'brand' => [

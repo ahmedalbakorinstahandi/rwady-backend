@@ -33,6 +33,8 @@ return [
         'created_successfully' => 'تم إنشاء التصنيف بنجاح',
         'updated_successfully' => 'تم تحديث التصنيف بنجاح',
         'deleted_successfully' => 'تم حذف التصنيف بنجاح',
+        'products_assigned_successfully' => 'تم تعيين المنتجات بنجاح',
+        'products_unassigned_successfully' => 'تم إزالة المنتجات بنجاح',
     ],
 
     'brand' => [
