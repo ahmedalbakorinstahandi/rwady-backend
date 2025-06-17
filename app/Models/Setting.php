@@ -18,6 +18,7 @@ class Setting extends Model
     ];
 
     protected $casts = [
+        'key' => 'string',
         'allow_null' => 'boolean',
         'is_setting' => 'boolean',
         'value' => 'string',
