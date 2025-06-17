@@ -28,7 +28,7 @@ class HomeSectionResource extends JsonResource
             'limit' => $this->limit,
             'can_show_more' => $this->can_show_more,
             'show_more_path' => $this->show_more_path,
-            'data' => $this->when($user->isCustomer(), $this->getHomeSectionData()),
+            'data' => $this->when(!$user || $user->isCustomer(), $this->getHomeSectionData()),
             'orders' => $this->orders,
             'availability' => $this->availability,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

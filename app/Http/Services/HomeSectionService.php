@@ -19,7 +19,7 @@ class HomeSectionService
 {
     public function getHomeSections()
     {
-        $homeSections = HomeSection::where('availability', true)->get();
+        $homeSections = HomeSection::where('availability', true)->orderBy('orders', 'asc')->get();
 
 
         return $homeSections;
