@@ -49,12 +49,13 @@ class ProductResource extends JsonResource
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),
             'favorites' => UserFavoriteResource::collection($this->whenLoaded('favorites')),
-            'related_products' => array_merge(
-                [
-                    ProductResource::collection($this->whenLoaded('relatedProducts'))->resolve(),
-                    ProductResource::collection($this->whenLoaded('relatedCategoryProducts'))->resolve()
-                ]
-            ),
+            // 'related_products' => array_merge(
+            //     [
+            //         ProductResource::collection($this->whenLoaded('relatedProducts'))->resolve(),
+            //         ProductResource::collection($this->whenLoaded('relatedCategoryProducts'))->resolve()
+            //     ]
+            // ),
+            'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts'))->merge(ProductResource::collection($this->whenLoaded('relatedCategoryProducts'))),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
