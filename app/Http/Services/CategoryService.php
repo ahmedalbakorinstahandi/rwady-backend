@@ -125,11 +125,17 @@ class CategoryService
 
     public function assignProductsToCategory($category, $productIds)
     {
-        $category->products()->sync(array_map('intval', $productIds));
+        $category->products()->syncWithoutDetaching(
+            array_map('intval', $productIds)
+        );
+
+        $category->loadCount('products');
+
+        return $category;
     }
 
     public function unassignProductsFromCategory($category, $productIds)
     {
-        $category->products()->detach(array_map('intval', $productIds));
+        $category->products()->detachWithoutDetaching(array_map('intval', $productIds));
     }
 }
