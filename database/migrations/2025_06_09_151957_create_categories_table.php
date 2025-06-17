@@ -26,6 +26,7 @@ return new class extends Migration
                 ->on('categories')
                 ->nullOnDelete();
 
+            $table->unsignedBigInteger('orders')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

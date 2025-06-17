@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CreateCategoryRequest;
+use App\Http\Requests\Category\ReOrderCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Services\CategoryService;
@@ -18,9 +19,9 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $categories = $this->categoryService->index($request->all());
+        $categories = $this->categoryService->index(request()->all());
 
         return ResponseService::response([
             'success' => true,
@@ -80,4 +81,14 @@ class CategoryController extends Controller
             'status' => 200,
         ]);
     }
-} 
+
+    public function reorder($id, ReOrderCategoryRequest $request)
+    {
+        $category = $this->categoryService->show($id);
+
+        $category = $this->categoryService->reorder($category, $request->validated());
+
+
+        return $this->index();
+    }
+}

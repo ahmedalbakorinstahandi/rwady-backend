@@ -54,6 +54,7 @@ class ProductResource extends JsonResource
             'ribbon_color' => $this->ribbon_color,
             'related_category_id' => $this->related_category_id,
             'related_category_limit' => $this->related_category_limit,
+            'orders' => $this->orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => ProductResource::collection($relatedCategoryProducts),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),

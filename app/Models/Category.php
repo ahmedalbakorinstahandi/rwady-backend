@@ -22,6 +22,7 @@ class Category extends Model
         'image',
         'availability',
         'parent_id',
+        'orders',
     ];
 
 

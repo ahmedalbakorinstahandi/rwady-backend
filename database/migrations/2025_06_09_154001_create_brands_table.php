@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('name');
             $table->string('image', 500);
             $table->boolean('availability')->default(true);
+            $table->unsignedBigInteger('orders')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

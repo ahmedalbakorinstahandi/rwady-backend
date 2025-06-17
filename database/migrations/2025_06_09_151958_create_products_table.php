@@ -45,6 +45,7 @@ return new class extends Migration
             $table->float('shipping_rate_multi')->nullable();
             $table->unsignedBigInteger('related_category_id')->nullable();
             $table->integer('related_category_limit')->default(5);
+            $table->unsignedBigInteger('orders')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

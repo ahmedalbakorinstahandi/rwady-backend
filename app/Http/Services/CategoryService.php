@@ -7,10 +7,11 @@ use App\Models\Category;
 use App\Services\FilterService;
 use App\Services\LanguageService;
 use App\Services\MessageService;
+use App\Services\OrderHelper;
 
 class CategoryService
 {
-    public function index(array $filters = [])
+    public function index($filters = [])
     {
         $query = Category::query()->with('children');
 
@@ -109,5 +110,12 @@ class CategoryService
         $category->seo()->delete();
         $category->children()->delete();
         $category->delete();
+    }
+
+    public function reorder($category, $validatedData)
+    {
+        OrderHelper::reorder($category, $validatedData['orders']);
+
+        return $category;
     }
 }

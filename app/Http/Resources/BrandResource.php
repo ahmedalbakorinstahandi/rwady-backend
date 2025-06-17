@@ -15,6 +15,7 @@ class BrandResource extends JsonResource
             'image' => $this->image,
             'image_url' => $this->image_url,
             'availability' => $this->availability,
+            'orders' => $this->orders,
             'products_count' => $this->products_count,
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),

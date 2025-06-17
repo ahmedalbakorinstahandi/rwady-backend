@@ -49,6 +49,7 @@ class Product extends Model
         'ribbon_color',
         'related_category_id',
         'related_category_limit',
+        'orders',
     ];
 
     protected $translatable = ['name', 'description', 'ribbon_text'];
