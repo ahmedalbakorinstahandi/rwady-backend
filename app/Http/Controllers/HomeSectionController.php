@@ -29,6 +29,19 @@ class HomeSectionController extends Controller
         );
     }
 
+    public function show($id)
+    {
+        $homeSection = $this->homeSectionService->show($id);
+
+        return ResponseService::response(
+            [
+                'success' => true,
+                'data' => $homeSection,
+                'status' => 200,
+            ],
+        );
+    }
+
     public function reorder($id, ReOrderHomeSectionRequest $request)
     {
         $homeSection = $this->homeSectionService->show($id);
