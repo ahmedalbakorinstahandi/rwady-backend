@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Product;
 
 use App\Http\Requests\BaseFormRequest;
+use App\Models\Category;
 use App\Services\LanguageService;
 
 class UpdateProductRequest extends BaseFormRequest
@@ -83,7 +84,15 @@ class UpdateProductRequest extends BaseFormRequest
             'seo.keywords' =>  'nullable|string|max:255',
             'seo.image' => 'nullable|string|max:100',
 
-            'related_category_id' => 'nullable|exists:categories,id,deleted_at,NULL',
+            'related_category_id' => [
+                'nullable',
+                'integer',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 0 && !Category::where('id', $value)->whereNull('deleted_at')->exists()) {
+                        $fail('The selected related category id is invalid.');
+                    }
+                },
+            ],
             'related_products' => 'nullable|array',
             'related_products.*' => 'required|exists:products,id,deleted_at,NULL',
         ];
