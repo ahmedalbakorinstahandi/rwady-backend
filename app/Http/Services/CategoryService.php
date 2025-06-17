@@ -22,6 +22,10 @@ class CategoryService
 
         $query = CategoryPermission::filterIndex($query);
 
+        if (empty($filters['parent_id'])) {
+            $query->whereNull('parent_id');
+        }
+
         $query = FilterService::applyFilters(
             $query,
             $filters,
