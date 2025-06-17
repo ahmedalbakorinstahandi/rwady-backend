@@ -11,8 +11,8 @@ class ProductResource extends JsonResource
     {
 
 
-        $relatedProducts = $this->whenLoaded('relatedProducts') ?? collect();
-        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts') ?? collect();
+        $relatedProducts = $this->whenLoaded('relatedProducts') ?? collect([]);
+        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts') ?? collect([]);
 
         $relatedProducts = $relatedProducts->merge($relatedCategoryProducts);
 
