@@ -125,7 +125,7 @@ class CategoryService
 
     public function assignProductsToCategory($category, $productIds)
     {
-        $category->products()->sync($productIds);
+        $category->products()->sync(array_map('intval', $productIds));
     }
 
     public function unassignProductsFromCategory($category, $productIds)
