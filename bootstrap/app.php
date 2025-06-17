@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\MessageService;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -30,31 +31,19 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => trans('messages.you_are_not_logged_in_Please_log_in_first'),
-                    'status' => 401
-                ], 401);
+                MessageService::abort(401, 'messages.you_are_not_logged_in_Please_log_in_first');
             }
         });
 
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => trans('messages.route_not_found'),
-                    'status' => 404,
-                ], 404);
+                MessageService::abort(404, 'messages.route_not_found');
             }
         });
 
         $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => trans('messages.invalid_request_method_Please_check_the_allowed_method'),
-                    'status' => 405,
-                ], 405);
+                MessageService::abort(405, 'messages.invalid_request_method_Please_check_the_allowed_method');
             }
         });
     })

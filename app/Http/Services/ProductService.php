@@ -91,7 +91,7 @@ class ProductService
         $product = Product::where('id', $id)->first();
 
         if (!$product) {
-            MessageService::abort(404, 'product.not_found');
+            MessageService::abort(404, 'messages.product.not_found');
         }
 
         $product->load(['relatedCategory', 'brands', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
@@ -204,20 +204,6 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
-        // // sku
-        // if (empty($data['sku'])) {
-        //     unset($data['sku']);
-        // }
-
-        // // out_of_stock
-        // if (empty($data['out_of_stock'])) {
-        //     $data['out_of_stock'] = "show_on_storefront";
-        // }
-
-        // //stock_unlimited
-        // if (empty($data['stock_unlimited'])) {
-        //     $data['stock_unlimited'] = false;
-        // }
 
         $allow_attributes = [
             'related_category_id',
@@ -228,7 +214,6 @@ class ProductService
             'cost_price_discount_start',
             'cost_price_discount_end',
         ];
-
 
 
         // unset not allow attributes if value is null

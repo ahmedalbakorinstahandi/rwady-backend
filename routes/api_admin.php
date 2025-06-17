@@ -15,7 +15,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
     Route::prefix('home-sections')->group(function () {
         Route::get('/', [HomeSectionController::class, 'index']);
         Route::get('/{id}', [HomeSectionController::class, 'show']);
-        // Route::post('/', [HomeSectionController::class, 'create']);
+        Route::post('/', [HomeSectionController::class, 'create']);
         // Route::put('/{id}', [HomeSectionController::class, 'update']);
         // Route::delete('/{id}', [HomeSectionController::class, 'delete']);
         Route::put('/reorder/{id}', [HomeSectionController::class, 'reorder']);
