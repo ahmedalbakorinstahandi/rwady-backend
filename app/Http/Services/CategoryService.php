@@ -12,7 +12,7 @@ class CategoryService
 {
     public function index(array $filters = [])
     {
-        $query = Category::query();
+        $query = Category::query()->with('children');
 
         $searchFields = ['name', 'description'];
         $numericFields = [];
