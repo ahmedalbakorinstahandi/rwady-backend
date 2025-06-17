@@ -35,6 +35,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [CategoryController::class, 'create']);
         Route::put('/{id}', [CategoryController::class, 'update']);
         Route::delete('/{id}', [CategoryController::class, 'delete']);
+        Route::put('/reorder/{id}', [CategoryController::class, 'reorder']);
     });
 
     Route::prefix('brands')->group(function () {
