@@ -128,7 +128,6 @@ class CategoryService
         $productIds = array_unique(array_map('intval', $productIds));
 
         $validProductIds = Product::whereIn('id', $productIds)
-            ->whereNull('deleted_at')
             ->pluck('id')
             ->toArray();
 
@@ -144,10 +143,9 @@ class CategoryService
 
     public function unassignProductsFromCategory($category, $productIds)
     {
-        $productIds = array_map('intval', $productIds);
+        $productIds = array_unique(array_map('intval', $productIds));
 
         $validProductIds = Product::whereIn('id', $productIds)
-            ->whereNull('deleted_at')
             ->pluck('id')
             ->toArray();
 
