@@ -44,4 +44,25 @@ class HomeSectionService
 
         return $homeSection;
     }
+
+
+    public function create($data)
+    {
+
+        $data['show_title'] = true;
+        $data['status'] = 'static';
+        $data['can_show_more'] = true;
+        if ($data['type'] === 'category_products') {
+            $data['show_more_path'] = '/products?category_id=' . $data['item_id'];
+        } elseif ($data['type'] === 'brand_products') {
+            $data['show_more_path'] = '/products?brand_id=' . $data['item_id'];
+        }
+
+        $homeSection = HomeSection::create($data);
+
+        OrderHelper::assign($homeSection);
+
+
+        return $homeSection;
+    }
 }

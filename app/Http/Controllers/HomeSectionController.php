@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HomeSection\CreateHomeSectionRequest;
 use App\Http\Requests\HomeSection\ReOrderHomeSectionRequest;
 use App\Http\Resources\HomeSectionResource;
 use App\Http\Services\HomeSectionService;
@@ -34,6 +35,20 @@ class HomeSectionController extends Controller
     public function show($id)
     {
         $homeSection = $this->homeSectionService->show($id);
+
+        return ResponseService::response(
+            [
+                'success' => true,
+                'data' => $homeSection,
+                'status' => 200,
+                'resource' => HomeSectionResource::class,
+            ],
+        );
+    }
+
+    public function create(CreateHomeSectionRequest $request) 
+    {
+        $homeSection = $this->homeSectionService->create($request->validated());
 
         return ResponseService::response(
             [
