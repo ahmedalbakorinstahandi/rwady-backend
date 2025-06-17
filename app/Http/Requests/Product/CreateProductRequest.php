@@ -83,7 +83,8 @@ class CreateProductRequest extends BaseFormRequest
             'seo.keywords' =>  'nullable|string|max:255',
             'seo.image' => 'nullable|string|max:100',
 
-            'related_category_id' => 'nullable|exists:categories,id,deleted_at,NULL|in:0,null',
+            'related_category_id' => 'nullable|integer|exists:categories,id,deleted_at,NULL|in:0',
+
             'related_products' => 'nullable|array',
             'related_products.*' => 'required|exists:products,id,deleted_at,NULL',
         ];
