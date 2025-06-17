@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,9 @@ class HomeSectionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        $user = User::auth();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -24,7 +28,7 @@ class HomeSectionResource extends JsonResource
             'limit' => $this->limit,
             'can_show_more' => $this->can_show_more,
             'show_more_path' => $this->show_more_path,
-            'data' => $this->data,
+            'data' => $this->when(!$user || $user->isCustomer(), $this->getHomeSectionData()),
             'orders' => $this->orders,
             'availability' => $this->availability,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

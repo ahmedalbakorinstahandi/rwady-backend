@@ -19,85 +19,13 @@ class HomeSectionService
 {
     public function getHomeSections()
     {
-        $homeSections = HomeSection::where('availability', true)->orderBy('orders', 'asc')->get();
+        $homeSections = HomeSection::where('availability', true)->get();
 
-        $user = User::auth();
-
-        if (!$user || $user->isCustomer()) {
-            $homeSections = $homeSections->map(function ($homeSection) {
-
-                $homeSection = $this->getHomeSectionData($homeSection);
-
-                return $homeSection;
-            });
-        }
 
         return $homeSections;
     }
 
-    private function getHomeSectionData($homeSection)
-    {
-        if ($homeSection->type === 'banner') {
-            $bannerService = new BannerService();
-            $banners = $bannerService->index(['limit' => $homeSection->limit]);
-            $homeSection->data = BannerResource::collection($banners);
-        }
 
-        if ($homeSection->type === 'category_list') {
-            $categoryService = new CategoryService();
-            $categories = $categoryService->index(['limit' => $homeSection->limit]);
-            $homeSection->data = CategoryResource::collection($categories);
-        }
-
-        if ($homeSection->type === 'featured_section') {
-            $featuredSectionService = new FeaturedSectionService();
-            $featuredSections = $featuredSectionService->index(['limit' => $homeSection->limit]);
-            $homeSection->data = FeaturedSectionResource::collection($featuredSections);
-        }
-
-        if ($homeSection->type === 'category_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $homeSection->limit, 'category_id' => $homeSection->item_id]);
-            $homeSection->data = ProductResource::collection($products);
-        }
-
-        if ($homeSection->type === 'brand_list') {
-            $brandService = new BrandService();
-            $brands = $brandService->index(['limit' => $homeSection->limit]);
-            $homeSection->data = BrandResource::collection($brands);
-        }
-
-        if ($homeSection->type === 'brand_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $homeSection->limit, 'brand_id' => $homeSection->item_id]);
-            $homeSection->data = ProductResource::collection($products);
-        }
-
-        if ($homeSection->type === 'recommended_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $homeSection->limit, 'is_recommended' => 1]);
-            $homeSection->data = ProductResource::collection($products);
-        }
-
-        if ($homeSection->type === 'new_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $homeSection->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
-            $homeSection->data = ProductResource::collection($products);
-        }
-
-        if ($homeSection->type === 'most_sold_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $homeSection->limit, 'most_sold' => 1]);
-            $homeSection->data = ProductResource::collection($products);
-        }
-
-        if ($homeSection->type === 'video') {
-            $videoUrl = Setting::where('key', 'video_url')->first();
-            $homeSection->data = new SettingResource($videoUrl);
-        }
-
-        return $homeSection;
-    }
 
     public function show($id)
     {
@@ -106,8 +34,6 @@ class HomeSectionService
         if (!$homeSection) {
             MessageService::abort(404, 'messages.home_section.not_found');
         }
-
-        $homeSection = $this->getHomeSectionData($homeSection);
 
         return $homeSection;
     }
