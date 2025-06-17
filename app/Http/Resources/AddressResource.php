@@ -11,21 +11,20 @@ class AddressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'address_line1' => $this->address_line1,
-            'address_line2' => $this->address_line2,
+            'name' => $this->name,
+            'address' => $this->address,
+            'exstra_adress' => $this->exstra_adress,
+            'country' => $this->country,
             'city' => $this->city,
             'state' => $this->state,
-            'postal_code' => $this->postal_code,
-            'country' => $this->country,
+            'zipe_code' => $this->zipe_code,
+            'longitude' => $this->longitude,
+            'latitude' => $this->latitude,
+            'addressable_id' => $this->addressable_id,
+            'addressable_type' => $this->addressable_type,
             'is_default' => $this->is_default,
-            'phone' => $this->phone,
-            'name' => $this->name,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'shipping_orders' => OrderResource::collection($this->whenLoaded('shippingOrders')),
-            'billing_orders' => OrderResource::collection($this->whenLoaded('billingOrders')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 } 

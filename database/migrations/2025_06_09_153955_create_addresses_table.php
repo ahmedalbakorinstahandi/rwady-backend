@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
+            $table->string('phone')->nullable();
             $table->string('address');
             $table->text('exstra_adress')->nullable();
             $table->string('country');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->string('zipe_code')->nullable();
             $table->bigInteger('longitude');
             $table->string('latitude');
+            $table->boolean('is_default');
             $table->unsignedBigInteger('addressable_id');
             $table->string('addressable_type');
             $table->timestamps();

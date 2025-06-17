@@ -8,6 +8,17 @@ class CreateAddressRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'exstra_adress' => 'nullable|string|max:255',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'zipe_code' => 'nullable|string|max:255',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|string',
+            'is_default' => 'nullable|boolean',
+        ];
     }
 } 

@@ -12,16 +12,18 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'address_line1',
-        'address_line2',
+        'name',
+        'address',
+        'exstra_adress',
+        'country',
         'city',
         'state',
-        'postal_code',
-        'country',
+        'zipe_code',
+        'longitude',
+        'latitude',
+        'addressable_id',
+        'addressable_type',
         'is_default',
-        'phone',
-        'name',
     ];
 
     protected $casts = [

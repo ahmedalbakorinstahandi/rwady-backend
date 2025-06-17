@@ -25,6 +25,14 @@ class UserController extends Controller
             'data' => $data,
             'status' => 200,
         ]);
+
+        // name
+        // phone
+        // address
+        // country
+        // city
+        // lang
+        // lat
     }
 
     public function updateMyData(UpdateMyDataRequest $request)
