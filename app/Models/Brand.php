@@ -40,7 +40,7 @@ class Brand extends Model
     protected $appends = ['image_url'];
     public function getImageUrlAttribute()
     {
-        return url($this->image);
+        return url('storage/' . $this->image);
     }
 
     public function products()

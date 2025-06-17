@@ -32,7 +32,7 @@ class Media extends Model
     public function getUrlAttribute()
     {
         if ($this->source == 'file') {
-            return url($this->path);
+            return url('storage/' . $this->path);
         } else {
             return $this->path;
         }

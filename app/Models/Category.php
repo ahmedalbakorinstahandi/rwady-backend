@@ -28,6 +28,8 @@ class Category extends Model
 
     public $translatable = ['name', 'description'];
 
+    
+
     protected function name(): Attribute
     {
         return Attribute::make(

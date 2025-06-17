@@ -17,7 +17,7 @@ class SeoResource extends JsonResource
             'meta_description' => $this->meta_description,
             'keywords' => $this->keywords,
             'image' => $this->image,
-            'image_url' => $this->image ? url($this->image) : null,
+            'image_url' => $this->image ? url('storage/' . $this->image) : null,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
