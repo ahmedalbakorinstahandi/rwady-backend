@@ -13,12 +13,13 @@ class Setting extends Model
         'key',
         'value',
         'type',
-        'group',
-        'is_public',
+        'allow_null',
+        'is_setting',
     ];
 
     protected $casts = [
-        'is_public' => 'boolean',
-        'value' => 'json',
+        'allow_null' => 'boolean',
+        'is_setting' => 'boolean',
+        'value' => 'string',
     ];
 } 
