@@ -10,7 +10,7 @@ class AssignProductsToCategoryRequest extends BaseFormRequest
     {
         return [
             'product_ids' => 'required|array',
-            'product_ids.*' => 'required|exists:products,id',
+            'product_ids.*' => 'required|exists:products,id,deleted_at,NULL',
         ];
     }
 } 

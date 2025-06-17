@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Permissions\CategoryPermission;
 use App\Models\Category;
+use App\Models\Product;
 use App\Services\FilterService;
 use App\Services\LanguageService;
 use App\Services\MessageService;
@@ -125,10 +126,20 @@ class CategoryService
 
     public function assignProductsToCategory($category, $productIds)
     {
-        $category->products()->syncWithoutDetaching(
-            array_map('intval', $productIds)
-        );
+        // Convert to integers and remove duplicates
+        $productIds = array_unique(array_map('intval', $productIds));
+        
+        // Verify that all products exist
+        $validProductIds = Product::whereIn('id', $productIds)
+            ->whereNull('deleted_at')
+            ->pluck('id')
+            ->toArray();
 
+        if (empty($validProductIds)) {
+            MessageService::abort(404, 'messages.product.not_found');
+        }
+
+        $category->products()->syncWithoutDetaching($validProductIds);
         $category->loadCount('products');
 
         return $category;
