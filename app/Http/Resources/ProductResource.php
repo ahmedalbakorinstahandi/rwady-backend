@@ -28,6 +28,7 @@ class ProductResource extends JsonResource
             'out_of_stock' => $this->out_of_stock,
             'minimum_purchase' => $this->minimum_purchase,
             'maximum_purchase' => $this->maximum_purchase,
+            'requires_shipping' => $this->requires_shipping,
             'weight' => $this->weight,
             'length' => $this->length,
             'width' => $this->width,
@@ -39,15 +40,21 @@ class ProductResource extends JsonResource
             'ribbon_text' => $this->ribbon_text,
             'ribbon_color' => $this->ribbon_color,
             'related_category_id' => $this->related_category_id,
+            'related_category_limit' => $this->related_category_limit,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_category_products' => ProductResource::collection($this->whenLoaded('relatedCategoryProducts')),
+            // 'related_category_products' => ProductResource::collection($this->whenLoaded('relatedCategoryProducts')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),
             'favorites' => UserFavoriteResource::collection($this->whenLoaded('favorites')),
-            'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts')),
+            'related_products' => array_merge(
+                [
+                    ProductResource::collection($this->whenLoaded('relatedProducts'))->resolve(),
+                    ProductResource::collection($this->whenLoaded('relatedCategoryProducts'))->resolve()
+                ]
+            ),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

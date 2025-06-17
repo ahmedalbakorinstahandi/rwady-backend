@@ -35,6 +35,7 @@ return new class extends Migration
             $table->enum('out_of_stock', ["show_on_storefront","hide_from_storefront","show_and_allow_pre_order"])->default("show_on_storefront");
             $table->integer('minimum_purchase')->nullable();
             $table->integer('maximum_purchase')->nullable();
+            $table->boolean('requires_shipping')->default(false);
             $table->float('weight')->nullable();
             $table->float('length')->nullable();
             $table->float('width')->nullable();
@@ -43,6 +44,7 @@ return new class extends Migration
             $table->float('shipping_rate_single')->nullable();
             $table->float('shipping_rate_multi')->nullable();
             $table->unsignedBigInteger('related_category_id')->nullable();
+            $table->integer('related_category_limit')->default(5);
             $table->timestamps();
             $table->softDeletes();
         });

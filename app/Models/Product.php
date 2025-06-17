@@ -33,6 +33,7 @@ class Product extends Model
         'stock',
         'minimum_purchase',
         'maximum_purchase',
+        'requires_shipping',
         'weight',
         'length',
         'width',
@@ -46,7 +47,8 @@ class Product extends Model
         'out_of_stock',
         'ribbon_text',
         'ribbon_color',
-        'related_category_id'
+        'related_category_id',
+        'related_category_limit',
     ];
 
     protected $translatable = ['name', 'description', 'ribbon_text'];
@@ -59,6 +61,7 @@ class Product extends Model
         'stock' => 'integer',
         'minimum_purchase' => 'integer',
         'maximum_purchase' => 'integer',
+        'requires_shipping' => 'boolean',
         'weight' => 'float',
         'length' => 'float',
         'width' => 'float',
@@ -111,7 +114,7 @@ class Product extends Model
                 ->whereHas('categories')
                 ->with(['media', 'colors'])
                 ->inRandomOrder()
-                ->limit(10);
+                ->limit($this->related_category_limit);
         } else {
             return $this->hasMany(Product::class, 'id', 'id')
                 ->where('id', '!=', $this->id)
@@ -120,7 +123,7 @@ class Product extends Model
                 })
                 ->with(['media', 'colors'])
                 ->inRandomOrder()
-                ->limit(10);
+                ->limit($this->related_category_limit);
         }
     }
 
