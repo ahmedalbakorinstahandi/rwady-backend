@@ -94,7 +94,7 @@ class ProductService
             MessageService::abort(404, 'product.not_found');
         }
 
-        $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
         return $product;
     }
@@ -196,7 +196,7 @@ class ProductService
         }
 
         $product = $product->fresh();
-        $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
         return $product;
     }
@@ -286,7 +286,7 @@ class ProductService
         }
 
         $product = $product->fresh();
-        $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
         return $product;
     }
