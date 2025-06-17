@@ -19,7 +19,7 @@ class HomeSectionService
 {
     public function getHomeSections()
     {
-        $homeSections = HomeSection::all();
+        $homeSections = HomeSection::where('availability', true)->orderBy('orders', 'asc')->get();
 
         $user = User::auth();
 
@@ -101,7 +101,7 @@ class HomeSectionService
 
     public function show($id)
     {
-        $homeSection = HomeSection::where('id', $id)->first();
+        $homeSection = HomeSection::where('id', $id)->where('availability', true)->first();
 
         if (!$homeSection) {
             MessageService::abort(404, 'messages.home_section.not_found');

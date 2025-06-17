@@ -24,12 +24,21 @@ class HomeSection extends Model
         'can_show_more',
         'show_more_path',
         'orders',
-        'is_active',
+        'availability',
         'data'
     ];
 
     protected $casts = [
         'data' => 'array',
+        'availability' => 'boolean',
+        'show_title' => 'boolean',
+        'can_show_more' => 'boolean',
+        'show_more_path' => 'string',
+        'limit' => 'integer',
+        'orders' => 'integer',
+        'item_id' => 'integer',
+        'status' => 'string',
+        'type' => 'string',
     ];
 
 

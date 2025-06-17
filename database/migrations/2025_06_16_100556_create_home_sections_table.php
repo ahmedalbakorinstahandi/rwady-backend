@@ -36,7 +36,7 @@ return new class extends Migration
             $table->boolean('can_show_more')->default(false);
             $table->string('show_more_path')->nullable();
             $table->integer('orders')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('availability')->default(true);
             $table->json('data')->nullable();
 
             $table->timestamps();

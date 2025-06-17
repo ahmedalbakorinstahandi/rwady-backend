@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HomeSection\ReOrderHomeSectionRequest;
+use App\Http\Resources\HomeSectionResource;
 use App\Http\Services\HomeSectionService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class HomeSectionController extends Controller
                 'success' => true,
                 'data' => $homeSections,
                 'status' => 200,
+                'resource' => HomeSectionResource::collection($homeSections),
             ],
         );
     }
@@ -38,6 +40,7 @@ class HomeSectionController extends Controller
                 'success' => true,
                 'data' => $homeSection,
                 'status' => 200,
+                'resource' => new HomeSectionResource($homeSection),
             ],
         );
     }
