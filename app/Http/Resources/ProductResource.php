@@ -42,7 +42,6 @@ class ProductResource extends JsonResource
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => ProductResource::collection($this->whenLoaded('relatedCategoryProducts')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'brand' => new BrandResource($this->whenLoaded('brand')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
@@ -55,4 +54,4 @@ class ProductResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
-} 
+}

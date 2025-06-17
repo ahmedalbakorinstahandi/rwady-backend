@@ -94,7 +94,7 @@ class ProductService
             MessageService::abort(404, 'product.not_found');
         }
 
-        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product->load(['relatedCategory', 'brands', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
         return $product;
     }
@@ -204,7 +204,41 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
-        $product->update($data);
+        // // sku
+        // if (empty($data['sku'])) {
+        //     unset($data['sku']);
+        // }
+
+        // // out_of_stock
+        // if (empty($data['out_of_stock'])) {
+        //     $data['out_of_stock'] = "show_on_storefront";
+        // }
+
+        // //stock_unlimited
+        // if (empty($data['stock_unlimited'])) {
+        //     $data['stock_unlimited'] = false;
+        // }
+
+        $allow_attributes = [
+            'related_category_id',
+            'price_after_discount',
+            'price_discount_start',
+            'price_discount_end',
+            'cost_price_after_discount',
+            'cost_price_discount_start',
+            'cost_price_discount_end',
+        ];
+
+
+
+        // unset not allow attributes if value is null
+        foreach ($data as $key => $value) {
+            if (!in_array($key, $allow_attributes) && is_null($value)) {
+                unset($data[$key]);
+            }
+        }
+
+        $product->update($data, $allow_attributes);
 
         // Handle media (images)
         if (isset($data['images'])) {
