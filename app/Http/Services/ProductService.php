@@ -130,7 +130,7 @@ class ProductService
                     'orders' => 0,
                 ];
             }, $data['images']);
-            
+
             $media = $product->media()->createMany($mediaData);
             foreach ($media as $item) {
                 OrderHelper::assign($item);
@@ -147,7 +147,7 @@ class ProductService
                     'orders' => 0,
                 ];
             }, $data['videos']);
-            
+
             $media = $product->media()->createMany($mediaData);
             foreach ($media as $item) {
                 OrderHelper::assign($item);
@@ -195,8 +195,7 @@ class ProductService
             );
         }
 
-        $product = $product->fresh();
-        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product = $this->show($product->id);
 
         return $product;
     }
@@ -218,7 +217,7 @@ class ProductService
                     'orders' => 0,
                 ];
             }, $data['images']);
-            
+
             $media = $product->media()->createMany($mediaData);
             foreach ($media as $item) {
                 OrderHelper::assign($item);
@@ -236,7 +235,7 @@ class ProductService
                     'orders' => 0,
                 ];
             }, $data['videos']);
-            
+
             $media = $product->media()->createMany($mediaData);
             foreach ($media as $item) {
                 OrderHelper::assign($item);
@@ -285,8 +284,8 @@ class ProductService
             );
         }
 
-        $product = $product->fresh();
-        $product->load(['relatedCategory', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+
+        $product = $this->show($product->id);
 
         return $product;
     }
@@ -299,7 +298,7 @@ class ProductService
         $product->brands()->detach();
         $product->colors()->delete();
         $product->relatedProducts()->detach();
-        
+
         $product->delete();
     }
 }
