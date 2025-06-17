@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HomeSection\ReOrderHomeSectionRequest;
 use App\Http\Services\HomeSectionService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
@@ -26,5 +27,15 @@ class HomeSectionController extends Controller
                 'status' => 200,
             ],
         );
+    }
+
+    public function reorder($id, ReOrderHomeSectionRequest $request)
+    {
+        $homeSection = $this->homeSectionService->show($id);
+
+        $homeSection = $this->homeSectionService->reorder($homeSection, $request->validated());
+
+
+        return $this->index();
     }
 }

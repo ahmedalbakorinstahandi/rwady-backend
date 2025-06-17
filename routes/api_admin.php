@@ -5,10 +5,21 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
+use App\Http\Controllers\HomeSectionController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
+
+
+    Route::prefix('home-sections')->group(function () {
+        Route::get('/', [HomeSectionController::class, 'index']);
+        Route::get('/{id}', [HomeSectionController::class, 'show']);
+        // Route::post('/', [HomeSectionController::class, 'create']);
+        // Route::put('/{id}', [HomeSectionController::class, 'update']);
+        // Route::delete('/{id}', [HomeSectionController::class, 'delete']);
+        Route::put('/reorder/{id}', [HomeSectionController::class, 'reorder']);
+    });
 
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);

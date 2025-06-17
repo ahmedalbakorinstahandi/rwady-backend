@@ -11,6 +11,8 @@ use App\Http\Resources\SettingResource;
 use App\Models\Banner;
 use App\Models\HomeSection;
 use App\Models\Setting;
+use App\Services\MessageService;
+use App\Services\OrderHelper;
 
 class HomeSectionService
 {
@@ -84,5 +86,23 @@ class HomeSectionService
 
 
         return $homeSections;
+    }
+
+    public function show($id)
+    {
+        $homeSection = HomeSection::where('id', $id)->first();
+
+        if (!$homeSection) {
+            MessageService::abort(404, 'messages.home_section.not_found');
+        }
+
+        return $homeSection;
+    }
+
+    public function reorder($homeSection, $validatedData)
+    {
+        OrderHelper::reorder($homeSection, $validatedData['orders']);
+
+        return $homeSection;
     }
 }
