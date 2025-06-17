@@ -4,6 +4,7 @@ namespace App\Http\Requests\Product;
 
 use App\Http\Requests\BaseFormRequest;
 use App\Services\LanguageService;
+use App\Models\Category;
 
 class CreateProductRequest extends BaseFormRequest
 {
@@ -83,7 +84,15 @@ class CreateProductRequest extends BaseFormRequest
             'seo.keywords' =>  'nullable|string|max:255',
             'seo.image' => 'nullable|string|max:100',
 
-            'related_category_id' => 'nullable|integer|exists:categories,id,deleted_at,NULL|in:0',
+            'related_category_id' => [
+                'nullable',
+                'integer',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 0 && !Category::where('id', $value)->whereNull('deleted_at')->exists()) {
+                        $fail('The selected related category id is invalid.');
+                    }
+                },
+            ],
 
             'related_products' => 'nullable|array',
             'related_products.*' => 'required|exists:products,id,deleted_at,NULL',
