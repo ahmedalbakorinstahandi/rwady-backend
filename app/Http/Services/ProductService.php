@@ -71,9 +71,7 @@ class ProductService
             $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
         }
 
-
         $query = ProductPermission::filterIndex($query);
-
 
         $query = FilterService::applyFilters(
             $query,
@@ -85,10 +83,8 @@ class ProductService
             $inFields
         );
 
-
         return $query;
     }
-
 
     public function show(int $id)
     {
@@ -105,7 +101,6 @@ class ProductService
 
     public function create($data)
     {
-
         if (empty($data['sku'])) {
             $data['sku'] = Str::random(10);
         }
@@ -118,89 +113,90 @@ class ProductService
             $data['stock_unlimited'] = false;
         }
 
-
-
-
         $data = LanguageService::prepareTranslatableData($data, new Product);
-
 
         $product = Product::create($data);
 
         $product->sku = $product->id;
         $product->save();
 
+        // Handle media (images)
         if (isset($data['images'])) {
-            foreach ($data['images'] as $image) {
-                $media = $product->media()->create([
+            $mediaData = array_map(function ($image) {
+                return [
                     'path' => $image,
                     'type' => 'image',
                     'source' => 'file',
                     'orders' => 0,
-                ]);
-
-                OrderHelper::assign($media);
+                ];
+            }, $data['images']);
+            
+            $media = $product->media()->createMany($mediaData);
+            foreach ($media as $item) {
+                OrderHelper::assign($item);
             }
         }
 
+        // Handle media (videos)
         if (isset($data['videos'])) {
-
-            foreach ($data['videos'] as $video) {
-                $media = $product->media()->create([
+            $mediaData = array_map(function ($video) {
+                return [
                     'path' => $video,
                     'type' => 'video',
                     'source' => 'link',
                     'orders' => 0,
-                ]);
-
-                OrderHelper::assign($media);
+                ];
+            }, $data['videos']);
+            
+            $media = $product->media()->createMany($mediaData);
+            foreach ($media as $item) {
+                OrderHelper::assign($item);
             }
         }
 
+        // Sync categories
         if (isset($data['categories'])) {
-            foreach ($data['categories'] as $category) {
-                $product->categories()->create([
-                    'category_id' => $category,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $categoryData = array_fill_keys($data['categories'], []);
+            $product->categories()->sync($categoryData);
         }
 
+        // Sync brands
         if (isset($data['brands'])) {
-            foreach ($data['brands'] as $brand) {
-                $product->brands()->create([
-                    'brand_id' => $brand,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $brandData = array_fill_keys($data['brands'], []);
+            $product->brands()->sync($brandData);
         }
 
+        // Sync colors
         if (isset($data['colors'])) {
-            foreach ($data['colors'] as $color) {
-                $product->colors()->create([
-                    'color' => $color,
-                ]);
-            }
+            $colorData = array_map(function ($color) {
+                return ['color' => $color];
+            }, $data['colors']);
+            $product->colors()->createMany($colorData);
         }
 
+        // Sync related products
         if (isset($data['related_products'])) {
             $product->relatedProducts()->sync($data['related_products']);
         }
 
+        // Create or update SEO
         if (isset($data['seo'])) {
-            $product->seo()->create([
-                'meta_title' => $data['seo']['meta_title'] ?? null,
-                'meta_description' => $data['seo']['meta_description'] ?? null,
-                'keywords' => $data['seo']['keywords'] ?? null,
-                'image' => $data['seo']['image'] ?? null,
-                'seoable_type' => Product::class,
-                'seoable_id' => $product->id,
-            ]);
+            $product->seo()->updateOrCreate(
+                [
+                    'seoable_type' => Product::class,
+                    'seoable_id' => $product->id,
+                ],
+                [
+                    'meta_title' => $data['seo']['meta_title'] ?? null,
+                    'meta_description' => $data['seo']['meta_description'] ?? null,
+                    'keywords' => $data['seo']['keywords'] ?? null,
+                    'image' => $data['seo']['image'] ?? null,
+                ]
+            );
         }
 
         $product = $product->fresh();
-
         $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
-
 
         return $product;
     }
@@ -209,155 +205,101 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
-
-
         $product->update($data);
 
+        // Handle media (images)
         if (isset($data['images'])) {
-            $existingImages = $product->media()->where('type', 'image')->pluck('path')->toArray();
-            $newImages = $data['images'];
-
-            // Remove images that are no longer present
-            $imagesToDelete = array_diff($existingImages, $newImages);
-            if (!empty($imagesToDelete)) {
-                $product->media()->whereIn('path', $imagesToDelete)->where('type', 'image')->delete();
-            }
-
-            // Add only new images that don't exist
-            $imagesToAdd = array_diff($newImages, $existingImages);
-            foreach ($data['images'] as $image) {
-                if (in_array($image, $imagesToAdd)) {
-                    $media = $product->media()->create([
-                        'path' => $image,
-                        'type' => 'image',
-                        'source' => 'file',
-                        'orders' => 0,
-                    ]);
-                    OrderHelper::assign($media);
-                }
+            $product->media()->where('type', 'image')->delete();
+            $mediaData = array_map(function ($image) {
+                return [
+                    'path' => $image,
+                    'type' => 'image',
+                    'source' => 'file',
+                    'orders' => 0,
+                ];
+            }, $data['images']);
+            
+            $media = $product->media()->createMany($mediaData);
+            foreach ($media as $item) {
+                OrderHelper::assign($item);
             }
         }
 
+        // Handle media (videos)
         if (isset($data['videos'])) {
-            $existingVideos = $product->media()->where('type', 'video')->pluck('path')->toArray();
-            $newVideos = $data['videos'];
-
-            // Remove videos that are no longer present
-            $videosToDelete = array_diff($existingVideos, $newVideos);
-            if (!empty($videosToDelete)) {
-                $product->media()->whereIn('path', $videosToDelete)->where('type', 'video')->delete();
-            }
-
-            // Add only new videos that don't exist
-            $videosToAdd = array_diff($newVideos, $existingVideos);
-            foreach ($data['videos'] as $video) {
-                if (in_array($video, $videosToAdd)) {
-                    $media = $product->media()->create([
-                        'path' => $video,
-                        'type' => 'video',
-                        'source' => 'link',
-                        'orders' => 0,
-                    ]);
-                    OrderHelper::assign($media);
-                }
+            $product->media()->where('type', 'video')->delete();
+            $mediaData = array_map(function ($video) {
+                return [
+                    'path' => $video,
+                    'type' => 'video',
+                    'source' => 'link',
+                    'orders' => 0,
+                ];
+            }, $data['videos']);
+            
+            $media = $product->media()->createMany($mediaData);
+            foreach ($media as $item) {
+                OrderHelper::assign($item);
             }
         }
 
+        // Sync categories
         if (isset($data['categories'])) {
-            $existingCategories = $product->categories()->pluck('category_id')->toArray();
-            $newCategories = $data['categories'];
-
-            // Remove categories that are no longer present
-            $categoriesToDelete = array_diff($existingCategories, $newCategories);
-            if (!empty($categoriesToDelete)) {
-                $product->categories()->whereIn('category_id', $categoriesToDelete)->delete();
-            }
-
-            // Add only new categories that don't exist
-            $categoriesToAdd = array_diff($newCategories, $existingCategories);
-            foreach ($categoriesToAdd as $categoryId) {
-                $product->categories()->create([
-                    'category_id' => $categoryId,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $categoryData = array_fill_keys($data['categories'], []);
+            $product->categories()->sync($categoryData);
         }
 
+        // Sync brands
         if (isset($data['brands'])) {
-            $existingBrands = $product->brands()->pluck('brand_id')->toArray();
-            $newBrands = $data['brands'];
-
-            // Remove brands that are no longer present
-            $brandsToDelete = array_diff($existingBrands, $newBrands);
-            if (!empty($brandsToDelete)) {
-                $product->brands()->whereIn('brand_id', $brandsToDelete)->delete();
-            }
-
-            // Add only new brands that don't exist
-            $brandsToAdd = array_diff($newBrands, $existingBrands);
-            foreach ($brandsToAdd as $brandId) {
-                $product->brands()->create([
-                    'brand_id' => $brandId,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $brandData = array_fill_keys($data['brands'], []);
+            $product->brands()->sync($brandData);
         }
 
+        // Sync colors
         if (isset($data['colors'])) {
-            $existingColors = $product->colors()->pluck('color')->toArray();
-            $newColors = $data['colors'];
-
-            // Remove colors that are no longer present
-            $colorsToDelete = array_diff($existingColors, $newColors);
-            if (!empty($colorsToDelete)) {
-                $product->colors()->whereIn('color', $colorsToDelete)->delete();
-            }
-
-            // Add only new colors that don't exist
-            $colorsToAdd = array_diff($newColors, $existingColors);
-            foreach ($colorsToAdd as $color) {
-                $product->colors()->create([
-                    'color' => $color,
-                    'product_id' => $product->id,
-                ]);
-            }
+            $product->colors()->delete();
+            $colorData = array_map(function ($color) {
+                return ['color' => $color];
+            }, $data['colors']);
+            $product->colors()->createMany($colorData);
         }
 
+        // Sync related products
         if (isset($data['related_products'])) {
             $product->relatedProducts()->sync($data['related_products']);
         }
 
+        // Update SEO
         if (isset($data['seo'])) {
-            $product->seo()->updateOrCreate([
-                'seoable_type' => Product::class,
-                'seoable_id' => $product->id,
-            ], [
-                'meta_title' => $data['seo']['meta_title'] ?? null,
-                'meta_description' => $data['seo']['meta_description'] ?? null,
-                'keywords' => $data['seo']['keywords'] ?? null,
-                'image' => $data['seo']['image'] ?? null,
-            ]);
+            $product->seo()->updateOrCreate(
+                [
+                    'seoable_type' => Product::class,
+                    'seoable_id' => $product->id,
+                ],
+                [
+                    'meta_title' => $data['seo']['meta_title'] ?? null,
+                    'meta_description' => $data['seo']['meta_description'] ?? null,
+                    'keywords' => $data['seo']['keywords'] ?? null,
+                    'image' => $data['seo']['image'] ?? null,
+                ]
+            );
         }
 
         $product = $product->fresh();
-
         $product->load(['category', 'brand', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
-
-
 
         return $product;
     }
 
     public function delete($product)
     {
-
         $product->media()->delete();
         $product->seo()->delete();
-        $product->categories()->delete();
-        $product->brands()->delete();
+        $product->categories()->detach();
+        $product->brands()->detach();
         $product->colors()->delete();
-        $product->relatedProducts()->delete();
-
+        $product->relatedProducts()->detach();
+        
         $product->delete();
     }
 }
