@@ -15,6 +15,9 @@ class CategoryService
     {
         $query = Category::query()->with('children');
 
+        $filters['sort_field'] = 'orders';
+        $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
+
         $searchFields = ['name', 'description'];
         $numericFields = [];
         $dateFields = ['created_at'];
