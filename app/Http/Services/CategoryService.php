@@ -123,17 +123,17 @@ class CategoryService
         return $category;
     }
 
-    public function assignProductsToCategory($category, $productIds)
+    public function assignProductsToCategory($category, $data)
     {
-        $productIds = array_unique(array_map('intval', $productIds));
+        $productIds = array_unique(array_map('intval', $data['product_ids']));
 
         $validProductIds = Product::whereIn('id', $productIds)
             ->pluck('id')
             ->toArray();
 
-        if (empty($validProductIds)) {
-            MessageService::abort(404, 'messages.product.not_found');
-        }
+        // if (empty($validProductIds)) {
+        //     MessageService::abort(404, 'messages.product.not_found');
+        // }
 
         $category->products()->syncWithoutDetaching($validProductIds);
         $category->loadCount('products');
@@ -141,17 +141,17 @@ class CategoryService
         return $category;
     }
 
-    public function unassignProductsFromCategory($category, $productIds)
+    public function unassignProductsFromCategory($category, $data)
     {
-        $productIds = array_unique(array_map('intval', $productIds));
+        $productIds = array_unique(array_map('intval', $data['product_ids']));
 
         $validProductIds = Product::whereIn('id', $productIds)
             ->pluck('id')
             ->toArray();
 
-        if (empty($validProductIds)) {
-            MessageService::abort(404, 'messages.product.not_found');
-        }
+        // if (empty($validProductIds)) {
+        //     MessageService::abort(404, 'messages.product.not_found');
+        // }
 
         $category->products()->detach($validProductIds);
         $category->loadCount('products');
