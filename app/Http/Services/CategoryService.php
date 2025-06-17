@@ -121,4 +121,15 @@ class CategoryService
 
         return $category;
     }
+
+
+    public function assignProductsToCategory($category, $productIds)
+    {
+        $category->products()->sync($productIds);
+    }
+
+    public function unassignProductsFromCategory($category, $productIds)
+    {
+        $category->products()->detach($productIds);
+    }
 }

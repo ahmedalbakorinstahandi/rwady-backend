@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Category\AssignProductsToCategoryRequest;
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\ReOrderCategoryRequest;
+use App\Http\Requests\Category\UnassignProductsFromCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Http\Services\CategoryService;
@@ -90,5 +92,31 @@ class CategoryController extends Controller
 
 
         return $this->index();
+    }
+
+    public function assignProductsToCategory(int $id, AssignProductsToCategoryRequest $request)
+    {
+        $category = $this->categoryService->show($id);
+
+        $this->categoryService->assignProductsToCategory($category, $request->validated());
+
+        return ResponseService::response([
+            'success' => true,
+            'message' => 'messages.category.products_assigned_successfully',
+            'status' => 200,
+        ]);
+    }
+
+    public function unassignProductsFromCategory(int $id, UnassignProductsFromCategoryRequest $request)
+    {
+        $category = $this->categoryService->show($id);
+
+        $this->categoryService->unassignProductsFromCategory($category, $request->validated());
+
+        return ResponseService::response([
+            'success' => true,
+            'message' => 'messages.category.products_unassigned_successfully',
+            'status' => 200,
+        ]);
     }
 }
