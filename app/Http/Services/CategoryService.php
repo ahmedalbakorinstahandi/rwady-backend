@@ -123,13 +123,10 @@ class CategoryService
         return $category;
     }
 
-
     public function assignProductsToCategory($category, $productIds)
     {
-        // Convert to integers and remove duplicates
         $productIds = array_unique(array_map('intval', $productIds));
-        
-        // Verify that all products exist
+
         $validProductIds = Product::whereIn('id', $productIds)
             ->whereNull('deleted_at')
             ->pluck('id')
@@ -147,6 +144,20 @@ class CategoryService
 
     public function unassignProductsFromCategory($category, $productIds)
     {
-        $category->products()->detachWithoutDetaching(array_map('intval', $productIds));
+        $productIds = array_map('intval', $productIds);
+
+        $validProductIds = Product::whereIn('id', $productIds)
+            ->whereNull('deleted_at')
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($validProductIds)) {
+            MessageService::abort(404, 'messages.product.not_found');
+        }
+
+        $category->products()->detach($validProductIds);
+        $category->loadCount('products');
+
+        return $category;
     }
 }
