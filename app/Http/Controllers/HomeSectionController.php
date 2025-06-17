@@ -26,7 +26,7 @@ class HomeSectionController extends Controller
                 'success' => true,
                 'data' => $homeSections,
                 'status' => 200,
-                'resource' => HomeSectionResource::collection($homeSections),
+                'resource' => HomeSectionResource::class,
             ],
         );
     }
@@ -40,7 +40,7 @@ class HomeSectionController extends Controller
                 'success' => true,
                 'data' => $homeSection,
                 'status' => 200,
-                'resource' => new HomeSectionResource($homeSection),
+                'resource' => HomeSectionResource::class,
             ],
         );
     }
