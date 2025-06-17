@@ -2,6 +2,11 @@
 
 namespace App\Http\Services;
 
+use App\Http\Resources\BannerResource;
+use App\Http\Resources\BrandResource;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\FeaturedSectionResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Banner;
 use App\Models\HomeSection;
 use App\Models\Setting;
@@ -16,52 +21,64 @@ class HomeSectionService
 
             if ($homeSection->type === 'banner') {
                 $bannerService = new BannerService();
-                $homeSection->data = $bannerService->index(['limit' => $homeSection->limit]);
+                $banners = $bannerService->index(['limit' => $homeSection->limit]);
+                $homeSection->data = BannerResource::collection($banners);
             }
 
             if ($homeSection->type === 'category_list') {
                 $categoryService = new CategoryService();
-                $homeSection->data = $categoryService->index(['limit' => $homeSection->limit]);
+                $categories = $categoryService->index(['limit' => $homeSection->limit]);
+                $homeSection->data = CategoryResource::collection($categories);
             }
 
             if ($homeSection->type === 'featured_section') {
                 $featuredSectionService = new FeaturedSectionService();
-                $homeSection->data = $featuredSectionService->index(['limit' => $homeSection->limit]);
+                $featuredSections = $featuredSectionService->index(['limit' => $homeSection->limit]);
+                $homeSection->data = FeaturedSectionResource::collection($featuredSections);
             }
 
             if ($homeSection->type === 'category_products') {
                 $productService = new ProductService();
-                $homeSection->data = $productService->index(['limit' => $homeSection->limit, 'category_id' => $homeSection->item_id]);
+                $products = $productService->index(['limit' => $homeSection->limit, 'category_id' => $homeSection->item_id]);
+                $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'brand_list') {
                 $brandService = new BrandService();
-                $homeSection->data = $brandService->index(['limit' => $homeSection->limit]);
+                $brands = $brandService->index(['limit' => $homeSection->limit]);
+                $homeSection->data = BrandResource::collection($brands);
             }
 
             if ($homeSection->type === 'brand_products') {
                 $productService = new ProductService();
-                $homeSection->data = $productService->index(['limit' => $homeSection->limit, 'brand_id' => $homeSection->item_id]);
+                $products = $productService->index(['limit' => $homeSection->limit, 'brand_id' => $homeSection->item_id]);
+                $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'recommended_products') {
                 $productService = new ProductService();
-                $homeSection->data = $productService->index(['limit' => $homeSection->limit, 'is_recommended' => 1]);
+                $products = $productService->index(['limit' => $homeSection->limit, 'is_recommended' => 1]);
+                $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'new_products') {
                 $productService = new ProductService();
-                $homeSection->data = $productService->index(['limit' => $homeSection->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
+                $products = $productService->index(['limit' => $homeSection->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
+                $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'most_sold_products') {
                 $productService = new ProductService();
-                $homeSection->data = $productService->index(['limit' => $homeSection->limit, 'most_sold' => 1]);
+                    $products = $productService->index(['limit' => $homeSection->limit, 'most_sold' => 1]);
+                $homeSection->data = ProductResource::collection($products);
             }
 
             if ($homeSection->type === 'video') {
-                $homeSection->data = Setting::where('key', 'video_url')->first();
+                $videoUrl = Setting::where('key', 'video_url')->first();
+                $homeSection->data = $videoUrl;
             }
+
+            return $homeSection;
         });
 
 
