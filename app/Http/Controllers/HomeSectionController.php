@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HomeSection\CreateHomeSectionRequest;
 use App\Http\Requests\HomeSection\ReOrderHomeSectionRequest;
+use App\Http\Requests\HomeSection\UpdateHomeSectionRequest;
 use App\Http\Resources\HomeSectionResource;
 use App\Http\Services\HomeSectionService;
+use App\Services\MessageService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
@@ -58,6 +60,26 @@ class HomeSectionController extends Controller
                 'resource' => HomeSectionResource::class,
             ],
         );
+    }
+
+    public function update(UpdateHomeSectionRequest $request, $id)
+    {
+        $homeSection = $this->homeSectionService->show($id);
+        $homeSection = $this->homeSectionService->update($homeSection, $request->validated());
+        return $this->index();
+    }
+
+    public function delete($id)
+    {
+        $homeSection = $this->homeSectionService->show($id);
+
+        if ($homeSection->status === 'static') {
+            MessageService::abort(400, 'message.home_section.cannot_delete_static');
+        }
+
+
+        $this->homeSectionService->delete($homeSection);
+        return $this->index();
     }
 
     public function reorder($id, ReOrderHomeSectionRequest $request)

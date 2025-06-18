@@ -50,7 +50,7 @@ class HomeSectionService
     {
 
         $data['show_title'] = true;
-        $data['status'] = 'static';
+        $data['status'] = 'dynamic';
         $data['can_show_more'] = true;
         if ($data['type'] === 'category_products') {
             $data['show_more_path'] = '/products?category_id=' . $data['item_id'];
@@ -62,6 +62,18 @@ class HomeSectionService
 
         OrderHelper::assign($homeSection);
 
+
+        return $homeSection;
+    }
+    public function update($homeSection, $data)
+    {
+        $homeSection->update($data);
+
+        return $homeSection;
+    }
+    public function delete($homeSection)
+    {
+        $homeSection->delete();
 
         return $homeSection;
     }

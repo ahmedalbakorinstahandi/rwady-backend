@@ -16,8 +16,8 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::get('/', [HomeSectionController::class, 'index']);
         Route::get('/{id}', [HomeSectionController::class, 'show']);
         Route::post('/', [HomeSectionController::class, 'create']);
-        // Route::put('/{id}', [HomeSectionController::class, 'update']);
-        // Route::delete('/{id}', [HomeSectionController::class, 'delete']);
+        Route::put('/{id}', [HomeSectionController::class, 'update']);
+        Route::delete('/{id}', [HomeSectionController::class, 'delete']);
         Route::put('/{id}/reorder', [HomeSectionController::class, 'reorder']);
     });
 
