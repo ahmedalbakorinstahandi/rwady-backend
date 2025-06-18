@@ -11,15 +11,15 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $relatedProducts = $this->whenLoaded('relatedProducts', function() {
+        $relatedProducts = $this->whenLoaded('relatedProducts', function () {
             return $this->relatedProducts;
         }, collect([]));
-        
-        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function() {
-            return $this->relatedCategoryProducts; 
+
+        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function () {
+            return $this->relatedCategoryProducts;
         }, collect([]));
 
-        $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue 
+        $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue
             ? collect([])
             : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
 
@@ -60,6 +60,7 @@ class ProductResource extends JsonResource
             'related_category_limit' => $this->related_category_limit,
             'is_favorite' => $user ? $user->favorites()->where('product_id', $this->id)->exists() : false,
             'discount_percentage_text' => $this->discount_percentage,
+            'sort_orders' => $this->orders,
             'total_orders' => $this->total_orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => ProductResource::collection($relatedCategoryProducts),
