@@ -11,7 +11,7 @@ class ReOrderProductRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'orders' => 'required|integer|exists:products,id',
+            'orders' => 'integer|required|exists:products,id',
         ];
     }
 }
