@@ -135,6 +135,6 @@ class HomeSection extends Model
             $this->data = new SettingResource($videoUrl);
         }
 
-        return $this;
+        return $this->data;
     }
 }
