@@ -117,6 +117,11 @@ class Product extends Model
         }
     }
 
+    public function getTotalOrdersAttribute()
+    {
+        return $this->orderProducts()->where('status', 'completed')->count();
+    }
+
     public function relatedCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'related_category_id');
