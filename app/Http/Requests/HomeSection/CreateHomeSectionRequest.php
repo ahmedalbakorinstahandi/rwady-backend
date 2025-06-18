@@ -31,7 +31,7 @@ class CreateHomeSectionRequest extends BaseFormRequest
                 }
             ],
             'limit' => 'required|integer|min:1',
-            'availability' => 'nullable|in:true,false',
+            'availability' => 'nullable|boolean',
 
         ];
     }
