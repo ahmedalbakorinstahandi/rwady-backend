@@ -26,6 +26,15 @@ class Media extends Model
         'orders' => 'integer',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('order', function ($query) {
+            $query->orderBy('orders', 'asc');
+        });
+    }
+
 
     // path is a url
     protected $appends = ['url'];

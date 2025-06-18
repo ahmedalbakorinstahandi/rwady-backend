@@ -18,6 +18,9 @@ class ProductService
     {
         $query = Product::query()->with(['media', 'colors', 'categories']);
 
+        $filters['sort_field'] = 'orders';
+        $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
+
         $searchFields = ['name', 'description', 'sku'];
         $numericFields = [
             'price',
