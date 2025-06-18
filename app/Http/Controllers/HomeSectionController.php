@@ -74,7 +74,7 @@ class HomeSectionController extends Controller
         $homeSection = $this->homeSectionService->show($id);
 
         if ($homeSection->status === 'static') {
-            MessageService::abort(400, 'message.home_section.cannot_delete_static');
+            MessageService::abort(400, 'messages.home_section.cannot_delete_static');
         }
 
 
