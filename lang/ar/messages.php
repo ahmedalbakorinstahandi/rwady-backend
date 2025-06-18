@@ -67,5 +67,6 @@ return [
         'created_successfully' => 'تم إنشاء القسم الرئيسي بنجاح',
         'updated_successfully' => 'تم تحديث القسم الرئيسي بنجاح',
         'deleted_successfully' => 'تم حذف القسم الرئيسي بنجاح',
+        'cannot_delete_static' => 'لا يمكن حذف القسم الرئيسي الثابت',
     ],
 ];

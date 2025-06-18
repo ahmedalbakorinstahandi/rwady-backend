@@ -68,5 +68,6 @@ return [
         'created_successfully' => 'Home section created successfully',
         'updated_successfully' => 'Home section updated successfully',
         'deleted_successfully' => 'Home section deleted successfully',
+        'cannot_delete_static' => 'Cannot delete static home section',
     ],
 ];
