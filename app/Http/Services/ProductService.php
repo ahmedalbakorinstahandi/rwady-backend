@@ -109,21 +109,59 @@ class ProductService
         return $product;
     }
 
+    private function handleMedia($product, $mediaArray)
+    {
+        if (empty($mediaArray)) {
+            return;
+        }
+
+        $mediaData = array_map(function ($item) {
+            $isVideo = filter_var($item, FILTER_VALIDATE_URL) && str_contains($item, 'https');
+
+            return [
+                'path' => $item,
+                'type' => $isVideo ? 'video' : 'image',
+                'source' => $isVideo ? 'link' : 'file',
+                'orders' => 0,
+            ];
+        }, $mediaArray);
+
+        $media = $product->media()->createMany($mediaData);
+        foreach ($media as $item) {
+            OrderHelper::assign($item);
+        }
+    }
+
+    private function updateMedia($product, $mediaArray)
+    {
+        // Get existing media
+        $existingMedia = $product->media()->get();
+        $existingPaths = $existingMedia->pluck('path')->toArray();
+
+        // Get new media paths
+        $newPaths = $mediaArray ?? [];
+
+        // Find items to delete (exist in DB but not in new array)
+        $pathsToDelete = array_diff($existingPaths, $newPaths);
+        if (!empty($pathsToDelete)) {
+            $product->media()->whereIn('path', $pathsToDelete)->delete();
+        }
+
+        // Find items to add (exist in new array but not in DB)
+        $pathsToAdd = array_diff($newPaths, $existingPaths);
+        if (!empty($pathsToAdd)) {
+            $this->handleMedia($product, $pathsToAdd);
+        }
+    }
+
     public function create($data)
     {
-        if (empty($data['sku'])) {
-            $data['sku'] = Str::random(10);
-        }
+        $data = LanguageService::prepareTranslatableData($data);
 
-        if (empty($data['out_of_stock'])) {
-            $data['out_of_stock'] = "show_on_storefront";
+        // Generate SKU if not provided
+        if (!isset($data['sku']) || empty($data['sku'])) {
+            $data['sku'] = 'SKU-' . strtoupper(uniqid());
         }
-
-        if (empty($data['stock_unlimited'])) {
-            $data['stock_unlimited'] = false;
-        }
-
-        $data = LanguageService::prepareTranslatableData($data, new Product);
 
         $product = Product::create($data);
 
@@ -132,38 +170,9 @@ class ProductService
         $product->sku = $product->id;
         $product->save();
 
-        // Handle media (images)
-        if (isset($data['images'])) {
-            $mediaData = array_map(function ($image) {
-                return [
-                    'path' => $image,
-                    'type' => 'image',
-                    'source' => 'file',
-                    'orders' => 0,
-                ];
-            }, $data['images']);
-
-            $media = $product->media()->createMany($mediaData);
-            foreach ($media as $item) {
-                OrderHelper::assign($item);
-            }
-        }
-
-        // Handle media (videos)
-        if (isset($data['videos'])) {
-            $mediaData = array_map(function ($video) {
-                return [
-                    'path' => $video,
-                    'type' => 'video',
-                    'source' => 'link',
-                    'orders' => 0,
-                ];
-            }, $data['videos']);
-
-            $media = $product->media()->createMany($mediaData);
-            foreach ($media as $item) {
-                OrderHelper::assign($item);
-            }
+        // Handle media (images and videos in one array)
+        if (isset($data['media'])) {
+            $this->handleMedia($product, $data['media']);
         }
 
         // Sync categories
@@ -237,40 +246,9 @@ class ProductService
 
         $product->update($data, $allow_attributes);
 
-        // Handle media (images)
-        if (isset($data['images'])) {
-            $product->media()->where('type', 'image')->delete();
-            $mediaData = array_map(function ($image) {
-                return [
-                    'path' => $image,
-                    'type' => 'image',
-                    'source' => 'file',
-                    'orders' => 0,
-                ];
-            }, $data['images']);
-
-            $media = $product->media()->createMany($mediaData);
-            foreach ($media as $item) {
-                OrderHelper::assign($item);
-            }
-        }
-
-        // Handle media (videos)
-        if (isset($data['videos'])) {
-            $product->media()->where('type', 'video')->delete();
-            $mediaData = array_map(function ($video) {
-                return [
-                    'path' => $video,
-                    'type' => 'video',
-                    'source' => 'link',
-                    'orders' => 0,
-                ];
-            }, $data['videos']);
-
-            $media = $product->media()->createMany($mediaData);
-            foreach ($media as $item) {
-                OrderHelper::assign($item);
-            }
+        // Handle media (images and videos in one array)
+        if (isset($data['media'])) {
+            $this->updateMedia($product, $data['media']);
         }
 
         // Sync categories
@@ -349,5 +327,14 @@ class ProductService
         OrderHelper::reorder($product, $data['orders']);
 
         return $product;
+    }
+
+
+    // reorder media
+    public function reorderMedia($media, $data)
+    {
+        OrderHelper::reorder($media, $data['orders']);
+
+        return $media;
     }
 }

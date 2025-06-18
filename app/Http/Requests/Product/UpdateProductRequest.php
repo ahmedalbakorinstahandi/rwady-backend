@@ -70,11 +70,8 @@ class UpdateProductRequest extends BaseFormRequest
                 }
             ],
 
-            'images' => 'nullable|array',
-            'images.*' => 'required|string|max:500',
-
-            'videos' => 'nullable|array',
-            'videos.*' => 'required|string|max:500',
+            'media' => 'nullable|array',
+            'media.*' => 'required|string|max:500',
 
             'seo' => 'nullable|array',
             // 'seo.meta_title' => LanguageService::translatableFieldRules('nullable|string|max:255'),

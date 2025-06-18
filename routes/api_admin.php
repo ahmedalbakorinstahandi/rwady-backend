@@ -18,7 +18,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [HomeSectionController::class, 'create']);
         // Route::put('/{id}', [HomeSectionController::class, 'update']);
         // Route::delete('/{id}', [HomeSectionController::class, 'delete']);
-        Route::put('/reorder/{id}', [HomeSectionController::class, 'reorder']);
+        Route::put('/{id}/reorder', [HomeSectionController::class, 'reorder']);
     });
 
     Route::prefix('products')->group(function () {
@@ -27,7 +27,8 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'delete']);
-        Route::put('/reorder/{id}', [ProductController::class, 'reorder']);
+        Route::put('/{id}/reorder', [ProductController::class, 'reorder']);
+        Route::put('/{id}/media/{mediaId}/reorder', [ProductController::class, 'reorderMedia']);
     });
 
     Route::prefix('categories')->group(function () {
@@ -36,7 +37,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [CategoryController::class, 'create']);
         Route::put('/{id}', [CategoryController::class, 'update']);
         Route::delete('/{id}', [CategoryController::class, 'delete']);
-        Route::put('/reorder/{id}', [CategoryController::class, 'reorder']);
+        Route::put('/{id}/reorder', [CategoryController::class, 'reorder']);
         Route::post('/{id}/assign-products', [CategoryController::class, 'assignProductsToCategory']);
         Route::post('/{id}/unassign-products', [CategoryController::class, 'unassignProductsFromCategory']);
     });

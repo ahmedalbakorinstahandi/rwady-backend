@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\ReOrderProductMediaRequest;
 use App\Http\Requests\Product\ReOrderProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Services\ProductService;
+use App\Services\MessageService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
@@ -120,5 +122,27 @@ class ProductController extends Controller
 
 
         return $this->index();
+    }
+
+    public function reorderMedia($id, $mediaId, ReOrderProductMediaRequest $request)
+    {
+        $product = $this->productService->show($id);
+
+        $media = $product->media()->find($mediaId);
+
+        if (!$media) {
+            return MessageService::abort(404, 'messages.product.media_not_found');
+        }
+
+        $media = $this->productService->reorderMedia($media, $request->validated());
+
+        return  ResponseService::response(
+            [
+                'success' => true,
+                'data' => $product->media,
+                'message' => 'messages.product.media_reordered_successfully',
+                'status' => 200,
+            ]
+        );
     }
 }
