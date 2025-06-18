@@ -69,6 +69,8 @@ class CategoryService
 
         $category = Category::create($data);
 
+        OrderHelper::assign($category);
+
         if (isset($data['seo'])) {
             $category->seo()->create([
                 'meta_title' => $data['seo']['meta_title'] ?? null,

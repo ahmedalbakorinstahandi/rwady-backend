@@ -127,6 +127,8 @@ class ProductService
 
         $product = Product::create($data);
 
+        OrderHelper::assign($product);
+
         $product->sku = $product->id;
         $product->save();
 
@@ -339,5 +341,13 @@ class ProductService
         }
 
         return $user->favorites()->where('product_id', $product->id)->exists();
+    }
+
+    // reorder
+    public function reorder($product, $data)
+    {
+        OrderHelper::reorder($product, $data['orders']);
+
+        return $product;
     }
 }
