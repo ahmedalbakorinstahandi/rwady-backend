@@ -19,6 +19,7 @@ Route::prefix('user')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('/{product}', [ProductController::class, 'show']);
+        Route::post('/{product}/toggle-favorite', [ProductController::class, 'toggleFavorite']);
     });
 
     Route::prefix('categories')->group(function () {

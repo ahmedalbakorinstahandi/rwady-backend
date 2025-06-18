@@ -6,6 +6,8 @@ return [
         'created_successfully' => 'Product created successfully',
         'updated_successfully' => 'Product updated successfully',
         'deleted_successfully' => 'Product deleted successfully',
+        'added_to_favorites' => 'Product added to favorites',
+        'removed_from_favorites' => 'Product removed from favorites',
     ],
 
     'you_are_not_logged_in_Please_log_in_first' => 'You are not logged in, please log in first',

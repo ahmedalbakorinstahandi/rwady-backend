@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,6 +22,9 @@ class ProductResource extends JsonResource
         $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue 
             ? collect([])
             : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
+
+
+        $user = User::auth();
 
         return [
             'id' => $this->id,
@@ -54,6 +58,7 @@ class ProductResource extends JsonResource
             'ribbon_color' => $this->ribbon_color,
             'related_category_id' => $this->related_category_id,
             'related_category_limit' => $this->related_category_limit,
+            'is_favorite' => $user ? $user->favorites()->where('product_id', $this->id)->exists() : false,
             'orders' => $this->orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => ProductResource::collection($relatedCategoryProducts),
@@ -62,7 +67,6 @@ class ProductResource extends JsonResource
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),
-            'favorites' => UserFavoriteResource::collection($this->whenLoaded('favorites')),
             'related_products' => ProductResource::collection($relatedProducts),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),

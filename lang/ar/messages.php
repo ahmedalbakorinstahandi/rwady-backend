@@ -6,6 +6,8 @@ return [
         'created_successfully' => 'تم إنشاء المنتج بنجاح',
         'updated_successfully' => 'تم تحديث المنتج بنجاح',
         'deleted_successfully' => 'تم حذف المنتج بنجاح',
+        'added_to_favorites' => 'تم إضافة المنتج إلى المفضلة',
+        'removed_from_favorites' => 'تم إزالة المنتج من المفضلة',
     ],
     'you_are_not_logged_in_Please_log_in_first' => 'يجب عليك تسجيل الدخول للمتابعة',
     'route_not_found' => 'الرابط غير موجود',

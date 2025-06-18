@@ -76,6 +76,12 @@ class User extends Authenticatable
         return $this->morphMany(Address::class, 'addressable');
     }
 
+    // povit
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'user_favorites', 'user_id', 'product_id');
+    }
+
     public static function auth()
     {
         if (Auth::guard('sanctum')->check()) {

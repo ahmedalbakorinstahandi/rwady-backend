@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Permissions\ProductPermission;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\FilterService;
 use App\Services\LanguageService;
 use App\Services\MessageService;
@@ -69,6 +70,15 @@ class ProductService
 
         if (isset($filters['most_sold'])) {
             $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
+        }
+
+        if (isset($filters['is_favorite'])) {
+            $user = User::auth();
+            if ($user) {
+                $query->whereHas('favorites', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
+            }
         }
 
         $query = ProductPermission::filterIndex($query);
@@ -319,5 +329,15 @@ class ProductService
         $product->relatedProducts()->detach();
 
         $product->delete();
+    }
+
+    public function toggleFavorite($product)
+    {
+        $user = User::auth();
+        if ($user) {
+            $user->favorites()->toggle($product->id);
+        }
+
+        return $user->favorites()->where('product_id', $product->id)->exists();
     }
 }

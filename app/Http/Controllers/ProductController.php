@@ -93,4 +93,21 @@ class ProductController extends Controller
             ]
         );
     }
+
+    public function toggleFavorite(int $id)
+    {
+        $product = $this->productService->show($id);
+        $isFavorite = $this->productService->toggleFavorite($product);
+
+        return  ResponseService::response(
+            [
+                'success' => true,
+                'data' => [
+                    'is_favorite' => $isFavorite,
+                ],
+                'message' => $isFavorite ? 'messages.product.added_to_favorites' : 'messages.product.removed_from_favorites',
+                'status' => 200,
+            ]
+        );
+    }
 }
