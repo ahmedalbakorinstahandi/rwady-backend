@@ -8,6 +8,8 @@ return [
         'deleted_successfully' => 'Product deleted successfully',
         'added_to_favorites' => 'Product added to favorites',
         'removed_from_favorites' => 'Product removed from favorites',
+        'media_reordered_successfully' => 'Media reordered successfully',
+        'media_not_found' => 'Media not found',
     ],
 
     'you_are_not_logged_in_Please_log_in_first' => 'You are not logged in, please log in first',

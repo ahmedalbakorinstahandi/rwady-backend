@@ -8,6 +8,8 @@ return [
         'deleted_successfully' => 'تم حذف المنتج بنجاح',
         'added_to_favorites' => 'تم إضافة المنتج إلى المفضلة',
         'removed_from_favorites' => 'تم إزالة المنتج من المفضلة',
+        'media_reordered_successfully' => 'تم إعادة ترتيب الوسائط بنجاح',
+        'media_not_found' => 'الوسائط غير موجودة',
     ],
     'you_are_not_logged_in_Please_log_in_first' => 'يجب عليك تسجيل الدخول للمتابعة',
     'route_not_found' => 'الرابط غير موجود',
