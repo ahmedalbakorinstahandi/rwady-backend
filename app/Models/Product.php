@@ -100,6 +100,23 @@ class Product extends Model
         );
     }
 
+
+    public function getDiscountPercentageAttribute()
+    {
+        if (($this->price_after_discount > 0 || $this->price_after_discount !=  null) && $this->price_discount_start && $this->price_discount_end && $this->price_discount_start <= now() && $this->price_discount_end >= now()) {
+            $value = round(($this->price - $this->price_after_discount) / $this->price * 100);
+            return [
+                'ar' => "وفر {$value}%",
+                'en' => "Save {$value}%",
+            ];
+        } else {
+            return [
+                'ar' => null,
+                'en' => null,
+            ];
+        }
+    }
+
     public function relatedCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'related_category_id');

@@ -59,6 +59,7 @@ class ProductResource extends JsonResource
             'related_category_id' => $this->related_category_id,
             'related_category_limit' => $this->related_category_limit,
             'is_favorite' => $user ? $user->favorites()->where('product_id', $this->id)->exists() : false,
+            'discount_percentage_text' => $this->discount_percentage,
             'orders' => $this->orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => ProductResource::collection($relatedCategoryProducts),

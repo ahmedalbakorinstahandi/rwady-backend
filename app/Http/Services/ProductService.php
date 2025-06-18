@@ -16,7 +16,7 @@ class ProductService
 {
     public function index(array $filters = [])
     {
-        $query = Product::query()->with(['media', 'colors']);
+        $query = Product::query()->with(['media', 'colors', 'categories']);
 
         $searchFields = ['name', 'description', 'sku'];
         $numericFields = [
@@ -72,7 +72,7 @@ class ProductService
             $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
         }
 
-        if (isset($filters['is_favorite'])) {
+        if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
             $user = User::auth();
             if ($user) {
                 $query->whereHas('favorites', function ($query) use ($user) {
