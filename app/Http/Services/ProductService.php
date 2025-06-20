@@ -159,7 +159,7 @@ class ProductService
 
     public function create($data)
     {
-        $data = LanguageService::prepareTranslatableData($data);
+        $data = LanguageService::prepareTranslatableData($data, new Product);
 
         // Generate SKU if not provided
         if (!isset($data['sku']) || empty($data['sku'])) {
