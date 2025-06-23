@@ -12,26 +12,41 @@ use App\Models\Banner;
 use App\Models\HomeSection;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\FilterService;
 use App\Services\MessageService;
 use App\Services\OrderHelper;
 
 class HomeSectionService
 {
-    public function getHomeSections()
+    public function getHomeSections(array $filters = [])
     {
 
 
         $user = User::auth();
 
 
-        $query = HomeSection::orderBy('orders', 'asc')->query();
+        $query = HomeSection::query();
 
 
         if ($user->is_admin) {
             $query->where('availability', true);
         }
 
-        $homeSections = $query->get();
+        $filters['sort_field'] = 'orders';
+        $filters['sort_order'] = 'asc';
+
+        $homeSections = FilterService::applyFilters(
+            $query,
+            $filters,
+            ['title'],
+            ['limit'],
+            ['created_at', 'updated_at'],
+            ['id', 'show_title', 'type', 'item_id', 'status',   'can_show_more',  'orders', 'availability'],
+            ['id'],
+        );
+
+
+
 
         return $homeSections;
     }
