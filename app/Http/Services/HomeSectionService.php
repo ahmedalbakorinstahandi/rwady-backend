@@ -19,8 +19,19 @@ class HomeSectionService
 {
     public function getHomeSections()
     {
-        $homeSections = HomeSection::where('availability', true)->orderBy('orders', 'asc')->get();
 
+
+        $user = User::auth();
+
+
+        $query = HomeSection::orderBy('orders', 'asc')->query();
+
+
+        if ($user->is_admin) {
+            $query->where('availability', true);
+        }
+
+        $homeSections = $query->get();
 
         return $homeSections;
     }

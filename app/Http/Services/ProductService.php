@@ -166,6 +166,10 @@ class ProductService
             $data['sku'] = 'SKU-' . strtoupper(uniqid());
         }
 
+        $data['stock_unlimited'] = $data['stock_unlimited'] ?? false;
+
+
+
         $product = Product::create($data);
 
         OrderHelper::assign($product);
