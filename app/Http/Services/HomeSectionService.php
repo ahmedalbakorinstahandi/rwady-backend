@@ -28,7 +28,7 @@ class HomeSectionService
         $query = HomeSection::query();
 
 
-        if ($user->isAdmin()) {
+        if ($user && $user->isAdmin()) {
             $query->where('availability', true);
         }
 
