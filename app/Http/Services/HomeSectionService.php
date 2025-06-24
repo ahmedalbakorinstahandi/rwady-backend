@@ -28,12 +28,13 @@ class HomeSectionService
         $query = HomeSection::query();
 
 
-        if ($user->is_admin) {
+        if ($user->isAdmin()) {
             $query->where('availability', true);
         }
 
         $filters['sort_field'] = 'orders';
         $filters['sort_order'] = 'asc';
+        $filters['limit'] = 100;
 
         $homeSections = FilterService::applyFilters(
             $query,
