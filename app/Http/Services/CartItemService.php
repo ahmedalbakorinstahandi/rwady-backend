@@ -11,7 +11,7 @@ class CartItemService
 {
     public function index(array $filters = [])
     {
-        $query = CartItem::query()->with('product.media', 'product.colors', 'product.categories', 'product.brands');
+        $query = CartItem::query()->with('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         $searchFields = ['product.name', 'product.description'];
         $numericFields = ['quantity'];
@@ -42,7 +42,7 @@ class CartItemService
             MessageService::abort(404, 'messages.cart_item.not_found');
         }
 
-        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands');
+        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         return $cartItem;
     }
@@ -63,7 +63,7 @@ class CartItemService
     {
         $cartItem->update($data);
 
-        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands');
+        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         return $cartItem;
     }
@@ -72,7 +72,7 @@ class CartItemService
     {
         $cartItem->delete();
 
-        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands');
+        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         return $cartItem;
     }
