@@ -47,7 +47,7 @@ class AddressPermission
 
         $data['addressable_type'] = User::class;
 
-        $user = User::find($data['user_id']);
+        $user = User::find($data['addressable_id']);
 
         $defaultAddress = $user->addresses()->where('is_default', true)->first();
 

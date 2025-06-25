@@ -59,11 +59,7 @@ class AddressService
         $data['state'] = $locationData['state'] ?? null;
         $data['zipe_code'] = $locationData['postal_code'] ?? null;
 
-        $user = User::auth();
 
-
-        $data['addressable_id'] = $user->id;
-        $data['addressable_type'] = User::class;
 
 
         $address = Address::create($data);
