@@ -58,6 +58,7 @@ class AddressService
         $data['country'] = $locationData['country'] ?? "";
         $data['state'] = $locationData['state'] ?? null;
         $data['zipe_code'] = $locationData['postal_code'] ?? null;
+        $data['extra_address'] = $data['extra_address'] ?? $locationData['address_secondary'] ?? null;
 
 
 
