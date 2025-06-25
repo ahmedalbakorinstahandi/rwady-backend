@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\ImageController;
 use App\Services\ResponseService;

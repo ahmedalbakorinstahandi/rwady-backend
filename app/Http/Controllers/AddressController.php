@@ -49,7 +49,7 @@ class AddressController extends Controller
 
     public function create(CreateAddressRequest $request)
     {
-        $address = $this->addressService->create($request->all());
+        $address = $this->addressService->create($request->validated());
 
         return ResponseService::response(
             [
@@ -66,7 +66,7 @@ class AddressController extends Controller
     {
         $address = $this->addressService->show($id);
 
-        $address = $this->addressService->update($request->validated(), $address);
+        $address = $this->addressService->update($address, $request->validated());
 
         return ResponseService::response(
             [

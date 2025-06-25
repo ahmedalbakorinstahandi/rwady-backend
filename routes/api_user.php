@@ -2,6 +2,7 @@
 
 // prfix user 
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -46,5 +47,13 @@ Route::prefix('user')->group(function () {
 
         Route::get('/me', [UserController::class, 'getMyData']);
         Route::put('/me', [UserController::class, 'updateMyData']);
+
+        Route::prefix('addresses')->group(function () {
+            Route::get('/', [AddressController::class, 'index']);
+            Route::get('/{id}', [AddressController::class, 'show']);
+            Route::post('/', [AddressController::class, 'create']);
+            Route::put('/{id}', [AddressController::class, 'update']);
+            Route::delete('/{id}', [AddressController::class, 'delete']);
+        });
     });
 });
