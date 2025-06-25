@@ -57,6 +57,8 @@ class AddressPermission
             if ($data['is_default'] == true) {
                 $user->addresses()->where('is_default', true)->update(['is_default' => false]);
                 $data['is_default'] = true;
+            } else {
+                $data['is_default'] = false;
             }
         }
 

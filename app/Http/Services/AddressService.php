@@ -60,7 +60,7 @@ class AddressService
         $data['zipe_code'] = $locationData['postal_code'] ?? null;
         $data['extra_address'] = $data['extra_address'] ?? $locationData['address_secondary'] ?? null;
 
-        $data['is_default'] = $data['is_default'] ?? false;
+      
 
 
 
