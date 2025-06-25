@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->unsignedInteger('quantity');
+            $table->unsignedBigInteger('color_id')->nullable();
+            $table->foreign('color_id')->references('id')->on('product_colors')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });

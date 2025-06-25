@@ -47,7 +47,7 @@ class CartItemService
         return $cartItem;
     }
 
-    public function create(array $data) 
+    public function create($data)
     {
         $cartItem = CartItem::create($data);
 
