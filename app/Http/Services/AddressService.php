@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Permissions\AddressPermission;
 use App\Models\Address;
+use App\Models\User;
 use App\Services\FilterService;
 use App\Services\LocationService;
 use App\Services\MessageService;
@@ -58,6 +59,12 @@ class AddressService
         $data['state'] = $locationData['state'] ?? null;
         $data['zipe_code'] = $locationData['postal_code'] ?? null;
 
+        $user = User::auth();
+
+
+        $data['addressable_id'] = $user->id;
+        $data['addressable_type'] = User::class;
+
 
         $address = Address::create($data);
 
@@ -66,6 +73,15 @@ class AddressService
 
     public function update($address, $data)
     {
+
+        $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
+
+        $data['address'] = $locationData['address'] ?? "";
+        $data['city'] = $locationData['city'] ?? "";
+        $data['country'] = $locationData['country'] ?? "";
+        $data['state'] = $locationData['state'] ?? null;
+        $data['zipe_code'] = $locationData['postal_code'] ?? null;
+
         $address->update($data);
 
         return $address;
