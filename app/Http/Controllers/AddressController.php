@@ -52,9 +52,13 @@ class AddressController extends Controller
 
     public function create(CreateAddressRequest $request)
     {
-        $data = $this->addressService->create($request->validated());
 
-        $address = AddressPermission::create($data);
+        $data = $request->validated();
+
+        $data = AddressPermission::create($data);
+
+        $address = $this->addressService->create($data);
+
 
         return ResponseService::response(
             [
@@ -71,9 +75,11 @@ class AddressController extends Controller
     {
         $address = $this->addressService->show($id);
 
-        $data = $this->addressService->update($address, $request->validated());
+        $data = $request->validated();
+        $data = AddressPermission::canUpdate($address, $data);
 
-        $address = AddressPermission::canUpdate($address, $data);
+        $address = $this->addressService->update($address, $data);
+
 
         return ResponseService::response(
             [
