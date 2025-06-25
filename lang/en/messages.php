@@ -83,5 +83,6 @@ return [
         'created' => 'Cart item created successfully',
         'updated' => 'Cart item updated successfully',
         'deleted' => 'Cart item deleted successfully',
+        'already_in_cart' => 'Item already in cart',
     ],
 ];

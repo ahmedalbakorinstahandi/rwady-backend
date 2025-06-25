@@ -6,6 +6,7 @@ use App\Http\Permissions\CartItemPermission;
 use App\Models\CartItem;
 use App\Services\FilterService;
 use App\Services\MessageService;
+use Illuminate\Support\Facades\DB;
 
 class CartItemService
 {
@@ -51,8 +52,18 @@ class CartItemService
     {
         $cartItem = CartItem::create($data);
 
-        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands');
+        $searchCartItem = CartItem::where('user_id', $data['user_id'])
+            ->where('product_id', $data['product_id'])
+            ->where('color_id', $data['color_id'])
+            ->first();
 
+        if ($searchCartItem) {
+            MessageService::abort(400, 'messages.cart_item.already_in_cart');
+        }
+
+        $cartItem = CartItem::where('user_id', $data['user_id'])->where('product_id', $data['product_id'])->where('color_id', $data['color_id'])->first();
+
+        $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         return $cartItem;
     }
