@@ -16,7 +16,7 @@ class ProductService
 {
     public function index(array $filters = [])
     {
-        $query = Product::query()->with(['media', 'colors', 'categories']);
+        $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
 
         $filters['sort_field'] = 'orders';
         $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';

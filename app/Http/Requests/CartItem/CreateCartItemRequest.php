@@ -8,6 +8,9 @@ class CreateCartItemRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'product_id' => 'required|exists:products,id,deleted_at,NULL',
+            'quantity' => 'required|integer|min:1',
+        ];
     }
-} 
+}

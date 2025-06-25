@@ -5,6 +5,7 @@
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
@@ -54,6 +55,14 @@ Route::prefix('user')->group(function () {
             Route::post('/', [AddressController::class, 'create']);
             Route::put('/{id}', [AddressController::class, 'update']);
             Route::delete('/{id}', [AddressController::class, 'delete']);
+        });
+
+        Route::prefix('cart-items')->group(function () {
+            Route::get('/', [CartItemController::class, 'index']);
+            Route::get('/{id}', [CartItemController::class, 'show']);
+            Route::post('/', [CartItemController::class, 'create']);
+            Route::put('/{id}', [CartItemController::class, 'update']);
+            Route::delete('/{id}', [CartItemController::class, 'delete']);
         });
     });
 });

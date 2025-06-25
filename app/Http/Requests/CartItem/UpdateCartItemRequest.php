@@ -8,6 +8,8 @@ class UpdateCartItemRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'quantity' => 'required|integer|min:1',
+        ];
     }
 } 

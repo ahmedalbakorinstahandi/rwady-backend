@@ -77,4 +77,11 @@ return [
         'updated_successfully' => 'Address updated successfully',
         'deleted_successfully' => 'Address deleted successfully',
     ],
+
+    'cart_item' => [
+        'not_found' => 'Cart item not found',
+        'created' => 'Cart item created successfully',
+        'updated' => 'Cart item updated successfully',
+        'deleted' => 'Cart item deleted successfully',
+    ],
 ];
