@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Permissions\AddressPermission;
 use App\Http\Requests\Address\CreateAddressRequest;
 use App\Http\Requests\Address\UpdateAddressRequest;
 use App\Http\Resources\AddressResource;
@@ -37,6 +38,8 @@ class AddressController extends Controller
     {
         $address = $this->addressService->show($id);
 
+        $address = AddressPermission::canShow($address);
+
         return ResponseService::response(
             [
                 'success' => true,
@@ -49,7 +52,9 @@ class AddressController extends Controller
 
     public function create(CreateAddressRequest $request)
     {
-        $address = $this->addressService->create($request->validated());
+        $data = $this->addressService->create($request->validated());
+
+        $address = AddressPermission::create($data);
 
         return ResponseService::response(
             [
@@ -66,7 +71,9 @@ class AddressController extends Controller
     {
         $address = $this->addressService->show($id);
 
-        $address = $this->addressService->update($address, $request->validated());
+        $data = $this->addressService->update($address, $request->validated());
+
+        $address = AddressPermission::canUpdate($address, $data);
 
         return ResponseService::response(
             [
