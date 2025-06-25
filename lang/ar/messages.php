@@ -69,4 +69,11 @@ return [
         'deleted_successfully' => 'تم حذف القسم الرئيسي بنجاح',
         'cannot_delete_static' => 'لا يمكن حذف القسم الرئيسي الثابت',
     ],
+
+    'address' => [
+        'not_found' => 'العنوان غير موجود',
+        'created_successfully' => 'تم إنشاء العنوان بنجاح',
+        'updated_successfully' => 'تم تحديث العنوان بنجاح',
+        'deleted_successfully' => 'تم حذف العنوان بنجاح',
+    ],
 ];

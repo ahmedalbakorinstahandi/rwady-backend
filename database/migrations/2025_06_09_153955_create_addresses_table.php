@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('phone')->nullable();
             $table->string('address');
-            $table->text('exstra_adress')->nullable();
+            $table->text('extra_address')->nullable();
             $table->string('country');
             $table->string('city');
             $table->string('state')->nullable();

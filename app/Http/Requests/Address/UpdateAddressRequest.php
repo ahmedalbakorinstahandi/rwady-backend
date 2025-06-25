@@ -11,7 +11,7 @@ class UpdateAddressRequest extends BaseFormRequest
         return [
             'name' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
-            'exstra_adress' => 'nullable|string|max:255',
+            'exstra_address' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',

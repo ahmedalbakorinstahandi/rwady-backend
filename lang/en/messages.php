@@ -70,4 +70,11 @@ return [
         'deleted_successfully' => 'Home section deleted successfully',
         'cannot_delete_static' => 'Cannot delete static home section',
     ],
+
+    'address' => [
+        'not_found' => 'Address not found',
+        'created_successfully' => 'Address created successfully',
+        'updated_successfully' => 'Address updated successfully',
+        'deleted_successfully' => 'Address deleted successfully',
+    ],
 ];

@@ -13,7 +13,7 @@ class AddressResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'address' => $this->address,
-            'exstra_adress' => $this->exstra_adress,
+            'exstra_address' => $this->exstra_address,
             'country' => $this->country,
             'city' => $this->city,
             'state' => $this->state,

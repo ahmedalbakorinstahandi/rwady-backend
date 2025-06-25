@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Permissions\AddressPermission;
 use App\Models\Address;
 use App\Services\FilterService;
+use App\Services\LocationService;
 use App\Services\MessageService;
 
 class AddressService
@@ -15,7 +16,7 @@ class AddressService
 
         $query = AddressPermission::filterIndex($query);
 
-        $searchFields = ['name', 'address', 'exstra_adress', 'country', 'city', 'state', 'zipe_code'];
+        $searchFields = ['name', 'address', 'exstra_address', 'country', 'city', 'state', 'zipe_code'];
         $numericFields = ['longitude', 'latitude'];
         $dateFields = [];
         $exactMatchFields = ['is_default'];
@@ -49,6 +50,13 @@ class AddressService
     public function create($data)
     {
 
+        $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
+
+        $data['address'] = $locationData['address'] ?? "";
+        $data['city'] = $locationData['city'] ?? "";
+        $data['country'] = $locationData['country'] ?? "";
+        $data['state'] = $locationData['state'] ?? null;
+        $data['zipe_code'] = $locationData['postal_code'] ?? null;
 
 
         $address = Address::create($data);
