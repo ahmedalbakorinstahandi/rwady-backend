@@ -11,6 +11,7 @@ class CreateCartItemRequest extends BaseFormRequest
         return [
             'product_id' => 'required|exists:products,id,deleted_at,NULL',
             'quantity' => 'required|integer|min:1',
+            'color_id' => 'nullable|exists:product_colors,id,deleted_at,NULL',
         ];
     }
 }
