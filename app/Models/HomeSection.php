@@ -88,7 +88,7 @@ class HomeSection extends Model
             $this->data = CategoryResource::collection($categories);
         }
 
-        if ($this->type === 'featured_section') {
+        if ($this->type === 'featured_sections') {
             $featuredSectionService = new FeaturedSectionService();
             $featuredSections = $featuredSectionService->index(['limit' => $this->limit]);
             $this->data = FeaturedSectionResource::collection($featuredSections);
