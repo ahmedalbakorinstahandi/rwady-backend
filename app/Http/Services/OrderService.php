@@ -17,7 +17,7 @@ class OrderService
 {
     public function index($filters = [])
     {
-        $query = Order::query()->with('children');
+        $query = Order::query()->with('couponUsage.coupon');
 
 
         $searchFields = ['name', 'description'];
@@ -49,7 +49,7 @@ class OrderService
             MessageService::abort(404, 'messages.order.not_found');
         }
 
-        $order->load(['orderProducts.product', 'couponUsage', 'payments', 'statuses']);
+        $order->load(['orderProducts.product', 'couponUsage.coupon', 'payments', 'statuses']);
 
 
         $user = User::auth();
