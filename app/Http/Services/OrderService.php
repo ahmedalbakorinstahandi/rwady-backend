@@ -76,7 +76,7 @@ class OrderService
         // notes : request notes ✅
 
         $coupon = null;
-        if ($data['coupon_code']) {
+        if (isset($data['coupon_code'])) {
             $coupon = Coupon::where('code', $data['coupon_code'])->first();
             if (!$coupon || !$coupon->is_active) {
                 MessageService::abort(404, 'messages.coupon.invalid');
@@ -163,7 +163,7 @@ class OrderService
         // status : pending ✅
         // is_refund : false ✅
 
-        $order = $this->show($order->id);   
+        $order = $this->show($order->id);
 
 
         return $order;
