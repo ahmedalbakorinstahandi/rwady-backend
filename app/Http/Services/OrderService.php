@@ -146,10 +146,6 @@ class OrderService
 
             $order->metadata = $paymentSession;
 
-            abort(
-                response()->json($paymentSession)
-            );
-
             $order->payment_session_id =  'qi-' . $paymentSession['id'];
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
