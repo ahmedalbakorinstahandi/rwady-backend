@@ -80,7 +80,7 @@ class AddressPermission
             }
         }
 
-        if ($data['is_default']) {
+        if ($data['is_default'] ?? false == true) {
             $user->addresses()->where('is_default', true)->update(['is_default' => false]);
         }
 
