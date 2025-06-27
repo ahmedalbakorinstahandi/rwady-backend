@@ -28,7 +28,7 @@ class HomeSectionService
         $query = HomeSection::query();
 
 
-        if (!$user ||  $user->isCustomer()) {
+        if (!$user || $user->isCustomer()) {
             $query->where('availability', true);
         }
 
@@ -51,8 +51,6 @@ class HomeSectionService
 
         return $homeSections;
     }
-
-
 
     public function show($id)
     {

@@ -76,6 +76,7 @@ class AddressController extends Controller
         $address = $this->addressService->show($id);
 
         $data = $request->validated();
+        
         $data = AddressPermission::canUpdate($address, $data);
 
         $address = $this->addressService->update($address, $data);

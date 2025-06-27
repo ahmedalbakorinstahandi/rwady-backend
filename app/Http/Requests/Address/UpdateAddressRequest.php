@@ -16,6 +16,7 @@ class UpdateAddressRequest extends BaseFormRequest
             'city' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
             'zipe_code' => 'nullable|string|max:255',
+            'is_default' => 'nullable|boolean',
         ];
     }
 } 

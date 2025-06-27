@@ -80,6 +80,10 @@ class AddressPermission
             }
         }
 
+        if ($data['is_default']) {
+            $user->addresses()->where('is_default', true)->update(['is_default' => false]);
+        }
+
         return $data;
     }
 

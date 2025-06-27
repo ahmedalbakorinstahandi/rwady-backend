@@ -42,7 +42,7 @@ class AddressService
         $address = Address::where('id', $id)->first();
 
         if (!$address) {
-            MessageService::abort(404, 'message.address.not_found');
+            MessageService::abort(404, 'messages.address.not_found');
         }
 
         return $address;
