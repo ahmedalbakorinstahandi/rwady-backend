@@ -20,6 +20,7 @@ class OrderResource extends JsonResource
             'notes' => $this->notes,
             'payment_method' => $this->payment_method,
             'payment_session_id' => $this->payment_session_id,
+            'paid_status' => $this->paid_status,
             'metadata' => $this->metadata,
             'user' => new UserResource($this->whenLoaded('user')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),

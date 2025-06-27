@@ -19,7 +19,7 @@ class OrderPermission
             $query->whereDoesntHave('statuses', function($q) {
                 $q->where('status', 'paid');
             })
-            ->orWhereNotIn('payment_method', ['qi', 'installment']);
+            ->whereNotIn('payment_method', ['qi', 'installment']);
         });
 
         return $query;
