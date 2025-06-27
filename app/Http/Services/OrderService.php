@@ -136,7 +136,7 @@ class OrderService
             $paymentData = [
                 'amount' => $order->total_amount_with_fees,
                 'currency' => 'IQD',
-                'requestId' => $order->id,
+                'requestId' => 'ORD-' . $order->id,
                 'description' => trans('messages.payment.description'),
                 'successRedirectUrl' => $successUrl . '/' . $order->id,
                 'failRedirectUrl' => $failUrl . '/' . $order->id,
