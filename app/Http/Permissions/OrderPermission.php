@@ -15,6 +15,13 @@ class OrderPermission
             $query->where('user_id', $user->id);
         }
 
+        $query->where(function($query) {
+            $query->whereDoesntHave('statuses', function($q) {
+                $q->where('status', 'paid');
+            })
+            ->orWhereNotIn('payment_method', ['qi', 'installment']);
+        });
+
         return $query;
     }
 

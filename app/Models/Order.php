@@ -46,10 +46,18 @@ class Order extends Model
         return $productsAmount;
     }
 
+
+
     // order payment
     public function getTotalAmountPaidAttribute()
     {
         return $this->payments->sum('amount');
+    }
+
+    // paid status
+    public function getPaidStatusAttribute()
+    {
+        return $this->statuses->where('status', 'paid')->first();
     }
 
 
