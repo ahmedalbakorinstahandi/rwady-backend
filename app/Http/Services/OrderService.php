@@ -136,7 +136,7 @@ class OrderService
             $paymentData = [
                 'amount' => $order->total_amount,
                 'currency' => 'IQD',
-                'requestId' => 'ORD-' . $order->id,
+                'requestId' =>  "{$order->id}",
                 'description' => trans('messages.payment.description'),
                 'successRedirectUrl' => $successUrl . '/' . $order->id,
                 'failRedirectUrl' => $failUrl . '/' . $order->id,
@@ -144,11 +144,13 @@ class OrderService
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
 
+            $order->metadata = $paymentSession;
+
             abort(
                 response()->json($paymentSession)
             );
 
-            $order->payment_session_id =  'qi_' . $paymentSession['id'];
+            $order->payment_session_id =  'qi-' . $paymentSession['id'];
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;

@@ -31,7 +31,7 @@ class QiPaymentWebhookController extends Controller
         // مثال على المعالجة
         // Order::where('payment_id', $payload['paymentId'])->update(['status' => $payload['status']]);
 
-        $order = Order::where('payment_session_id', 'qi_' . $payload['paymentId'])->first();
+        $order = Order::where('payment_session_id', 'qi-' . $payload['paymentId'])->first();
         if (!$order) {
             Log::warning('Order not found', ['paymentId' => $payload['paymentId']]);
             MessageService::abort(404, 'messages.order.not_found');

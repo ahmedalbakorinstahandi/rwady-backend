@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('payment_method', ['qi', 'installment', 'transfer', 'cash'])->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('payment_session_id')->nullable();
+            $table->longText('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
