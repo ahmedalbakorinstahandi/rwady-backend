@@ -79,6 +79,46 @@ class Product extends Model
         'out_of_stock' => 'string',
     ];
 
+    // current price after discount if exists and is between start and end date
+    public function getFinalPriceAttribute()
+    {
+        if ($this->price_after_discount > 0 && $this->price_discount_start && $this->price_discount_end && $this->price_discount_start <= now() && $this->price_discount_end >= now()) {
+            return $this->price_after_discount;
+        }
+        return $this->price;
+    }
+
+    // current cost price after discount if exists and is between start and end date
+    public function getFinalCostPriceAttribute()
+    {
+        if ($this->cost_price_after_discount > 0 && $this->cost_price_discount_start && $this->cost_price_discount_end && $this->cost_price_discount_start <= now() && $this->cost_price_discount_end >= now()) {
+            return $this->cost_price_after_discount;
+        }
+        return $this->cost_price;
+    }
+
+    // get shipping rate 
+    public function getShippingRateAttribute($quantity = 1)
+    {
+        if ($this->shipping_type == 'fixed_shipping') {
+            if ($quantity == 1) {
+                return $this->shipping_rate_single;
+            } else {
+                return $this->shipping_rate_multi;
+            }
+        } elseif ($this->shipping_type == 'free_shipping') {
+            return null;
+        } elseif ($this->shipping_type == 'default') {
+            $defaultShippingRate = Setting::where('key', 'default_shipping_rate_single')->first();
+
+            if ($defaultShippingRate) {
+                return (int) $defaultShippingRate->value;
+            } else {
+                return null;
+            }
+        }
+    }
+
     protected function name(): Attribute
     {
         return Attribute::make(

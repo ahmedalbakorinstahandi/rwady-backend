@@ -17,7 +17,8 @@ class OrderProduct extends Model
         'price',
         'cost_price',
         'status',
-        'shipping_rate'
+        'shipping_rate',
+        'color_id'
     ];
 
     public function order(): BelongsTo

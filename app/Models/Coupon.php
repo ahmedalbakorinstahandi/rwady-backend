@@ -13,12 +13,9 @@ class Coupon extends Model
     protected $fillable = [
         'code',
         'type',
-        'value',
-        'min_order_amount',
-        'max_discount',
+        'amount',
         'start_date',
         'end_date',
-        'usage_limit',
         'is_active',
     ];
 
@@ -26,10 +23,38 @@ class Coupon extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'is_active' => 'boolean',
+        'type' => 'string',
+        'amount' => 'float',
     ];
+
+    public function getDiscountAmountLabelAttribute()
+    {
+        if ($this->type == 'percentage') {
+            return $this->amount . '%';
+        } else {
+            return $this->amount . ' IQD';
+        }
+    }
+
+    public function getDiscountAmountValueAttribute()
+    {
+        if ($this->type == 'percentage') {
+            return $this->amount;
+        } else {
+            return $this->amount;
+        }
+    }
+
+    public function getIsActiveAttribute($value)
+    {
+        if ($this->start_date && $this->end_date) {
+            return $this->start_date <= now() && $this->end_date >= now();
+        }
+        return true;
+    }
 
     public function usages(): HasMany
     {
         return $this->hasMany(CouponUsage::class);
     }
-} 
+}

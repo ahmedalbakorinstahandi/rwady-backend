@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->enum('payment_method', ['credit_card', 'installment', 'tranfer', 'cash'])->nullable();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->string('payment_session_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

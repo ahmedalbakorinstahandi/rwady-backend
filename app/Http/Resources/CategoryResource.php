@@ -18,7 +18,7 @@ class CategoryResource extends JsonResource
             'image_url' => $this->image ? url('storage/' . $this->image) : null,
             'availability' => $this->availability,
             'orders' => $this->orders,
-            'products_count' => $this->products_count,
+            'products_count' => $this->products->count(),
             'parent' => new CategoryResource($this->whenLoaded('parent')),
             'children' => CategoryResource::collection($this->whenLoaded('children')),
             'products' => ProductResource::collection($this->whenLoaded('products')),
@@ -27,4 +27,4 @@ class CategoryResource extends JsonResource
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
-} 
+}

@@ -13,16 +13,13 @@ class CouponResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'type' => $this->type,
-            'value' => $this->value,
-            'min_order_amount' => $this->min_order_amount,
-            'max_discount' => $this->max_discount,
+            'discount_amount_label' => $this->discount_amount_label,
+            'discount_amount_value' => $this->discount_amount_value,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'usage_limit' => $this->usage_limit,
             'is_active' => $this->is_active,
-            'usages' => CouponUsageResource::collection($this->whenLoaded('usages')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
-} 
+}

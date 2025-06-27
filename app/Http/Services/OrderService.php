@@ -3,8 +3,10 @@
 namespace App\Http\Services;
 
 use App\Http\Permissions\OrderPermission;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Services\MessageService;
@@ -64,6 +66,14 @@ class OrderService
         // payment_fees : حسب طريقة الدفع ✅
         // notes : request notes ✅
 
+        $coupon = null;
+        if ($data['coupon_code']) {
+            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+            if (!$coupon || !$coupon->is_active) {
+                MessageService::abort(404, 'messages.coupon.invalid');
+            }
+        }
+
         $user  = User::auth();
 
         $data['user_id'] = $user->id;
@@ -78,19 +88,24 @@ class OrderService
 
         $order = Order::create($data);
 
+        $order->code = 'ORD-' . $order->id;
+        $order->save();
+
 
         $products = $data['products'];
 
-        foreach ($products as $product) {
+        foreach ($products as $productData) {
+            $product = Product::find($productData['product_id']);
+
             $orderProduct = OrderProduct::create([
                 'order_id' => $order->id,
-                'product_id' => $product['id'],
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-                'cost_price' => $product['cost_price'],
+                'product_id' => $product->id,
+                'quantity' => $productData['quantity'],
+                'price' => $product->final_price,
+                'cost_price' => $product->final_cost_price,
                 'status' => 'pending',
-                'shipping_rate' => $product['shipping_rate'],
-
+                'shipping_rate' => $product->shipping_rate($productData['quantity']),
+                'color_id' => $productData['color_id'] ?? null,
             ]);
         }
 
@@ -108,9 +123,8 @@ class OrderService
 
         $paymentSession = $qiPaymentService->createPayment($paymentData);
 
-
-
-
+        $order->payment_session_id =  'qi_' . $paymentSession['id'];
+        $order->save();
 
 
 

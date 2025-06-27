@@ -89,4 +89,9 @@ return [
     'payment' => [
         'description' => 'New order',
     ],
+
+    'coupon' => [
+        'not_found' => 'Coupon not found',
+        'invalid' => 'Coupon is invalid',
+    ],
 ];

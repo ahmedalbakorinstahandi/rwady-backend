@@ -87,5 +87,10 @@ return [
 
     'payment' => [
         'description' => 'طلب جديد',
+    ],  
+
+    'coupon' => [
+        'not_found' => 'الكوبون غير موجود',
+        'invalid' => 'الكوبون غير صالح',
     ],
 ];

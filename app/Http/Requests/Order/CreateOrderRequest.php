@@ -8,7 +8,16 @@ class CreateOrderRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.color_id' => 'nullable|exists:product_colors,id',
+            'success_url' => 'required|url',
+            'fail_url' => 'required|url',
+            'notes' => 'nullable|string',
+            'coupon_code' => 'nullable|string',
+        ];
     }
 } 
 

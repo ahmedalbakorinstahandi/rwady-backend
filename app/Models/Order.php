@@ -20,6 +20,36 @@ class Order extends Model
         'payment_method',
     ];
 
+
+    public function getTotalAmountWithOrWithoutFeesAttribute()
+    {
+        $productsAmount = $this->products->sum('price');
+
+        $coupon = CouponUsage::where('order_id', $this->id)->first();
+
+        if ($coupon && $coupon->discount_type && $coupon->discount_value) {
+            if ($coupon->discount_type == 'percentage') {
+                $productsAmount = $productsAmount - ($productsAmount * ($coupon->discount_value / 100));
+            } else {
+                $productsAmount = $productsAmount - $coupon->discount_value;
+            }
+        }
+
+
+        return $productsAmount;
+    }
+
+    // order payment
+    public function getTotalAmountPaidAttribute()
+    {
+        return $this->payments->sum('amount');
+    }
+
+    public function getTotalAmountWithFeesAttribute()
+    {
+        return $this->total_amount_with_or_without_fees + ($this->total_amount_with_or_without_fees * ($this->payment_fees / 100));
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -40,4 +70,4 @@ class Order extends Model
     {
         return $this->hasMany(OrderPayment::class);
     }
-} 
+}

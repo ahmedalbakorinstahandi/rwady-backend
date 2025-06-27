@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Payment\QiSignatureValidator;
+use App\Models\Order;
 
 class QiPaymentWebhookController extends Controller
 {
@@ -27,6 +28,16 @@ class QiPaymentWebhookController extends Controller
 
         // مثال على المعالجة
         // Order::where('payment_id', $payload['paymentId'])->update(['status' => $payload['status']]);
+
+        $order = Order::where('payment_session_id', 'qi_' . $payload['paymentId'])->first();
+        if (!$order) {
+            Log::warning('Order not found', ['paymentId' => $payload['paymentId']]);
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        
+
+
 
         return response()->json(['message' => 'Webhook processed'], 200);
     }
