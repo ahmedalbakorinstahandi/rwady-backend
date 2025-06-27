@@ -144,6 +144,10 @@ class OrderService
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
 
+            abort(
+                response()->json($paymentSession)
+            );
+
             $order->payment_session_id =  'qi_' . $paymentSession['id'];
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
