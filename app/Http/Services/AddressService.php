@@ -72,15 +72,6 @@ class AddressService
 
     public function update($address, $data)
     {
-
-        $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
-
-        $data['address'] = $locationData['address'] ?? "";
-        $data['city'] = $locationData['city'] ?? "";
-        $data['country'] = $locationData['country'] ?? "";
-        $data['state'] = $locationData['state'] ?? null;
-        $data['zipe_code'] = $locationData['postal_code'] ?? null;
-
         $address->update($data);
 
         return $address;
