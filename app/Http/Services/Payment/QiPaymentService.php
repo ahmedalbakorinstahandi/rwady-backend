@@ -16,10 +16,14 @@ class QiPaymentService
 
     public function __construct()
     {
-        $this->baseUrl = config('services.qi.base_url', 'https://uat-sandbox-3ds-api.qi.iq/api/v1/');
-        $this->username = config('services.qi.username', 'paymentgatewaytest');
-        $this->password = config('services.qi.password', 'WHaNFE5C3qlChqNbAzH4');
-        $this->terminalId = config('services.qi.terminal_id', '237984');
+        // $this->baseUrl = config('services.qi.base_url', 'https://uat-sandbox-3ds-api.qi.iq/api/v1/');
+        // $this->username = config('services.qi.username', 'paymentgatewaytest');
+        // $this->password = config('services.qi.password', 'WHaNFE5C3qlChqNbAzH4');
+        // $this->terminalId = config('services.qi.terminal_id', '237984');
+        $this->baseUrl =  'https://uat-sandbox-3ds-api.qi.iq/api/v1/';
+        $this->username =  'paymentgatewaytest';
+        $this->password =  'WHaNFE5C3qlChqNbAzH4';
+        $this->terminalId =  '237984';
     }
 
     /**
