@@ -119,7 +119,7 @@ class OrderService
                 'price' => $product->final_price,
                 'cost_price' => $product->final_cost_price,
                 'status' => 'pending',
-                'shipping_rate' => $product->shipping_rate($productData['quantity']),
+                'shipping_rate' => $product->getShippingRateAttribute($productData['quantity']),
                 'color_id' => $productData['color_id'] ?? null,
             ]);
         }
