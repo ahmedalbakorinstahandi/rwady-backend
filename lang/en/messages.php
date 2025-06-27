@@ -94,4 +94,11 @@ return [
         'not_found' => 'Coupon not found',
         'invalid' => 'Coupon is invalid',
     ],
+
+    'order' => [
+        'not_found' => 'Order not found',
+        'created_successfully' => 'Order created successfully',
+        'updated_successfully' => 'Order updated successfully',
+        'deleted_successfully' => 'Order deleted successfully',
+    ],
 ];

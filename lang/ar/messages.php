@@ -93,4 +93,11 @@ return [
         'not_found' => 'الكوبون غير موجود',
         'invalid' => 'الكوبون غير صالح',
     ],
+
+    'order' => [
+        'not_found' => 'الطلب غير موجود',
+        'created_successfully' => 'تم إنشاء الطلب بنجاح',
+        'updated_successfully' => 'تم تحديث الطلب بنجاح',
+        'deleted_successfully' => 'تم حذف الطلب بنجاح',
+    ],
 ];
