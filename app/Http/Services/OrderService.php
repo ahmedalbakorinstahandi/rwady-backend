@@ -19,8 +19,6 @@ class OrderService
     {
         $query = Order::query()->with('children');
 
-        $filters['sort_field'] = 'orders';
-        $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
 
         $searchFields = ['name', 'description'];
         $numericFields = [];
@@ -187,6 +185,10 @@ class OrderService
 
     public function delete($order)
     {
+        $order->orderProducts()->delete();
+        $order->couponUsage()->delete();
+        $order->payments()->delete();
+        $order->statuses()->delete();
         $order->delete();
     }
 }

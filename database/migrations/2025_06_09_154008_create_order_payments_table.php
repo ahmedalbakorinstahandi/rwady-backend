@@ -19,10 +19,10 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders');
             $table->float('amount');
             $table->longText('description');
-            $table->enum('status', ["pending","completed","failed"]);
+            $table->enum('status', ["pending", "completed", "failed"]);
             $table->boolean('is_refund')->default(false);
-            $table->enum('method', ["qi","installment","transfer","cash"]);
-            $table->string('attached', 110);
+            $table->enum('method', ["qi", "installment", "transfer", "cash"]);
+            $table->string('attached', 110)->nullable();
             $table->longText('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
