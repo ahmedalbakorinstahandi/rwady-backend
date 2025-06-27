@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('statuses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('statusable_id');
-            $table->string('statueable_type');
+            $table->string('statusable_type');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

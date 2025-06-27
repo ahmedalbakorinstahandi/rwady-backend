@@ -108,6 +108,10 @@ class OrderService
         foreach ($products as $productData) {
             $product = Product::find($productData['product_id']);
 
+            if (!$product) {
+                MessageService::abort(404, 'messages.product.not_found');
+            }
+
             $orderProduct = OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $product->id,

@@ -10,9 +10,9 @@ class CreateOrderRequest extends BaseFormRequest
     {
         return [
             'products' => 'required|array',
-            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.product_id' => 'required|exists:products,id,deleted_at,NULL',
             'products.*.quantity' => 'required|integer|min:1',
-            'products.*.color_id' => 'nullable|exists:product_colors,id',
+            'products.*.color' => 'nullable|exists:product_colors,color,deleted_at,NULL',
             'success_url' => 'required|url',
             'fail_url' => 'required|url',
             'notes' => 'nullable|string',
