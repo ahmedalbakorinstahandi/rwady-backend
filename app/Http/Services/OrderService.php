@@ -96,6 +96,7 @@ class OrderService
         $order = Order::create($data);
 
         $order->code = 'ORD-' . $order->id;
+        $order_id = $order->id;
 
         $order->statuses()->create([
             'status' => 'pending',
@@ -136,8 +137,8 @@ class OrderService
                 'currency' => 'IQD',
                 'requestId' =>  "{$order->id}",
                 'description' => trans('messages.payment.description'),
-                'successRedirectUrl' => $successUrl . '/' . $order->id,
-                'failRedirectUrl' => $failUrl . '/' . $order->id,
+                'successRedirectUrl' => $successUrl . '/' . $order_id,
+                'failRedirectUrl' => $failUrl . '/' . $order_id,
                 'notificationUrl' =>  url('/api/webhook/qi-payment'),
             ];
 
