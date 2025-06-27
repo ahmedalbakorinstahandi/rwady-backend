@@ -40,6 +40,7 @@ return [
         'password' => env('QI_PASSWORD'),
         'terminal_id' => env('QI_TERMINAL_ID'),
         'base_url' => env('QI_BASE_URL'),
+        'fees' => 10,
     ],
 
 

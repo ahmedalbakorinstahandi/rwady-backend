@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
+use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -64,5 +65,12 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [FeaturedSectionController::class, 'create']);
         Route::put('/{id}', [FeaturedSectionController::class, 'update']);
         Route::delete('/{id}', [FeaturedSectionController::class, 'delete']);
+    });
+
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::get('/{id}', [OrderController::class, 'show']);
+        // Route::put('/{id}', [OrderController::class, 'update']);
+        // Route::delete('/{id}', [OrderController::class, 'delete']);
     });
 });

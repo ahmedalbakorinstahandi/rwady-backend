@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Order extends Model
 {
@@ -21,9 +22,9 @@ class Order extends Model
     ];
 
 
-    public function getTotalAmountWithOrWithoutFeesAttribute()
+    public function getTotalAmountAttribute()
     {
-        $productsAmount = $this->products->sum('price');
+        $productsAmount = $this->orderProducts->sum('price');
 
         $coupon = CouponUsage::where('order_id', $this->id)->first();
 
@@ -35,6 +36,9 @@ class Order extends Model
             }
         }
 
+        $productsAmount = $productsAmount + ($productsAmount * ($this->payment_fees / 100));
+
+
 
         return $productsAmount;
     }
@@ -45,23 +49,27 @@ class Order extends Model
         return $this->payments->sum('amount');
     }
 
-    public function getTotalAmountWithFeesAttribute()
+
+    // coupon usage
+    public function couponUsage(): BelongsTo
     {
-        return $this->total_amount_with_or_without_fees + ($this->total_amount_with_or_without_fees * ($this->payment_fees / 100));
+        return $this->belongsTo(CouponUsage::class);
     }
+
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function status(): BelongsTo
+
+    public function statuses(): MorphMany
     {
-        return $this->belongsTo(Status::class);
+        return $this->morphMany(Status::class, 'statusable');
     }
 
 
-    public function products(): HasMany
+    public function orderProducts(): HasMany
     {
         return $this->hasMany(OrderProduct::class);
     }

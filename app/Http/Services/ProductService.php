@@ -84,6 +84,17 @@ class ProductService
             }
         }
 
+        if (isset($filters['is_new'])) {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // color
+        if (isset($filters['color'])) {
+            $query->whereHas('colors', function ($query) use ($filters) {
+                $query->where('color', $filters['color']);
+            });
+        }
+
         $query = ProductPermission::filterIndex($query);
 
         $query = FilterService::applyFilters(

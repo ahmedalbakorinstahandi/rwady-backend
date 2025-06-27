@@ -17,6 +17,7 @@ class CreateOrderRequest extends BaseFormRequest
             'fail_url' => 'required|url',
             'notes' => 'nullable|string',
             'coupon_code' => 'nullable|string',
+            'payment_method' => 'required|string|in:qi,cash,installment,transfer',
         ];
     }
 } 

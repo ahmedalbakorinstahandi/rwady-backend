@@ -51,6 +51,15 @@ class OrderService
             MessageService::abort(404, 'messages.order.not_found');
         }
 
+        $order->load(['orderProducts.product', 'couponUsage', 'payments', 'statuses']);
+
+
+        $user = User::auth();
+
+        if ($user->isAdmin()) {
+            $order->load('user');
+        }
+
         return $order;
     }
 
@@ -76,11 +85,11 @@ class OrderService
 
         $user  = User::auth();
 
+
         $data['user_id'] = $user->id;
         $data['code'] = Str::random(10);
         $data['status'] = 'pending';
-        $data['payment_fees'] = null;
-        $data['payment_method'] = null;
+
         $data['notes'] = $data['notes'] ?? null;
 
         $successUrl = $data['success_url'];
@@ -89,8 +98,10 @@ class OrderService
         $order = Order::create($data);
 
         $order->code = 'ORD-' . $order->id;
-        $order->save();
 
+        $order->statuses()->create([
+            'status' => 'pending',
+        ]);
 
         $products = $data['products'];
 
@@ -109,33 +120,41 @@ class OrderService
             ]);
         }
 
-        $qiPaymentService = new QiPaymentService();
+        if ($data['payment_method'] == 'qi') {
+
+            $data['payment_method'] = 'qi';
+            $data['payment_fees'] = config('services.qi.fees', 10);
 
 
-        $paymentData = [
-            'amount' => 25000,
-            'currency' => 'IQD',
-            'requestId' => $order->id,
-            'description' => trans('messages.payment.description'),
-            'successRedirectUrl' => $successUrl . '/' . $order->id,
-            'failRedirectUrl' => $failUrl . '/' . $order->id,
-        ];
+            $qiPaymentService = new QiPaymentService();
 
-        $paymentSession = $qiPaymentService->createPayment($paymentData);
 
-        $order->payment_session_id =  'qi_' . $paymentSession['id'];
+            $paymentData = [
+                'amount' => $order->total_amount_with_fees,
+                'currency' => 'IQD',
+                'requestId' => $order->id,
+                'description' => trans('messages.payment.description'),
+                'successRedirectUrl' => $successUrl . '/' . $order->id,
+                'failRedirectUrl' => $failUrl . '/' . $order->id,
+            ];
+
+            $paymentSession = $qiPaymentService->createPayment($paymentData);
+
+            $order->payment_session_id =  'qi_' . $paymentSession['id'];
+        } elseif ($data['payment_method'] == 'cash') {
+            $order->payment_method = 'cash';
+            $order->payment_fees = 0;
+        } elseif ($data['payment_method'] == 'transfer') {
+            $order->payment_method = 'transfer';
+            $order->payment_fees = 0;
+        } elseif ($data['payment_method'] == 'installment') {
+            $order->payment_method = 'installment';
+            $order->payment_fees = 0;
+        }
+
+
         $order->save();
 
-
-
-        // Order Product
-        // order_id : Order ID ✅
-        // product_id : Product ID from request ✅
-        // quantity : Product Quantity from request ✅
-        // price : Product Price from product ✅
-        // cost_price : Product Cost Price from product ✅
-        // status : pending ✅
-        // shipping_rate : Shipping Rate from product ✅
 
         // Order Payment
         // order_id : Order ID ✅
@@ -144,6 +163,8 @@ class OrderService
         // status : pending ✅
         // is_refund : false ✅
 
+        $order = $this->show($order->id);   
+
 
         return $order;
     }
@@ -151,6 +172,8 @@ class OrderService
     public function update($order, $data)
     {
         $order->update($data);
+
+        $order = $this->show($order->id);
 
         return $order;
     }

@@ -21,4 +21,12 @@ class MessageService
             )
         );
     }
+
+    public static function success($message, $replace = [])
+    {
+        return response()->json([
+            'success' => true,
+            'message' => trans($message, $replace),
+        ], 200);
+    }
 }

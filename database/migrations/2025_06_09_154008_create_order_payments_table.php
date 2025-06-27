@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('description');
             $table->enum('status', ["pending","completed","failed"]);
             $table->boolean('is_refund')->default(false);
-            $table->enum('method', ["credit_card","installment","tranfer","cash"]);
+            $table->enum('method', ["qi","installment","transfer","cash"]);
             $table->string('attached', 110);
             $table->longText('metadata')->nullable();
             $table->timestamps();
