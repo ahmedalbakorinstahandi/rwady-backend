@@ -10,7 +10,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\FilterService;
 use App\Services\MessageService;
-use App\Services\Payment\QiPaymentService;
+use App\Http\Services\Payment\QiPaymentService;
 use Illuminate\Support\Str;
 
 class OrderService

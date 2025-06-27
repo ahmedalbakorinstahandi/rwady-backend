@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Payment;
+namespace App\Http\Services\Payment;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
