@@ -134,7 +134,7 @@ class OrderService
 
 
             $paymentData = [
-                'amount' => $order->total_amount_with_fees,
+                'amount' => $order->total_amount,
                 'currency' => 'IQD',
                 'requestId' => 'ORD-' . $order->id,
                 'description' => trans('messages.payment.description'),
