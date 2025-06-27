@@ -35,7 +35,15 @@ class OrderPayment extends Model
     {
         return $this->belongsTo(Order::class);
     }
-    protected function metadata(): Attribute    
+
+    protected function description(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => json_decode($value, true),
+            set: fn($value) => json_encode($value),
+        );
+    }
+    protected function metadata(): Attribute
     {
         return Attribute::make(
             get: fn(string $value) => json_decode($value, true),

@@ -37,25 +37,27 @@ class QiPaymentWebhookController extends Controller
             MessageService::abort(404, 'messages.order.not_found');
         }
 
-        // $order->payments()->create([
-        //     'amount' => $payload['amount'],
-        //     'status' => $payload['status'],
-        //     'payment_method' => 'qi',
-        //     'payment_session_id' => 'qi_' . $payload['paymentId'],
-        // ]);
+        $order->payments()->create([
+            'amount' => $order->total_amount,
+            'description' => [
+                'ar' => 'تم الدفع بواسطة بطاقة الائتمان',
+                'en' => 'Payment by credit card',
+            ],
+            'status' => 'completed',
+            'method' => 'qi',
+             'metadata' => $payload,
+        ]);
 
-      
-        //     $table->float('amount');
-        //     $table->longText('description');
-        //     $table->enum('status', ["pending","completed","failed"]);
-        //     $table->boolean('is_refund')->default(false);
-        //     $table->enum('method', ["qi","installment","transfer","cash"]);
-        //     $table->string('attached', 110);
-        //     $table->longText('metadata')->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
 
+
+
+        $order->statuses()->create([
+            'status' => 'paid',
+            'statusable_type' => Order::class,
+            'statusable_id' => $order->id,
+        ]);
+
+        // TODO : Send notification to user and admin
 
 
 

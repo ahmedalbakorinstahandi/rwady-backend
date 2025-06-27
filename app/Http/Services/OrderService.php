@@ -140,6 +140,7 @@ class OrderService
                 'description' => trans('messages.payment.description'),
                 'successRedirectUrl' => $successUrl . '/' . $order->id,
                 'failRedirectUrl' => $failUrl . '/' . $order->id,
+                'notificationUrl' =>  url('/api/webhook/qi-payment'),
             ];
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
