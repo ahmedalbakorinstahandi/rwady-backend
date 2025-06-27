@@ -85,5 +85,7 @@ return [
         'already_in_cart' => 'العنصر موجود بالفعل في السلة',
     ],
 
-    
+    'payment' => [
+        'description' => 'طلب جديد',
+    ],
 ];

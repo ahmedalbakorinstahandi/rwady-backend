@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,24 +13,33 @@ class OrderPayment extends Model
 
     protected $fillable = [
         'order_id',
-        'payment_method_id',
         'amount',
-        'transaction_id',
+        'description',
         'status',
-        'payment_details',
+        'is_refund',
+        'method',
+        'attached',
+        'metadata'
     ];
 
     protected $casts = [
-        'payment_details' => 'array',
+        'is_refund' => 'boolean',
+        'order_id' => 'integer',
+        'amount' => 'float',
+        'description' => 'string',
+        'status' => 'string',
+        'method' => 'string',
     ];
 
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
-
-    public function paymentMethod(): BelongsTo
+    protected function metadata(): Attribute    
     {
-        return $this->belongsTo(PaymentMethod::class);
+        return Attribute::make(
+            get: fn(string $value) => json_decode($value, true),
+            set: fn($value) => json_encode($value),
+        );
     }
-} 
+}

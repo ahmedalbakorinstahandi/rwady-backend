@@ -13,12 +13,11 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'status_id',
-        'total_amount',
-        'shipping_address_id',
-        'billing_address_id',
+        'code',
+        'status',
+        'payment_fees',
         'notes',
-        'tracking_number',
+        'payment_method',
     ];
 
     public function user(): BelongsTo
@@ -31,15 +30,6 @@ class Order extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function shippingAddress(): BelongsTo
-    {
-        return $this->belongsTo(Address::class, 'shipping_address_id');
-    }
-
-    public function billingAddress(): BelongsTo
-    {
-        return $this->belongsTo(Address::class, 'billing_address_id');
-    }
 
     public function products(): HasMany
     {

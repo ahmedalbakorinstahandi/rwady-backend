@@ -22,8 +22,10 @@ return new class extends Migration
             $table->unsignedInteger('quantity');
             $table->bigInteger('price');
             $table->bigInteger('cost_price');
-            $table->enum('status', ["pending","completed","failed"]);
+            $table->enum('status', ["pending", "completed", "failed"]);
             $table->float('shipping_rate')->nullable();
+            $table->unsignedBigInteger('color_id')->nullable();
+            $table->foreign('color_id')->references('id')->on('product_colors')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });
