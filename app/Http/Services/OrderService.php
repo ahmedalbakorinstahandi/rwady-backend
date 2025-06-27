@@ -146,7 +146,7 @@ class OrderService
 
             $order->metadata = $paymentSession;
 
-            $order->payment_session_id =  'qi-' . $paymentSession['id'];
+            $order->payment_session_id =  'qi-' . $paymentSession['requestId'];
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;
