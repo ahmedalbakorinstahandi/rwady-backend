@@ -28,6 +28,7 @@ class OrderController extends Controller
             'data' => $orders,
             'resource' => OrderResource::class,
             'status' => 200,
+            'meta' => true,
         ]);
     }
 
