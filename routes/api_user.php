@@ -9,6 +9,7 @@ use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
@@ -73,5 +74,11 @@ Route::prefix('user')->group(function () {
         Route::post('/', [OrderController::class, 'create']);
         Route::put('/{id}', [OrderController::class, 'update']);
         Route::delete('/{id}', [OrderController::class, 'delete']);
+    });
+
+    Route::prefix('installments')->group(function () {
+        Route::post('/check-eligibility', [InstallmentController::class, 'checkEligibility']);
+        Route::post('/validate-plan', [InstallmentController::class, 'validatePlan']);
+        Route::post('/confirm', [InstallmentController::class, 'confirmInstallment']);
     });
 });

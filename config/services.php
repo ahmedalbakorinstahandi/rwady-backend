@@ -43,5 +43,8 @@ return [
         'fees' => 10,
     ],
 
-
+    'aqsati' => [
+        'url' => env('AQSATI_BASE_URL', 'https://dev.aqsati.iq'),
+        'token' => env('AQSATI_TOKEN'),
+    ],
 ];
