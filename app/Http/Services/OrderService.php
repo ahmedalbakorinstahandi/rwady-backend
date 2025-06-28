@@ -150,9 +150,29 @@ class OrderService
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;
+
+            // TODO : Send notification to user and admin
+
+
         } elseif ($data['payment_method'] == 'transfer') {
             $order->payment_method = 'transfer';
             $order->payment_fees = 0;
+
+            if (isset($data['attached'])) {
+                $order->payments()->create([
+                    'amount' => $order->total_amount,
+                    'description' => [
+                        'ar' => 'دفع بواسطة التحويل',
+                        'en' => 'Payment by transfer',
+                    ],
+                    'status' => 'pending',
+                    'method' => 'transfer',
+                    'attached' => $data['attached'],
+                ]);
+            }
+
+            // TODO : Send notification to user and admin
+
         } elseif ($data['payment_method'] == 'installment') {
             $order->payment_method = 'installment';
             $order->payment_fees = 0;

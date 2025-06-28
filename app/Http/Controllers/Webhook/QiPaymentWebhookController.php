@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Services\Payment\QiSignatureValidator;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\MessageService;
 
 class QiPaymentWebhookController extends Controller
@@ -45,7 +46,7 @@ class QiPaymentWebhookController extends Controller
             ],
             'status' => 'completed',
             'method' => 'qi',
-             'metadata' => $payload,
+            'metadata' => $payload,
         ]);
 
 
@@ -56,6 +57,20 @@ class QiPaymentWebhookController extends Controller
             'statusable_type' => Order::class,
             'statusable_id' => $order->id,
         ]);
+
+
+        // clear cart
+
+        $user = User::where('id', $order->user_id)->first();
+
+        $orderProducts = $order->orderProducts;
+
+        foreach ($orderProducts as $orderProduct) {
+            $cartItem = $user->cartItems()->where('product_id', $orderProduct->product_id)->where('color_id', $orderProduct->color_id)->first();
+            if ($cartItem) {
+                $cartItem->delete();
+            }
+        }
 
         // TODO : Send notification to user and admin
 

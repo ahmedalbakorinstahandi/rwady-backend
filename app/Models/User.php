@@ -91,4 +91,9 @@ class User extends Authenticatable
 
         return null;
     }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }
