@@ -60,13 +60,14 @@ class CartItemService
             $searchCartItem->where('color_id', $data['color_id']);
         }
 
-        $cartItem = $searchCartItem->first();
-
-        $cartItem = CartItem::create($data);
-
+        $searchCartItem = $searchCartItem->first();
+        
+        
         if ($searchCartItem) {
             MessageService::abort(400, 'messages.cart_item.already_in_cart');
         }
+
+        $cartItem = CartItem::create($data);
 
         $cartItem = CartItem::where('user_id', $data['user_id'])->where('product_id', $data['product_id'])->where('color_id', $data['color_id'])->first();
 
