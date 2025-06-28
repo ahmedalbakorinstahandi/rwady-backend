@@ -51,11 +51,17 @@ class CartItemService
     public function create($data)
     {
         
-        $searchCartItem = CartItem::where('user_id', $data['user_id'])
-        ->where('product_id', $data['product_id'])
-        ->where('color_id', $data['color_id'])
-        ->first();
         
+
+        $searchCartItem = CartItem::where('user_id', $data['user_id'])
+        ->where('product_id', $data['product_id']);
+
+        if (isset($data['color_id'])) {
+            $searchCartItem->where('color_id', $data['color_id']);
+        }
+
+        $cartItem = $searchCartItem->first();
+
         $cartItem = CartItem::create($data);
 
         if ($searchCartItem) {
