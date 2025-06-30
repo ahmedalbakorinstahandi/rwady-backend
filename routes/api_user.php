@@ -74,6 +74,7 @@ Route::prefix('user')->group(function () {
         Route::post('/', [OrderController::class, 'create']);
         Route::put('/{id}', [OrderController::class, 'update']);
         Route::delete('/{id}', [OrderController::class, 'delete']);
+        Route::post('/check-details', [OrderController::class, 'checkOrderDetails']);
     });
 
     Route::prefix('installments')->group(function () {
