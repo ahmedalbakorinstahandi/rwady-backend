@@ -303,6 +303,7 @@ class OrderService
             $address['name'] = 'Order Address ' . $order->id;
             $address['addressable_id'] = $order->id;
             $address['addressable_type'] = Order::class;
+            $address['is_default'] = false;
             $addressService->create($address);
         }
 
