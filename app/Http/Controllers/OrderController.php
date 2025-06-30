@@ -68,7 +68,6 @@ class OrderController extends Controller
             'success' => true,
             'data' => $data,
             'message' => 'messages.order.details_checked_successfully',
-            'resource' => OrderResource::class,
             'status' => 200,
         ]);
     }
