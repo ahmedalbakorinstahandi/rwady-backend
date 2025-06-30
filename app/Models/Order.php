@@ -30,7 +30,17 @@ class Order extends Model
 
         $totalAmount = 0;
 
-        $productsAmount = $this->orderProducts->sum('price');
+        // products amount with quantity for each product
+        $productsData = $this->orderProducts->map(function ($product) {
+            return [
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+            ];
+        });
+
+        $productsAmount = $productsData->sum(function ($product) {
+            return $product['price'] * $product['quantity'];
+        });
 
         $totalAmount = $productsAmount;
 
