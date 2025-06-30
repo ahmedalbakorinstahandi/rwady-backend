@@ -263,6 +263,10 @@ class OrderService
                 'type_of_customer' => 1,
             ]);
 
+            if (!$eligibility['success']) {
+                MessageService::abort(400, $eligibility['message']);
+            }
+
             // metadata
             $order->metadata =   [
                 'check_eligibility' => $eligibility,
