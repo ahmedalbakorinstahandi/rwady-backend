@@ -101,5 +101,6 @@ return [
         'updated_successfully' => 'Order updated successfully',
         'deleted_successfully' => 'Order deleted successfully',
         'details_checked_successfully' => 'Order details checked successfully',
+        'otp_confirmed_successfully' => 'OTP confirmed successfully',
     ],
 ];

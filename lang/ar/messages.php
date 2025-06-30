@@ -100,5 +100,6 @@ return [
         'updated_successfully' => 'تم تحديث الطلب بنجاح',
         'deleted_successfully' => 'تم حذف الطلب بنجاح',
         'details_checked_successfully' => 'تم التحقق من تفاصيل الطلب بنجاح',
+        'otp_confirmed_successfully' => 'تم التحقق من رمز التحقق بنجاح',
     ],
 ];

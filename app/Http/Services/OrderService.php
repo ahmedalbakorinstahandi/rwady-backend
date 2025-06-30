@@ -78,7 +78,6 @@ class OrderService
 
         $amount = 0;
         $shippingFees = 0;
-        $products = [];
 
         foreach ($productsData as $item) {
             $product = Product::find($item['product_id']);
