@@ -21,11 +21,11 @@ class CreateOrderRequest extends BaseFormRequest
             'attached' => 'nullable|string|required_if:payment_method,transfer',
             'identity' => 'nullable|string|required_if:payment_method,installment',
 
-            'name' => 'required|string|max:255',
-            'exstra_address' => 'nullable|string|max:255',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|string',
-            'is_default' => 'nullable|boolean',
+            'address' => 'nullable|array',
+            'address.extra_address' => 'nullable|string|max:255',
+            'address.longitude' => 'required|numeric',
+            'address.latitude' => 'required|string',
+            'address.is_default' => 'nullable|boolean',
         ];
     }
 }

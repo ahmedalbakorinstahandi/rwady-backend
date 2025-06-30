@@ -296,6 +296,18 @@ class OrderService
         }
 
 
+        if (isset($data['address'])) {
+            // create address
+            $addressService = new AddressService();
+
+            $address = $data['address'];
+
+            $address['name'] = 'Order Address ' . $order->id;
+            $address['addressable_id'] = $order->id;
+            $address['addressable_type'] = Order::class;
+            $addressService->create($address);
+        }
+
         $order->save();
 
 
