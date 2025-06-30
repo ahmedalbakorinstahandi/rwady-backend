@@ -20,6 +20,12 @@ class CreateOrderRequest extends BaseFormRequest
             'fail_url' => 'required_if:payment_method,qi|url',
             'attached' => 'nullable|string|required_if:payment_method,transfer',
             'identity' => 'nullable|string|required_if:payment_method,installment',
+
+            'name' => 'required|string|max:255',
+            'exstra_address' => 'nullable|string|max:255',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|string',
+            'is_default' => 'nullable|boolean',
         ];
     }
 }

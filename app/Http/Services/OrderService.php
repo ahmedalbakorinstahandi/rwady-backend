@@ -115,6 +115,7 @@ class OrderService
             'payment_fees_percentage' => $paymentFeesPercentage,
             'payment_fees_value' => $paymentFeesValue,
             'amount_with_shipping_after_coupon_and_payment_fees' => $subtotal + $paymentFeesValue,
+            'installment_count' => $paymentMethod == 'installment' ? 10 : null,
         ];
     }
 
