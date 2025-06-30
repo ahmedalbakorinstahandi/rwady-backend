@@ -104,5 +104,6 @@ return [
         'otp_confirmed_successfully' => 'OTP confirmed successfully',
         'otp_not_confirmed' => 'OTP not confirmed',
         'payment_method_not_installment' => 'Payment method is not installment',
+        'هنالك سلوك غير طبيعي في فحص البطاقة تم حجب الفحص مؤقتاً ولمدة ثلاث ساعات' => "There is an unusual behavior in the card check, the check has been temporarily blocked for three hours",
     ],
 ];
