@@ -25,11 +25,28 @@ class AqsatiInstallmentService
             'Identity' => $data['identity']
         ]);
 
+        // if (!$response->ok()) {
+        //     return response()->json(
+        //          $response->json(),
+        //         400
+        //     );
+        // }
+
+        $data = $response->json();
+
         if (!$response->ok()) {
-            return response()->json(['message' => 'غير مؤهل للتقسيط'], 400);
+            $data = array_merge($data, [
+                'success' => false,
+                'key' => 'not_eligible'
+            ]);
+        } else {
+            $data = array_merge($data, [
+                'success' => true,
+                'key' => 'eligible'
+            ]);
         }
 
-        return $response->json();
+        return $data;
     }
 
     // ✅ [2] التحقق من الخطة وإرسال OTP

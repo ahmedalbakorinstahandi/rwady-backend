@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\FilterService;
 use App\Services\MessageService;
 use App\Http\Services\Payment\QiPaymentService;
+use App\Http\Services\AqsatiInstallmentService;
 use Illuminate\Support\Str;
 
 class OrderService
@@ -125,8 +126,12 @@ class OrderService
 
         if ($data['payment_method'] == 'qi') {
 
-            $data['payment_method'] = 'qi';
-            $data['payment_fees'] = config('services.qi.fees', 10);
+            $order->payment_method = 'qi';
+            $order->payment_fees = config('services.qi.fees', 10);
+
+            $order->save();
+
+
 
 
             $qiPaymentService = new QiPaymentService();
@@ -150,6 +155,7 @@ class OrderService
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;
+            $order->save();
 
             // TODO : Send notification to user and admin
 
@@ -157,6 +163,8 @@ class OrderService
         } elseif ($data['payment_method'] == 'transfer') {
             $order->payment_method = 'transfer';
             $order->payment_fees = 0;
+            $order->save();
+
 
             if (isset($data['attached'])) {
                 $order->payments()->create([
@@ -175,7 +183,46 @@ class OrderService
 
         } elseif ($data['payment_method'] == 'installment') {
             $order->payment_method = 'installment';
-            $order->payment_fees = 0;
+            $order->payment_fees = config('services.aqsati.our_fees', 5);
+            $order->save();
+
+
+            $aqsatiService = new AqsatiInstallmentService();
+
+            // تحقق من الأهلية
+            $eligibility = $aqsatiService->checkEligibility([
+                'identity' => $data['identity'],
+                // 'type_of_customer' => $data['type_of_customer'] ?? 1,
+                'type_of_customer' => 1,
+            ]);
+
+            $sessionId = $eligibility['data']['session']['sessionId'];
+
+            // تحقق من الخطة
+            $validation = $aqsatiService->validatePlan([
+                'session_id' => $sessionId,
+                'amount' => $order->total_amount,
+                'count_of_month' => 10,
+            ]);
+
+            // تأكيد القسط بكود الاختبار أو كود المستخدم
+            $confirmation = $aqsatiService->confirmInstallment([
+                'session_id' => $sessionId,
+                'otp' => $data['otp'] ?? 22331144,
+                'note' => 'Order #' . $order->id,
+                'payment_card' => '',
+            ]);
+
+            // حفظ metadata
+            $order->metadata = [
+                'installment_id' => $confirmation['data']['installmentId'] ?? null,
+                'amount' => $confirmation['data']['amount'] ?? null,
+                'amount_per_month' => $confirmation['data']['amountPerMonth'] ?? null,
+                'months' => $confirmation['data']['countOfMonth'] ?? null,
+                'due_date' => $confirmation['data']['dueDate'] ?? null,
+                'operation_id' => $confirmation['data']['operationId'] ?? null,
+                'to_be_deducted' => $confirmation['data']['toBeDeducted'] ?? null,
+            ];
         }
 
 

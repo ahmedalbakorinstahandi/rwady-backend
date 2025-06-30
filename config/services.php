@@ -46,5 +46,8 @@ return [
     'aqsati' => [
         'url' => env('AQSATI_BASE_URL', 'https://dev.aqsati.iq'),
         'token' => env('AQSATI_TOKEN'),
+        'count_of_month' => 10,
+        'aqsati_installment_fees' => 15,
+        'our_fees' => 5,
     ],
 ];
