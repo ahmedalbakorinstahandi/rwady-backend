@@ -27,23 +27,36 @@ class Order extends Model
 
     public function getTotalAmountAttribute()
     {
+
+        $totalAmount = 0;
+
         $productsAmount = $this->orderProducts->sum('price');
 
-        $coupon = CouponUsage::where('order_id', $this->id)->first();
+        $totalAmount = $productsAmount;
 
-        if ($coupon && $coupon->discount_type && $coupon->discount_value) {
+        $coupon = $this->couponUsage;
+
+        $shippingFees = $this->orderProducts->sum('shipping_rate');
+
+        $totalAmount = $totalAmount + $shippingFees;
+
+
+
+        if ($coupon) {
             if ($coupon->discount_type == 'percentage') {
-                $productsAmount = $productsAmount - ($productsAmount * ($coupon->discount_value / 100));
+                $totalAmount = $totalAmount - ($totalAmount * ($coupon->discount_value / 100));
             } else {
-                $productsAmount = $productsAmount - $coupon->discount_value;
+                $totalAmount = $totalAmount - $coupon->discount_value;
             }
         }
 
-        $productsAmount = $productsAmount + ($productsAmount * ($this->payment_fees / 100));
+        $totalAmount = $totalAmount + ($totalAmount * ($this->payment_fees / 100));
 
 
 
-        return $productsAmount;
+
+
+        return $totalAmount;
     }
 
 
@@ -93,8 +106,8 @@ class Order extends Model
     public function metadata(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
+            get: fn($value) => json_decode($value, true),
+            set: fn($value) => json_encode($value),
         );
     }
 }

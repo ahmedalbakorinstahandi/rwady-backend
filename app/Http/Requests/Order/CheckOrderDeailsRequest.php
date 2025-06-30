@@ -4,7 +4,7 @@ namespace App\Http\Requests\Order;
 
 use App\Http\Requests\BaseFormRequest;
 
-class CreateOrderRequest extends BaseFormRequest
+class CheckOrderDeailsRequest extends BaseFormRequest
 {
     public function rules(): array
     {
@@ -13,13 +13,8 @@ class CreateOrderRequest extends BaseFormRequest
             'products.*.product_id' => 'required|exists:products,id,deleted_at,NULL',
             'products.*.quantity' => 'required|integer|min:1',
             'products.*.color' => 'nullable|exists:product_colors,color,deleted_at,NULL',
-            'notes' => 'nullable|string',
             'coupon_code' => 'nullable|string',
             'payment_method' => 'required|string|in:qi,cash,installment,transfer',
-            'success_url' => 'required_if:payment_method,qi|url',
-            'fail_url' => 'required_if:payment_method,qi|url',
-            'attached' => 'nullable|string|required_if:payment_method,transfer',
-            'identity' => 'nullable|string|required_if:payment_method,installment',
         ];
     }
 }

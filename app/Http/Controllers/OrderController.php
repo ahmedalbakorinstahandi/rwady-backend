@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Permissions\OrderPermission;
+use App\Http\Requests\Order\CheckOrderDeailsRequest;
 use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
@@ -54,6 +55,19 @@ class OrderController extends Controller
             'success' => true,
             'data' => $order,
             'message' => 'messages.order.created_successfully',
+            'resource' => OrderResource::class,
+            'status' => 200,
+        ]);
+    }
+
+    public function checkOrderDetails(CheckOrderDeailsRequest $request)
+    {
+        $data = $this->orderService->checkOrderDetails($request->validated());
+
+        return ResponseService::response([
+            'success' => true,
+            'data' => $data,
+            'message' => 'messages.order.details_checked_successfully',
             'resource' => OrderResource::class,
             'status' => 200,
         ]);

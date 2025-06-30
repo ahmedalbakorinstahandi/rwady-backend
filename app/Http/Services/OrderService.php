@@ -12,6 +12,7 @@ use App\Services\FilterService;
 use App\Services\MessageService;
 use App\Http\Services\Payment\QiPaymentService;
 use App\Http\Services\AqsatiInstallmentService;
+use App\Models\CouponUsage;
 use Illuminate\Support\Str;
 
 class OrderService
@@ -63,6 +64,64 @@ class OrderService
     }
 
 
+    public function checkOrderDetails($data)
+    {
+        $productsData = $data['products'];
+        $paymentMethod = $data['payment_method'];
+
+        $paymentFeesPercentage = 0;
+        if ($paymentMethod === 'qi') {
+            $paymentFeesPercentage = config('services.qi.fees', 10);
+        } elseif ($paymentMethod === 'installment') {
+            $paymentFeesPercentage = config('services.aqsati.aqsati_installment_fees', 5)
+                + config('services.aqsati.our_fees', 5);
+        }
+
+        $amount = 0;
+        $shippingFees = 0;
+        $products = [];
+
+        foreach ($productsData as $item) {
+            $product = Product::find($item['product_id']);
+            if (!$product) {
+                MessageService::abort(404, 'messages.product.not_found');
+            }
+
+            $products[] = $product;
+            $amount += $product->final_price * $item['quantity'];
+            $shippingFees += $product->getShippingRateAttribute($item['quantity']) * $item['quantity'];
+        }
+
+        $coupon = null;
+        $couponDiscountValue = 0;
+        if (!empty($data['coupon_code'])) {
+            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+            if (!$coupon || !$coupon->is_active) {
+                MessageService::abort(404, 'messages.coupon.invalid');
+            }
+
+            $couponDiscountValue = $coupon->type === 'percentage'
+                ? $amount * ($coupon->discount_amount_value / 100)
+                : $coupon->discount_amount_value;
+        }
+
+        $subtotal = $amount + $shippingFees - $couponDiscountValue;
+        $paymentFeesValue = $subtotal * ($paymentFeesPercentage / 100);
+
+        return [
+            'amount' => $amount,
+            'shipping_fees' => $shippingFees,
+            'amount_with_shipping' => $amount + $shippingFees,
+            'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
+            'amount_with_shipping_after_coupon' => $subtotal,
+            'payment_fees_percentage' => $paymentFeesPercentage,
+            'payment_fees_value' => $paymentFeesValue,
+            'amount_with_shipping_after_coupon_and_payment_fees' => $subtotal + $paymentFeesValue,
+        ];
+    }
+
+
+
     public function create($data)
     {
 
@@ -74,15 +133,8 @@ class OrderService
         // payment_fees : حسب طريقة الدفع ✅
         // notes : request notes ✅
 
-        $coupon = null;
-        if (isset($data['coupon_code'])) {
-            $coupon = Coupon::where('code', $data['coupon_code'])->first();
-            if (!$coupon || !$coupon->is_active) {
-                MessageService::abort(404, 'messages.coupon.invalid');
-            }
-        }
+        $user = User::auth();
 
-        $user  = User::auth();
 
 
         $data['user_id'] = $user->id;
@@ -103,8 +155,27 @@ class OrderService
             'status' => 'pending',
         ]);
 
+        $coupon = null;
+        
+        if (isset($data['coupon_code'])) {
+            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+            if (!$coupon || !$coupon->is_active) {
+                MessageService::abort(404, 'messages.coupon.invalid');
+            }
+
+
+            $couponUsage = CouponUsage::create([
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'coupon_id' => $coupon->id,
+                'discount_type' => $coupon->type,
+                'discount_value' => $coupon->amount,
+            ]);
+        }
+
         $products = $data['products'];
 
+ 
         foreach ($products as $productData) {
             $product = Product::find($productData['product_id']);
 
@@ -127,11 +198,9 @@ class OrderService
         if ($data['payment_method'] == 'qi') {
 
             $order->payment_method = 'qi';
-            $order->payment_fees = config('services.qi.fees', 10);
+            $order->payment_fees = config('services.qi.fees', 3);
 
             $order->save();
-
-
 
 
             $qiPaymentService = new QiPaymentService();
@@ -189,40 +258,38 @@ class OrderService
 
             $aqsatiService = new AqsatiInstallmentService();
 
-            // تحقق من الأهلية
+            // check eligibility
             $eligibility = $aqsatiService->checkEligibility([
                 'identity' => $data['identity'],
                 // 'type_of_customer' => $data['type_of_customer'] ?? 1,
                 'type_of_customer' => 1,
             ]);
 
+            // metadata
+            $order->metadata =   [
+                'check_eligibility' => $eligibility,
+            ];
+
+            $order->save();
+
             $sessionId = $eligibility['data']['session']['sessionId'];
 
-            // تحقق من الخطة
+            $order->payment_session_id =  'aqsati-' . $sessionId;
+
             $validation = $aqsatiService->validatePlan([
                 'session_id' => $sessionId,
                 'amount' => $order->total_amount,
                 'count_of_month' => 10,
             ]);
 
-            // تأكيد القسط بكود الاختبار أو كود المستخدم
-            $confirmation = $aqsatiService->confirmInstallment([
-                'session_id' => $sessionId,
-                'otp' => $data['otp'] ?? 22331144,
-                'note' => 'Order #' . $order->id,
-                'payment_card' => '',
-            ]);
+            if (!$validation['success']) {
+                MessageService::abort(400, $validation['message']);
+            }
 
-            // حفظ metadata
-            $order->metadata = [
-                'installment_id' => $confirmation['data']['installmentId'] ?? null,
-                'amount' => $confirmation['data']['amount'] ?? null,
-                'amount_per_month' => $confirmation['data']['amountPerMonth'] ?? null,
-                'months' => $confirmation['data']['countOfMonth'] ?? null,
-                'due_date' => $confirmation['data']['dueDate'] ?? null,
-                'operation_id' => $confirmation['data']['operationId'] ?? null,
-                'to_be_deducted' => $confirmation['data']['toBeDeducted'] ?? null,
-            ];
+            $orderMetadata = $order->metadata ?? [];
+            $order->metadata = array_merge($orderMetadata, [
+                'validate_plan' => $validation,
+            ]);
         }
 
 
@@ -238,6 +305,47 @@ class OrderService
 
         $order = $this->show($order->id);
 
+
+        return $order;
+    }
+
+
+    // confirm otp
+    public function confirmOtp($order, $data)
+    {
+        $aqsatiService = new AqsatiInstallmentService();
+
+
+        $sessionId = $order->payment_session_id;
+
+        $sessionId = str_replace('aqsati-', '', $sessionId);
+
+
+        // تأكيد القسط بكود الاختبار أو كود المستخدم
+        $confirmation = $aqsatiService->confirmInstallment([
+            'session_id' => $sessionId,
+            'otp' => $data['otp'],
+            'note' => 'Order #' . $order->id,
+            'payment_card' => '',
+        ]);
+
+        $orderMetadata = $order->metadata ?? [];
+        $order->metadata = array_merge($orderMetadata, [
+            'confirm_otp' => $confirmation,
+        ]);
+
+
+        $order->save();
+
+        $order->payments()->create([
+            'amount' => $order->total_amount,
+            'description' => [
+                'ar' => 'دفع بواسطة التقسيط',
+                'en' => 'Payment by installment',
+            ],
+            'status' => 'confirmed',
+            'method' => 'installment',
+        ]);
 
         return $order;
     }

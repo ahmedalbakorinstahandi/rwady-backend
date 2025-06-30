@@ -46,7 +46,7 @@ class Coupon extends Model
         }
     }
 
-    public function getIsActiveAttribute($value)
+    public function getIsActiveAttribute()
     {
         if ($this->start_date && $this->end_date) {
             return $this->start_date <= now() && $this->end_date >= now();
