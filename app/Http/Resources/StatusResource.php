@@ -11,11 +11,7 @@ class StatusResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'color' => $this->color,
-            'is_active' => $this->is_active,
-            'orders' => OrderResource::collection($this->whenLoaded('orders')),
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
