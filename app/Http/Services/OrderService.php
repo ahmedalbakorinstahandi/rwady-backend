@@ -101,8 +101,8 @@ class OrderService
             }
 
             $couponDiscountValue = $coupon->type === 'percentage'
-                ? $amount * ($coupon->discount_amount_value / 100)
-                : $coupon->discount_amount_value;
+                ? $amount * ($coupon->amount / 100)
+                : $coupon->amount;
         }
 
         $subtotal = $amount + $shippingFees - $couponDiscountValue;
@@ -190,7 +190,7 @@ class OrderService
                 'price' => $product->final_price,
                 'cost_price' => $product->final_cost_price,
                 'status' => 'pending',
-                'shipping_rate' => $product->getShippingRateAttribute($productData['quantity']),
+                'shipping_rate' => $product->getShippingRateAttribute($productData['quantity']) * $productData['quantity'],
                 'color_id' => $productData['color_id'] ?? null,
             ]);
         }
