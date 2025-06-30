@@ -72,6 +72,8 @@ class OrderController extends Controller
         ]);
     }
 
+    
+
     public function update(UpdateOrderRequest $request, $id)
     {
         $order = $this->orderService->show($id);

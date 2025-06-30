@@ -73,8 +73,7 @@ class OrderService
         if ($paymentMethod === 'qi') {
             $paymentFeesPercentage = config('services.qi.fees', 10);
         } elseif ($paymentMethod === 'installment') {
-            $paymentFeesPercentage = config('services.aqsati.aqsati_installment_fees', 5)
-                + config('services.aqsati.our_fees', 5);
+            $paymentFeesPercentage = config('services.aqsati.aqsati_installment_fees', 15) + config('services.aqsati.our_fees', 5);
         }
 
         $amount = 0;
@@ -156,7 +155,7 @@ class OrderService
         ]);
 
         $coupon = null;
-        
+
         if (isset($data['coupon_code'])) {
             $coupon = Coupon::where('code', $data['coupon_code'])->first();
             if (!$coupon || !$coupon->is_active) {
@@ -175,7 +174,7 @@ class OrderService
 
         $products = $data['products'];
 
- 
+
         foreach ($products as $productData) {
             $product = Product::find($productData['product_id']);
 
