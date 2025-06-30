@@ -75,7 +75,7 @@ return [
         'created_successfully' => 'تم إنشاء العنوان بنجاح',
         'updated_successfully' => 'تم تحديث العنوان بنجاح',
         'deleted_successfully' => 'تم حذف العنوان بنجاح',
-    ],  
+    ],
 
     'cart_item' => [
         'not_found' => 'العنصر في السلة غير موجود',
@@ -87,7 +87,7 @@ return [
 
     'payment' => [
         'description' => 'طلب جديد',
-    ],  
+    ],
 
     'coupon' => [
         'not_found' => 'الكوبون غير موجود',
@@ -101,5 +101,7 @@ return [
         'deleted_successfully' => 'تم حذف الطلب بنجاح',
         'details_checked_successfully' => 'تم التحقق من تفاصيل الطلب بنجاح',
         'otp_confirmed_successfully' => 'تم التحقق من رمز التحقق بنجاح',
+        'otp_not_confirmed' => 'رمز التحقق غير صالح',
+        'payment_method_not_installment' => 'طريقة الدفع ليست قسط',
     ],
 ];

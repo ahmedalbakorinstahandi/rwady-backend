@@ -311,6 +311,12 @@ class OrderService
     // confirm otp
     public function confirmOtp($order, $data)
     {
+
+        if ($order->payment_method != 'installment') {
+            MessageService::abort(400, 'messages.order.payment_method_not_installment');
+        }
+
+
         $aqsatiService = new AqsatiInstallmentService();
 
 
@@ -326,6 +332,10 @@ class OrderService
             'note' => 'Order #' . $order->id,
             'payment_card' => '',
         ]);
+
+        if (!$confirmation['success']) {
+            MessageService::abort(400, $confirmation['message']);
+        }
 
         $orderMetadata = $order->metadata ?? [];
         $order->metadata = array_merge($orderMetadata, [

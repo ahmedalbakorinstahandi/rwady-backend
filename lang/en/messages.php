@@ -102,5 +102,7 @@ return [
         'deleted_successfully' => 'Order deleted successfully',
         'details_checked_successfully' => 'Order details checked successfully',
         'otp_confirmed_successfully' => 'OTP confirmed successfully',
+        'otp_not_confirmed' => 'OTP not confirmed',
+        'payment_method_not_installment' => 'Payment method is not installment',
     ],
 ];
