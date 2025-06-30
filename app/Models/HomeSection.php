@@ -132,7 +132,11 @@ class HomeSection extends Model
 
         if ($this->type === 'video') {
             $videoUrl = Setting::where('key', 'video_url')->first();
-            $this->data = new SettingResource($videoUrl);
+            $coverImageUrlForHomePageVideo = Setting::where('key', 'cover_image_url_for_home_page_video')->first();
+            $this->data = [
+                'video_url' => $videoUrl->value,
+                'cover_image_url_for_home_page_video' => $coverImageUrlForHomePageVideo->value,
+            ];
         }
 
         return $this->data;
