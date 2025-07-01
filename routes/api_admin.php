@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SettingController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -72,5 +73,14 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::get('/{id}', [OrderController::class, 'show']);
         // Route::put('/{id}', [OrderController::class, 'update']);
         // Route::delete('/{id}', [OrderController::class, 'delete']);
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SettingController::class, 'index']);
+        Route::get('/{idOrKey}', [SettingController::class, 'show']);
+        Route::post('/', [SettingController::class, 'create']);
+        Route::put('/', [SettingController::class, 'updateMany']);
+        Route::put('/{idOrKey}', [SettingController::class, 'updateOne']);
+        Route::delete('/{idOrKey}', [SettingController::class, 'delete']);
     });
 });
