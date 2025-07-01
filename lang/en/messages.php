@@ -106,4 +106,13 @@ return [
         'payment_method_not_installment' => 'Payment method is not installment',
         'هنالك سلوك غير طبيعي في فحص البطاقة تم حجب الفحص مؤقتاً ولمدة ثلاث ساعات' => "There is an unusual behavior in the card check, the check has been temporarily blocked for three hours",
     ],
+
+    'setting' => [
+        'not_found' => 'Setting not found',
+        'created_successfully' => 'Setting created successfully',
+        'updated_successfully' => 'Setting updated successfully',
+        'deleted_successfully' => 'Setting deleted successfully',
+        'item_not_found' => 'Setting not found',
+        'item_already_exists' => 'Setting already exists',
+    ],
 ];
