@@ -11,7 +11,7 @@ class CouponService
     {
         $coupon = Coupon::where('code', $coupon)->first();
         if (!$coupon || !$coupon->is_active) {
-            return MessageService::abort(404, 'messages.coupon.not_found');
+            return MessageService::abort(404, 'messages.coupon.invalid');
         }
 
         return $coupon;
