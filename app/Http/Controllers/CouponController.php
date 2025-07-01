@@ -8,7 +8,7 @@ use App\Http\Services\CouponService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 
-class CouponController extends Controller
+class CouponController extends Controller 
 {
     protected $couponService;
 
