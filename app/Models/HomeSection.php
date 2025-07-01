@@ -78,55 +78,55 @@ class HomeSection extends Model
     {
         if ($this->type === 'banner') {
             $bannerService = new BannerService();
-            $banners = $bannerService->index(['limit' => $this->limit]);
+            $banners = $bannerService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
             $this->data = BannerResource::collection($banners);
         }
 
         if ($this->type === 'category_list') {
             $categoryService = new CategoryService();
-            $categories = $categoryService->index(['limit' => $this->limit]);
+            $categories = $categoryService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
             $this->data = CategoryResource::collection($categories);
         }
 
         if ($this->type === 'featured_sections') {
             $featuredSectionService = new FeaturedSectionService();
-            $featuredSections = $featuredSectionService->index(['limit' => $this->limit]);
+            $featuredSections = $featuredSectionService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
             $this->data = FeaturedSectionResource::collection($featuredSections);
         }
 
         if ($this->type === 'category_products') {
             $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit, 'category_id' => $this->item_id]);
+            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'category_id' => $this->item_id]);
             $this->data = ProductResource::collection($products);
         }
 
         if ($this->type === 'brand_list') {
             $brandService = new BrandService();
-            $brands = $brandService->index(['limit' => $this->limit]);
+            $brands = $brandService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
             $this->data = BrandResource::collection($brands);
         }
 
         if ($this->type === 'brand_products') {
             $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit, 'brand_id' => $this->item_id]);
+            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'brand_id' => $this->item_id]);
             $this->data = ProductResource::collection($products);
         }
 
         if ($this->type === 'recommended_products') {
             $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit, 'is_recommended' => 1]);
+            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'is_recommended' => 1]);
             $this->data = ProductResource::collection($products);
         }
 
         if ($this->type === 'new_products') {
             $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
+            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
             $this->data = ProductResource::collection($products);
         }
 
         if ($this->type === 'most_sold_products') {
             $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit, 'most_sold' => 1]);
+            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'most_sold' => 1]);
             $this->data = ProductResource::collection($products);
         }
 
