@@ -14,8 +14,8 @@ class SettingResource extends JsonResource
             'key' => $this->key,
             'value' => $this->value,
             'type' => $this->type,
-            'group' => $this->group,
-            'is_public' => $this->is_public,
+            'allow_null' => $this->allow_null,
+            'is_setting' => $this->is_setting,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
