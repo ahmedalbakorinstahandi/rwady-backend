@@ -69,6 +69,10 @@ Route::prefix('user')->group(function () {
         });
     });
 
+    Route::prefix('coupons')->group(function () {
+        Route::post('/check', [CouponController::class, 'checkCoupon']);
+    });
+
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{id}', [OrderController::class, 'show']);
@@ -77,7 +81,6 @@ Route::prefix('user')->group(function () {
         Route::delete('/{id}', [OrderController::class, 'delete']);
         Route::post('/check-details', [OrderController::class, 'checkOrderDetails']);
         Route::post('/{id}/confirm-otp', [OrderController::class, 'confirmOtp']);
-        Route::post('/check-coupon', [CouponController::class, 'checkCoupon']);
     });
 
     Route::prefix('installments')->group(function () {
