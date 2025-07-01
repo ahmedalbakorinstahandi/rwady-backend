@@ -54,7 +54,7 @@ class HomeSectionService
 
     public function show($id)
     {
-        $homeSection = HomeSection::where('id', $id)->where('availability', true)->first();
+        $homeSection = HomeSection::where('id', $id)->first();
 
         if (!$homeSection) {
             MessageService::abort(404, 'messages.home_section.not_found');

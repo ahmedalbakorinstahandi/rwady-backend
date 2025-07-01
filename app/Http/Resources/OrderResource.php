@@ -27,6 +27,7 @@ class OrderResource extends JsonResource
             'payments' => OrderPaymentResource::collection($this->whenLoaded('payments')),
             'statuses' => StatusResource::collection($this->whenLoaded('statuses')),
             'coupon_usage' => new CouponUsageResource($this->whenLoaded('couponUsage')),
+            'address' => new AddressResource($this->whenLoaded('address')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
