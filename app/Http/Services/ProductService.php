@@ -302,7 +302,7 @@ class ProductService
         cache()->flush();
         
         // Clear user auth cache
-        \App\Models\User::clearAuthCache();
+        User::clearAuthCache();
     }
 
     public function toggleFavorite($product)

@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\InstallmentController;
@@ -76,6 +77,7 @@ Route::prefix('user')->group(function () {
         Route::delete('/{id}', [OrderController::class, 'delete']);
         Route::post('/check-details', [OrderController::class, 'checkOrderDetails']);
         Route::post('/{id}/confirm-otp', [OrderController::class, 'confirmOtp']);
+        Route::post('/check-coupon', [CouponController::class, 'checkCoupon']);
     });
 
     Route::prefix('installments')->group(function () {
