@@ -46,6 +46,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => trans('messages.setting.created_successfully'),
             'data' => new SettingResource($setting),
         ]);
     }
@@ -58,8 +59,8 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => trans('messages.setting.updated_successfully'),
             'data' => [],
-            'message' => trans('messages.setting.item_updated_successfully'),
         ]);
     }
 
@@ -69,6 +70,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => trans('messages.setting.updated_successfully'),
             'data' => new SettingResource($setting),
         ]);
     }
@@ -84,7 +86,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => trans('messages.setting.item_deleted_successfully'),
+            'message' => trans('messages.setting.deleted_successfully'),
         ]);
     }
 }
