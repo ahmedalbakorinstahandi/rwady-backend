@@ -76,69 +76,132 @@ class HomeSection extends Model
 
     public function getHomeSectionData()
     {
-        if ($this->type === 'banner') {
-            $bannerService = new BannerService();
-            $banners = $bannerService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
-            $this->data = BannerResource::collection($banners);
-        }
+        // Use cache to avoid repeated database queries
+        $cacheKey = "home_section_data_{$this->id}_{$this->type}_{$this->item_id}";
+        
+        return cache()->remember($cacheKey, 300, function () { // Cache for 5 minutes
+            return $this->loadHomeSectionData();
+        });
+    }
 
-        if ($this->type === 'category_list') {
-            $categoryService = new CategoryService();
-            $categories = $categoryService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
-            $this->data = CategoryResource::collection($categories);
+    private function loadHomeSectionData()
+    {
+        switch ($this->type) {
+            case 'banner':
+                return $this->loadBannerData();
+            case 'category_list':
+                return $this->loadCategoryData();
+            case 'featured_sections':
+                return $this->loadFeaturedSectionData();
+            case 'category_products':
+                return $this->loadCategoryProductsData();
+            case 'brand_list':
+                return $this->loadBrandData();
+            case 'brand_products':
+                return $this->loadBrandProductsData();
+            case 'recommended_products':
+                return $this->loadRecommendedProductsData();
+            case 'new_products':
+                return $this->loadNewProductsData();
+            case 'most_sold_products':
+                return $this->loadMostSoldProductsData();
+            case 'video':
+                return $this->loadVideoData();
+            default:
+                return null;
         }
+    }
 
-        if ($this->type === 'featured_sections') {
-            $featuredSectionService = new FeaturedSectionService();
-            $featuredSections = $featuredSectionService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
-            $this->data = FeaturedSectionResource::collection($featuredSections);
-        }
+    private function loadBannerData()
+    {
+        $bannerService = new BannerService();
+        $banners = $bannerService->index(['limit' => min($this->limit, 10)]);
+        return BannerResource::collection($banners);
+    }
 
-        if ($this->type === 'category_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'category_id' => $this->item_id]);
-            $this->data = ProductResource::collection($products);
-        }
+    private function loadCategoryData()
+    {
+        $categoryService = new CategoryService();
+        $categories = $categoryService->index(['limit' => min($this->limit, 10)]);
+        return CategoryResource::collection($categories);
+    }
 
-        if ($this->type === 'brand_list') {
-            $brandService = new BrandService();
-            $brands = $brandService->index(['limit' => $this->limit > 10 ? 10 : $this->limit]);
-            $this->data = BrandResource::collection($brands);
-        }
+    private function loadFeaturedSectionData()
+    {
+        $featuredSectionService = new FeaturedSectionService();
+        $featuredSections = $featuredSectionService->index(['limit' => min($this->limit, 10)]);
+        return FeaturedSectionResource::collection($featuredSections);
+    }
 
-        if ($this->type === 'brand_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'brand_id' => $this->item_id]);
-            $this->data = ProductResource::collection($products);
-        }
+    private function loadCategoryProductsData()
+    {
+        $productService = new ProductService();
+        $products = $productService->index([
+            'limit' => min($this->limit, 10), 
+            'category_id' => $this->item_id
+        ]);
+        return ProductResource::collection($products);
+    }
 
-        if ($this->type === 'recommended_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'is_recommended' => 1]);
-            $this->data = ProductResource::collection($products);
-        }
+    private function loadBrandData()
+    {
+        $brandService = new BrandService();
+        $brands = $brandService->index(['limit' => min($this->limit, 10)]);
+        return BrandResource::collection($brands);
+    }
 
-        if ($this->type === 'new_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'sort_order' => 'desc', 'sort_field' => 'created_at']);
-            $this->data = ProductResource::collection($products);
-        }
+    private function loadBrandProductsData()
+    {
+        $productService = new ProductService();
+        $products = $productService->index([
+            'limit' => min($this->limit, 10), 
+            'brand_id' => $this->item_id
+        ]);
+        return ProductResource::collection($products);
+    }
 
-        if ($this->type === 'most_sold_products') {
-            $productService = new ProductService();
-            $products = $productService->index(['limit' => $this->limit > 10 ? 10 : $this->limit, 'most_sold' => 1]);
-            $this->data = ProductResource::collection($products);
-        }
+    private function loadRecommendedProductsData()
+    {
+        $productService = new ProductService();
+        $products = $productService->index([
+            'limit' => min($this->limit, 10), 
+            'is_recommended' => 1
+        ]);
+        return ProductResource::collection($products);
+    }
 
-        if ($this->type === 'video') {
-            $videoUrl = Setting::where('key', 'video_url')->first();
-            $coverImageUrlForHomePageVideo = Setting::where('key', 'cover_image_url_for_home_page_video')->first();
-            $this->data = [
-                'video_url' => $videoUrl->value,
-                'cover_image_url_for_home_page_video' => $coverImageUrlForHomePageVideo->value,
-            ];
-        }
+    private function loadNewProductsData()
+    {
+        $productService = new ProductService();
+        $products = $productService->index([
+            'limit' => min($this->limit, 10), 
+            'sort_order' => 'desc', 
+            'sort_field' => 'created_at'
+        ]);
+        return ProductResource::collection($products);
+    }
 
-        return $this->data;
+    private function loadMostSoldProductsData()
+    {
+        $productService = new ProductService();
+        $products = $productService->index([
+            'limit' => min($this->limit, 10), 
+            'most_sold' => 1
+        ]);
+        return ProductResource::collection($products);
+    }
+
+    private function loadVideoData()
+    {
+        // Use single query with whereIn to get both settings at once
+        $settings = Setting::whereIn('key', [
+            'video_url', 
+            'cover_image_url_for_home_page_video'
+        ])->pluck('value', 'key');
+        
+        return [
+            'video_url' => $settings['video_url'] ?? null,
+            'cover_image_url_for_home_page_video' => $settings['cover_image_url_for_home_page_video'] ?? null,
+        ];
     }
 }

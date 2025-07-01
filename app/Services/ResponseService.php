@@ -18,18 +18,13 @@ class ResponseService
 
     public static function response(array $params, $status = 200)
     {
-
         $status = $status ?? 200;
-
 
         if (isset($params['status'])) {
             $status = $params['status'] ?? 200;
         }
 
-
-
         $replace = $params['replace'] ?? [];
-
         $response = [];
 
         foreach ($params as $key => $value) {
@@ -45,7 +40,7 @@ class ResponseService
                     break;
 
                 case 'data':
-                    if (isset($params['resource'])) {
+                    if (isset($params['resource']) && $value) {
                         $response['data'] = self::isCollectionLike($value)
                             ? $params['resource']::collection($value)
                             : new $params['resource']($value);
@@ -55,8 +50,8 @@ class ResponseService
                     break;
 
                 case 'meta':
-                    if ($value) {
-                        $response['meta'] = self::meta($params['data'] ?? null);
+                    if ($value && isset($params['data'])) {
+                        $response['meta'] = self::meta($params['data']);
                     }
                     break;
 

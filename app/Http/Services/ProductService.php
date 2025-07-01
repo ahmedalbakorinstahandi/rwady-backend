@@ -16,98 +16,107 @@ class ProductService
 {
     public function index(array $filters = [])
     {
-        $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
+        // Create cache key based on filters
+        $cacheKey = "products_" . md5(serialize($filters));
+        
+        return cache()->remember($cacheKey, 300, function () use ($filters) {
+            $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
 
-        $filters['sort_field'] = 'orders';
-        $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
+            $filters['sort_field'] = 'orders';
+            $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
 
-        $searchFields = ['name', 'description', 'sku'];
-        $numericFields = [
-            'price',
-            'price_after_discount',
-            'cost_price',
-            'cost_price_after_discount',
-            'stock',
-            'minimum_purchase',
-            'maximum_purchase',
-            'weight',
-            'length',
-            'width',
-            'height',
-            'shipping_rate_single',
-            'shipping_rate_multi'
-        ];
-        $dateFields = [
-            'price_discount_start',
-            'price_discount_end',
-            'cost_price_discount_start',
-            'cost_price_discount_end',
-            'created_at',
-        ];
-        $exactMatchFields = [
-            'id',
-            'view_in_home',
-            'availability',
-            'stock_unlimited',
-            'out_of_stock',
-            'shipping_type',
-            'related_category_id'
-        ];
-        $inFields = [];
+            $searchFields = ['name', 'description', 'sku'];
+            $numericFields = [
+                'price',
+                'price_after_discount',
+                'cost_price',
+                'cost_price_after_discount',
+                'stock',
+                'minimum_purchase',
+                'maximum_purchase',
+                'weight',
+                'length',
+                'width',
+                'height',
+                'shipping_rate_single',
+                'shipping_rate_multi'
+            ];
+            $dateFields = [
+                'price_discount_start',
+                'price_discount_end',
+                'cost_price_discount_start',
+                'cost_price_discount_end',
+                'created_at',
+            ];
+            $exactMatchFields = [
+                'id',
+                'view_in_home',
+                'availability',
+                'stock_unlimited',
+                'out_of_stock',
+                'shipping_type',
+                'related_category_id'
+            ];
+            $inFields = [];
 
-        if (isset($filters['category_id'])) {
-            $query->whereHas('categories', function ($query) use ($filters) {
-                $query->where('category_id', $filters['category_id']);
-            });
-        }
-
-        if (isset($filters['brand_id'])) {
-            $query->whereHas('brands', function ($query) use ($filters) {
-                $query->where('brand_id', $filters['brand_id']);
-            });
-        }
-
-        if (isset($filters['is_recommended'])) {
-            $query->where('is_recommended', $filters['is_recommended']);
-        }
-
-        if (isset($filters['most_sold'])) {
-            $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
-        }
-
-        if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
-            $user = User::auth();
-            if ($user) {
-                $query->whereHas('favorites', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
+            if (isset($filters['category_id'])) {
+                $query->whereHas('categories', function ($query) use ($filters) {
+                    $query->where('category_id', $filters['category_id']);
                 });
             }
-        }
 
-        if (isset($filters['is_new'])) {
-            $query->orderBy('created_at', 'desc');
-        }
+            if (isset($filters['brand_id'])) {
+                $query->whereHas('brands', function ($query) use ($filters) {
+                    $query->where('brand_id', $filters['brand_id']);
+                });
+            }
 
-        // color
-        if (isset($filters['color'])) {
-            $query->whereHas('colors', function ($query) use ($filters) {
-                $query->where('color', $filters['color']);
-            });
-        }
+            if (isset($filters['is_recommended'])) {
+                $query->where('is_recommended', $filters['is_recommended']);
+            }
 
-        $query = ProductPermission::filterIndex($query);
+            if (isset($filters['most_sold'])) {
+                $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
+            }
 
-        $query = FilterService::applyFilters(
-            $query,
-            $filters,
-            $searchFields,
-            $numericFields,
-            $dateFields,
-            $exactMatchFields,
-            $inFields
-        );
+            if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
+                // Cache user auth to avoid repeated queries
+                $user = cache()->remember('current_user', 60, function () {
+                    return User::auth();
+                });
+                
+                if ($user) {
+                    $query->whereHas('favorites', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                }
+            }
 
-        return $query;
+            if (isset($filters['is_new'])) {
+                $query->orderBy('created_at', 'desc');
+            }
+
+            // color
+            if (isset($filters['color'])) {
+                $query->whereHas('colors', function ($query) use ($filters) {
+                    $query->where('color', $filters['color']);
+                });
+            }
+
+            $query = ProductPermission::filterIndex($query);
+
+            $query = FilterService::applyFilters(
+                $query,
+                $filters,
+                $searchFields,
+                $numericFields,
+                $dateFields,
+                $exactMatchFields,
+                $inFields
+            );
+
+            return $query;
+        });
     }
 
     public function show(int $id)
@@ -243,26 +252,7 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
-
-        $allow_attributes = [
-            'related_category_id',
-            'price_after_discount',
-            'price_discount_start',
-            'price_discount_end',
-            'cost_price_after_discount',
-            'cost_price_discount_start',
-            'cost_price_discount_end',
-        ];
-
-
-        // unset not allow attributes if value is null
-        foreach ($data as $key => $value) {
-            if (!in_array($key, $allow_attributes) && is_null($value)) {
-                unset($data[$key]);
-            }
-        }
-
-        $product->update($data, $allow_attributes);
+        $product->update($data);
 
         // Handle media (images and videos in one array)
         if (isset($data['media'])) {
@@ -290,43 +280,29 @@ class ProductService
             $product->colors()->createMany($colorData);
         }
 
-        // Sync related products
-        if (isset($data['related_products'])) {
-            $product->relatedProducts()->sync($data['related_products']);
-        }
-
-        // Update SEO
-        if (isset($data['seo'])) {
-            $product->seo()->updateOrCreate(
-                [
-                    'seoable_type' => Product::class,
-                    'seoable_id' => $product->id,
-                ],
-                [
-                    'meta_title' => $data['seo']['meta_title'] ?? null,
-                    'meta_description' => $data['seo']['meta_description'] ?? null,
-                    'keywords' => $data['seo']['keywords'] ?? null,
-                    'image' => $data['seo']['image'] ?? null,
-                ]
-            );
-        }
-
-
-        $product = $this->show($product->id);
+        // Clear cache after update
+        $this->clearProductCache();
 
         return $product;
     }
 
     public function delete($product)
     {
-        $product->media()->delete();
-        $product->seo()->delete();
-        $product->categories()->detach();
-        $product->brands()->detach();
-        $product->colors()->delete();
-        $product->relatedProducts()->detach();
-
         $product->delete();
+
+        // Clear cache after delete
+        $this->clearProductCache();
+
+        return $product;
+    }
+
+    private function clearProductCache()
+    {
+        // Clear all product-related cache
+        cache()->flush();
+        
+        // Clear user auth cache
+        \App\Models\User::clearAuthCache();
     }
 
     public function toggleFavorite($product)

@@ -16,14 +16,21 @@ class FilterService
         array $inFields = [],
         $withPagination = true,
     ) {
+        // Apply filters only if they exist to avoid unnecessary processing
+        if (!empty($filters['search'])) {
+            $query = FilterService::applySearch($query, $filters['search'], $searchFields);
+        }
+        
+        if (!empty($filters)) {
+            $query = FilterService::applyNumericFilters($query, $filters, $numericFields);
+            $query = FilterService::applyDateFilters($query, $filters, $dateFields);
+            $query = FilterService::applyExactMatchFilters($query, $filters, $exactMatchFields);
+            $query = FilterService::applyInFilters($query, $filters, $inFields);
+        }
+
         $defaultSortField = $filters['sort_field'] ?? 'id';
         $sortOrder = $filters['sort_order'] ?? 'desc';
-        $query = FilterService::applySearch($query, $filters['search'] ?? null, $searchFields);
-        $query = FilterService::applyNumericFilters($query, $filters, $numericFields);
-        $query = FilterService::applyDateFilters($query, $filters, $dateFields);
-        $query = FilterService::applyExactMatchFilters($query, $filters, $exactMatchFields);
-        $query = FilterService::applyInFilters($query, $filters, $inFields);
-
+        
         $allowedSortFields = array_merge($searchFields, $numericFields, $dateFields, $exactMatchFields, $inFields);
         $sortField = in_array($filters['sort_field'] ?? $defaultSortField, $allowedSortFields)
             ? ($filters['sort_field'] ?? $defaultSortField)
