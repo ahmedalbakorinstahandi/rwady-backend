@@ -8,7 +8,7 @@ class SettingPermission
 {
     public static function filterIndex($query)
     {
-        return $query->where('is_settings', true);
+        return $query->where('is_setting', true);
     }
 
     public static function canShow(Setting $item)

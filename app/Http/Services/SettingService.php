@@ -23,7 +23,7 @@ class SettingService
             ['key', 'value'],
             [],
             ['created_at'],
-            ['type', 'is_settings'],
+            ['type', 'is_setting'],
             ['id', 'key'] // in_key[] = ['key1', 'key2']
         );
     }
@@ -45,7 +45,7 @@ class SettingService
 
     public function create($data)
     {
-        $data['is_settings'] = true;
+        $data['is_setting'] = true;
 
         $setting = Setting::where('key', $data['key'])->first();
 
