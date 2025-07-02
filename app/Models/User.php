@@ -85,7 +85,7 @@ class User extends Authenticatable
     public static function auth()
     {
         // Use cache to avoid repeated database queries
-        return cache()->remember('current_user', 60, function () {
+        return cache()->remember('current_user', 300, function () {
             if (Auth::guard('sanctum')->check()) {
                 $user = Auth::guard('sanctum')->user();
                 return User::where('id', $user->id)->first();

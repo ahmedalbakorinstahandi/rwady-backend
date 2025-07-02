@@ -79,7 +79,7 @@ class HomeSection extends Model
         // Use cache to avoid repeated database queries
         $cacheKey = "home_section_data_{$this->id}_{$this->type}_{$this->item_id}";
         
-        return cache()->remember($cacheKey, 60, function () { // Cache for 5 minutes
+        return cache()->remember($cacheKey, 300, function () { // Cache for 5 minutes
             return $this->loadHomeSectionData();
         });
     }

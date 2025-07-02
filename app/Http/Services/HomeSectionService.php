@@ -21,13 +21,13 @@ class HomeSectionService
     public function getHomeSections(array $filters = [])
     {
         // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 60, function () {
+        $user = cache()->remember('current_user', 300, function () {
             return User::auth();
         });
         
         $cacheKey = "home_sections_" . ($user ? $user->id : 'guest') . "_" . md5(serialize($filters));
         
-        return cache()->remember($cacheKey, 60, function () use ($user, $filters) {
+        return cache()->remember($cacheKey, 300, function () use ($user, $filters) {
             $query = HomeSection::query();
 
             if (!$user || $user->isCustomer()) {
