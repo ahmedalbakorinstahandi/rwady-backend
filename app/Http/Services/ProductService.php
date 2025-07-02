@@ -252,7 +252,7 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
-        $product->stock_unlimited = $data['stock_unlimited'] ??  $product->stock_unlimited ?? false;
+        $data['stock_unlimited'] = $data['stock_unlimited'] ??  $product->stock_unlimited ?? false;
 
         $product->update($data);
 
