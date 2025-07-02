@@ -27,7 +27,7 @@ class HomeSectionService
         
         $cacheKey = "home_sections_" . ($user ? $user->id : 'guest') . "_" . md5(serialize($filters));
         
-        return cache()->remember($cacheKey, 300, function () use ($user, $filters) {
+        return cache()->remember($cacheKey, 60, function () use ($user, $filters) {
             $query = HomeSection::query();
 
             if (!$user || $user->isCustomer()) {
