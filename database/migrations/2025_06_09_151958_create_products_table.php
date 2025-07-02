@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('name');
             $table->longText('description')->nullable();
             $table->boolean('is_recommended')->default(false);
-            $table->string('ribbon_text', 40)->nullable();
+            $table->string('ribbon_text', 100)->nullable();
             $table->string('ribbon_color', 10)->nullable();
             $table->float('price')->default(0);
             $table->float('price_after_discount')->nullable();

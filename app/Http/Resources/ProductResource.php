@@ -11,17 +11,17 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $relatedProducts = $this->whenLoaded('relatedProducts', function () {
-            return $this->relatedProducts;
-        }, collect([]));
+        // $relatedProducts = $this->whenLoaded('relatedProducts', function () {
+        //     return $this->relatedProducts;
+        // }, collect([]));
 
-        $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function () {
-            return $this->relatedCategoryProducts;
-        }, collect([]));
+        // $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function () {
+        //     return $this->relatedCategoryProducts;
+        // }, collect([]));
 
-        $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue
-            ? collect([])
-            : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
+        // $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue
+        //     ? collect([])
+        //     : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
 
 
         $user = User::auth();
@@ -63,13 +63,13 @@ class ProductResource extends JsonResource
             'sort_orders' => $this->orders,
             'total_orders' => $this->total_orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_category_products' => ProductResource::collection($relatedCategoryProducts),
+            'related_category_products' => ProductResource::collection($this->whenLoaded('relatedCategoryProducts')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),
-            'related_products' => ProductResource::collection($relatedProducts),
+            'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts')),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
