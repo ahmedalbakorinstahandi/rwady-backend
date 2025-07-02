@@ -30,7 +30,7 @@ class HomeSectionController extends Controller
         
         $cacheKey = "home_sections_response_" . ($user ? $user->id : 'guest');
         
-        return cache()->remember($cacheKey, 300, function () {
+        return cache()->remember($cacheKey, 60, function () {
             $homeSections = $this->homeSectionService->getHomeSections();
 
             return ResponseService::response(
