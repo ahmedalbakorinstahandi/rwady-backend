@@ -252,6 +252,8 @@ class ProductService
     {
         $data = LanguageService::prepareTranslatableData($data, $product);
 
+        $product->stock_unlimited = $data['stock_unlimited'] ??  $product->stock_unlimited ?? false;
+
         $product->update($data);
 
         // Handle media (images and videos in one array)
