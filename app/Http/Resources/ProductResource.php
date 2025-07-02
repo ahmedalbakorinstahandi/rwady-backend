@@ -11,17 +11,6 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        // $relatedProducts = $this->whenLoaded('relatedProducts', function () {
-        //     return $this->relatedProducts;
-        // }, collect([]));
-
-        // $relatedCategoryProducts = $this->whenLoaded('relatedCategoryProducts', function () {
-        //     return $this->relatedCategoryProducts;
-        // }, collect([]));
-
-        // $relatedProducts = $relatedProducts instanceof \Illuminate\Http\Resources\MissingValue
-        //     ? collect([])
-        //     : $relatedProducts->merge($relatedCategoryProducts instanceof \Illuminate\Http\Resources\MissingValue ? collect([]) : $relatedCategoryProducts);
 
 
         $user = User::auth();
@@ -63,7 +52,9 @@ class ProductResource extends JsonResource
             'sort_orders' => $this->orders,
             'total_orders' => $this->total_orders,
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_category_products' => ProductResource::collection($this->whenLoaded('relatedCategoryProducts')),
+            'related_category_products' => $this->whenLoaded('relatedCategory', function () {
+                return ProductResource::collection($this->relatedCategoryProducts);
+            }, collect([])),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),

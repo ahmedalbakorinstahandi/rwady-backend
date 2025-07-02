@@ -127,7 +127,7 @@ class ProductService
             MessageService::abort(404, 'messages.product.not_found');
         }
 
-        $product->load(['relatedCategoryProducts', 'brands', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
+        $product->load(['brands', 'colors', 'relatedProducts', 'categories', 'media', 'seo']);
 
         return $product;
     }

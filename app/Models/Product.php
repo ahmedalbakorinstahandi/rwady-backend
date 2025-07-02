@@ -167,28 +167,29 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'related_category_id');
     }
 
-    public function relatedCategoryProducts(): HasMany
+    public function getRelatedCategoryProductsAttribute()
     {
+        $query = Product::query()
+            ->where('id', '!=', $this->id)
+            ->with(['media', 'colors']);
+
         if ($this->related_category_id === null) {
-            return $this->hasMany(Product::class, 'id', 'id')->where('id', '=', 0);
-        } elseif ($this->related_category_id === 0) {
-            return $this->hasMany(Product::class, 'id', 'id')
-                ->where('id', '!=', $this->id)
-                ->whereHas('categories')
-                ->with(['media', 'colors'])
-                ->inRandomOrder()
-                ->limit($this->related_category_limit);
-        } else {
-            return $this->hasMany(Product::class, 'id', 'id')
-                ->where('id', '!=', $this->id)
-                ->whereHas('categories', function ($query) {
-                    $query->where('category_id', $this->related_category_id);
-                })
-                ->with(['media', 'colors'])
-                ->inRandomOrder()
-                ->limit($this->related_category_limit);
+            return collect();
         }
+
+        if ($this->related_category_id === 0) {
+            $query->whereHas('categories');
+        } else {
+            $query->whereHas('categories', function ($q) {
+                $q->where('category_id', $this->related_category_id);
+            });
+        }
+
+        return $query->inRandomOrder()
+            ->limit($this->related_category_limit)
+            ->get();
     }
+
 
     public function categories(): BelongsToMany
     {
