@@ -16,7 +16,7 @@ class HomeSectionResource extends JsonResource
     public function toArray(Request $request): array
     {
         // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 300, function () {
+        $user = cache()->remember('current_user', 60, function () {
             return User::auth();
         });
 

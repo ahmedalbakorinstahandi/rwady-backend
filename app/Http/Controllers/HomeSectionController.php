@@ -24,13 +24,13 @@ class HomeSectionController extends Controller
     public function index()
     {
         // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 300, function () {
+        $user = cache()->remember('current_user', 60, function () {
             return User::auth();
         });
         
         $cacheKey = "home_sections_response_" . ($user ? $user->id : 'guest');
         
-        return cache()->remember($cacheKey, 300, function () {
+        return cache()->remember($cacheKey, 60, function () {
             $homeSections = $this->homeSectionService->getHomeSections();
 
             return ResponseService::response(

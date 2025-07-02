@@ -19,7 +19,7 @@ class ProductService
         // Create cache key based on filters
         $cacheKey = "products_" . md5(serialize($filters));
         
-        return cache()->remember($cacheKey, 300, function () use ($filters) {
+        return cache()->remember($cacheKey, 60, function () use ($filters) {
             $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
 
             $filters['sort_field'] = 'orders';
@@ -81,7 +81,7 @@ class ProductService
 
             if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
                 // Cache user auth to avoid repeated queries
-                $user = cache()->remember('current_user', 300, function () {
+                $user = cache()->remember('current_user', 60, function () {
                     return User::auth();
                 });
                 
