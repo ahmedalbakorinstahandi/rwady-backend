@@ -51,15 +51,25 @@ class OrderService
             MessageService::abort(404, 'messages.order.not_found');
         }
 
-        // load products with 'media', 'colors', 'categories', 'brands'
-        $order->load(['orderProducts.product.media', 'orderProducts.product.colors', 'orderProducts.product.categories', 'orderProducts.product.brands', 'couponUsage.coupon', 'payments', 'statuses', 'address']);
+        $relations = [
+            'orderProducts.product.media',
+            'orderProducts.product.colors',
+            'orderProducts.product.categories',
+            'orderProducts.product.brands',
+            'couponUsage.coupon',
+            'payments',
+            'statuses',
+            'address'
+        ];
 
 
         $user = User::auth();
 
         if ($user->isAdmin()) {
-            $order->load('user');
+            $relations[] = 'user';
         }
+
+        $order->load($relations);
 
         return $order;
     }
