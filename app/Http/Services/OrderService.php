@@ -51,7 +51,8 @@ class OrderService
             MessageService::abort(404, 'messages.order.not_found');
         }
 
-        $order->load(['orderProducts.product', 'couponUsage.coupon', 'payments', 'statuses', 'address']);
+        // load products with 'media', 'colors', 'categories', 'brands'
+        $order->load(['orderProducts.product.media', 'orderProducts.product.colors', 'orderProducts.product.categories', 'orderProducts.product.brands', 'couponUsage.coupon', 'payments', 'statuses', 'address']);
 
 
         $user = User::auth();
