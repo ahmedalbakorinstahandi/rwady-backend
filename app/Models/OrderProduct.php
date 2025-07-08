@@ -23,16 +23,16 @@ class OrderProduct extends Model
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class)->withTrashed();
     }
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function color(): BelongsTo
     {
-        return $this->belongsTo(ProductColor::class, 'color_id');
+        return $this->belongsTo(ProductColor::class, 'color_id')->withTrashed();
     }
-} 
+}
