@@ -27,6 +27,9 @@ class HomeSectionService
         
         $cacheKey = "home_sections_" . ($user ? $user->id : 'guest') . "_" . md5(serialize($filters));
         
+        // Store cache key for tracking
+        $this->storeCacheKey($cacheKey);
+        
         return cache()->remember($cacheKey, 60, function () use ($user, $filters) {
             $query = HomeSection::query();
 
@@ -114,10 +117,32 @@ class HomeSectionService
         // Clear specific home section cache
         cache()->forget("home_section_data_{$homeSection->id}_{$homeSection->type}_{$homeSection->item_id}");
         
-        // Clear all home sections cache
-        cache()->flush();
+        // Clear all home sections cache for all users
+        $this->clearAllHomeSectionsCache();
         
         // Clear user auth cache
         User::clearAuthCache();
+    }
+    
+    private function storeCacheKey($cacheKey)
+    {
+        $keys = cache()->get('cache_keys', []);
+        if (!in_array($cacheKey, $keys)) {
+            $keys[] = $cacheKey;
+            cache()->put('cache_keys', $keys, 60);
+        }
+    }
+    
+    private function clearAllHomeSectionsCache()
+    {
+        // Get all cache keys
+        $keys = cache()->get('cache_keys', []);
+        
+        // Clear only home sections related cache, keep current_user cache
+        foreach ($keys as $key) {
+            if (str_starts_with($key, 'home_sections_') && !str_starts_with($key, 'current_user')) {
+                cache()->forget($key);
+            }
+        }
     }
 }
