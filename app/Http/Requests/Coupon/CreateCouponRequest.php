@@ -8,6 +8,13 @@ class CreateCouponRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'code' => 'required|string|max:100',
+            'type' => 'required|string|in:fixed,percentage',
+            'amount' => 'required|numeric',
+            'is_active' => 'required|boolean',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+        ];
     }
 } 

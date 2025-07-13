@@ -94,6 +94,7 @@ return [
         'not_found' => 'Coupon not found',
         'invalid' => 'Coupon is invalid',
         'checked' => 'Coupon checked successfully',
+        'already_exists' => 'Coupon already exists',
     ],
 
     'order' => [

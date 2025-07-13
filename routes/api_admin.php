@@ -3,6 +3,7 @@
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
@@ -82,5 +83,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::put('/', [SettingController::class, 'updateMany']);
         Route::put('/{idOrKey}', [SettingController::class, 'updateOne']);
         Route::delete('/{idOrKey}', [SettingController::class, 'delete']);
+    });
+
+    Route::prefix('coupons')->group(function () {
+        Route::get('/', [CouponController::class, 'index']);
+        Route::get('/{id}', [CouponController::class, 'show']);
+        Route::post('/', [CouponController::class, 'create']);
+        Route::put('/{id}', [CouponController::class, 'update']);
+        Route::delete('/{id}', [CouponController::class, 'delete']);
     });
 });
