@@ -131,7 +131,7 @@ class Product extends Model
     protected function description(): Attribute
     {
         return Attribute::make(
-            get: fn(?string $value) => $this->getDescriptionWithAllLocales(),
+            get: fn(?string $value) => $this->getCleanDescription(),
         );
     }
 
@@ -160,15 +160,28 @@ class Product extends Model
     private function getCleanDescription()
     {
         $translations = $this->getAllTranslations('description');
+        $allLocales = ['ar', 'en']; // اللغات المدعومة
+        
+        // إذا كانت الترجمات فارغة أو null أو غير موجودة، نرجع object مع قيم فارغة
+        if (empty($translations) || !is_array($translations) || $translations === null) {
+            $result = [];
+            foreach ($allLocales as $locale) {
+                $result[$locale] = '';
+            }
+            return $result;
+        }
+        
         $cleanTranslations = [];
-
-        foreach ($translations as $locale => $html) {
+        foreach ($allLocales as $locale) {
+            $html = $translations[$locale] ?? '';
             if (is_string($html)) {
                 // Remove HTML tags and decode HTML entities
                 $cleanText = strip_tags($html);
                 $cleanText = html_entity_decode($cleanText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $cleanText = trim($cleanText);
                 $cleanTranslations[$locale] = $cleanText;
+            } else {
+                $cleanTranslations[$locale] = '';
             }
         }
 
