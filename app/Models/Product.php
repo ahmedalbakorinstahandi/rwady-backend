@@ -130,17 +130,14 @@ class Product extends Model
 
     protected function description(): Attribute
     {
-        $descType = request()->input('desc_type', 'html');
+        return Attribute::make(
+            get: fn(?string $value) => $this->getAllTranslations('description'),
+        );
+    }
 
-        if ($descType == 'html') {
-            return Attribute::make(
-                get: fn(?string $value) => $this->getAllTranslations('description'),
-            );
-        } else {
-            return Attribute::make(
-                get: fn(?string $value) => $this->getCleanDescription(),
-            );
-        }
+    public function getCleanDescriptionAttribute()
+    {
+        return $this->getCleanDescription();
     }
 
     private function getCleanDescription()
