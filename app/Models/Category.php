@@ -28,7 +28,7 @@ class Category extends Model
 
     public $translatable = ['name', 'description'];
 
-    
+
 
     protected function name(): Attribute
     {
@@ -40,8 +40,31 @@ class Category extends Model
     protected function description(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('description'),
+            get: fn(?string $value) => $this->getAllTranslations('description'),
         );
+    }
+
+    public function getCleanDescriptionAttribute()
+    {
+        return $this->getCleanDescription();
+    }
+
+    private function getCleanDescription()
+    {
+        $translations = $this->getAllTranslations('description');
+        $cleanTranslations = [];
+
+        foreach ($translations as $locale => $html) {
+            if (is_string($html)) {
+                // Remove HTML tags and decode HTML entities
+                $cleanText = strip_tags($html);
+                $cleanText = html_entity_decode($cleanText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $cleanText = trim($cleanText);
+                $cleanTranslations[$locale] = $cleanText;
+            }
+        }
+
+        return $cleanTranslations;
     }
 
     public function parent(): BelongsTo
