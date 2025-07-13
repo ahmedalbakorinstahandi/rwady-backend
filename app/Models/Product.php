@@ -132,9 +132,7 @@ class Product extends Model
     {
         $descType = request()->input('desc_type', 'html');
 
-        $description = $this->getAllTranslations('description');
-
-        if ($descType == 'html' || $descType == null || $description == null) {
+        if ($descType == 'html') {
             return Attribute::make(
                 get: fn(?string $value) => $this->getAllTranslations('description'),
             );

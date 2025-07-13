@@ -54,7 +54,6 @@ class CategoryService
         $category->load([
             'parent',
             // 'children',
-            // 'products',
             'seo'
         ]);
 
