@@ -46,8 +46,8 @@ class OrderPayment extends Model
     protected function metadata(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => json_decode($value, true),
-            set: fn($value) => json_encode($value),
+            get: fn(?string $value) => $value ? json_decode($value, true) : null,
+            set: fn($value) => $value ? json_encode($value) : null,
         );
     }
 }
