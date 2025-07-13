@@ -25,6 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
         });
+
+        // Register custom middleware
+        $middleware->alias([
+            'clear.user.cache' => \App\Http\Middleware\ClearUserCacheMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         request()->headers->set('Accept', 'application/json');

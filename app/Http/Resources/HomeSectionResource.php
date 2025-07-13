@@ -5,9 +5,12 @@ namespace App\Http\Resources;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Traits\UserCacheTrait;
 
 class HomeSectionResource extends JsonResource
 {
+    use UserCacheTrait;
+
     /**
      * Transform the resource into an array.
      *
@@ -15,10 +18,7 @@ class HomeSectionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 60, function () {
-            return User::auth();
-        });
+        $user = $this->getCurrentUser();
 
         return [
             'id' => $this->id,

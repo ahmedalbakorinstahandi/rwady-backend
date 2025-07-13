@@ -15,17 +15,17 @@ use App\Models\User;
 use App\Services\FilterService;
 use App\Services\MessageService;
 use App\Services\OrderHelper;
+use App\Traits\UserCacheTrait;
 
 class HomeSectionService
 {
+    use UserCacheTrait;
+
     public function getHomeSections(array $filters = [])
     {
-        // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 60, function () {
-            return User::auth();
-        });
+        $user = $this->getCurrentUser();
         
-        $cacheKey = "home_sections_" . ($user ? $user->id : 'guest') . "_" . md5(serialize($filters));
+        $cacheKey = $this->getUserCacheKey("home_sections_" . md5(serialize($filters)));
         
         // Store cache key for tracking
         $this->storeCacheKey($cacheKey);

@@ -84,19 +84,38 @@ class User extends Authenticatable
 
     public static function auth()
     {
-        // Use cache to avoid repeated database queries
-        return cache()->remember('current_user', 60, function () {
-            if (Auth::guard('sanctum')->check()) {
-                $user = Auth::guard('sanctum')->user();
-                return User::where('id', $user->id)->first();
-            }
+        // Check if user is authenticated
+        if (!Auth::guard('sanctum')->check()) {
             return null;
+        }
+
+        $user = Auth::guard('sanctum')->user();
+        $cacheKey = 'current_user_' . $user->id;
+
+        // Use cache to avoid repeated database queries
+        return cache()->remember($cacheKey, 60, function () use ($user) {
+            return User::where('id', $user->id)->first();
         });
     }
 
     public static function clearAuthCache()
     {
-        cache()->forget('current_user');
+        if (Auth::guard('sanctum')->check()) {
+            $user = Auth::guard('sanctum')->user();
+            $cacheKey = 'current_user_' . $user->id;
+            cache()->forget($cacheKey);
+        }
+    }
+
+    public static function clearUserCache($userId = null)
+    {
+        if ($userId) {
+            $cacheKey = 'current_user_' . $userId;
+            cache()->forget($cacheKey);
+        } else {
+            // Clear current user cache
+            self::clearAuthCache();
+        }
     }
 
     public function cartItems()

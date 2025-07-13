@@ -11,9 +11,12 @@ use App\Services\MessageService;
 use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Traits\UserCacheTrait;
 
 class HomeSectionController extends Controller
 {
+    use UserCacheTrait;
+
     protected $homeSectionService;
 
     public function __construct(HomeSectionService $homeSectionService)
@@ -23,12 +26,9 @@ class HomeSectionController extends Controller
 
     public function index()
     {
-        // Cache user auth to avoid repeated queries
-        $user = cache()->remember('current_user', 60, function () {
-            return User::auth();
-        });
+        $user = $this->getCurrentUser();
         
-        $cacheKey = "home_sections_response_" . ($user ? $user->id : 'guest');
+        $cacheKey = $this->getUserCacheKey("home_sections_response");
         
         return cache()->remember($cacheKey, 60, function () {
             $homeSections = $this->homeSectionService->getHomeSections();

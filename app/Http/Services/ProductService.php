@@ -10,10 +10,13 @@ use App\Services\LanguageService;
 use App\Services\MessageService;
 use App\Services\OrderHelper;
 use Illuminate\Support\Str;
+use App\Traits\UserCacheTrait;
 
 
 class ProductService
 {
+    use UserCacheTrait;
+
     public function index(array $filters = [])
     {
         $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
@@ -76,10 +79,7 @@ class ProductService
         }
 
         if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
-            // Cache user auth to avoid repeated queries
-            $user = cache()->remember('current_user', 60, function () {
-                return User::auth();
-            });
+            $user = $this->getCurrentUser();
             
             if ($user) {
                 $query->whereHas('favorites', function ($query) use ($user) {
