@@ -134,13 +134,26 @@ class Product extends Model
 
         if ($descType == 'html') {
             return Attribute::make(
-                get: fn(?string $value) => $this->getAllTranslations('description'),
+                get: fn(?string $value) => $this->getDescriptionWithAllLocales(),
             );
         } else {
             return Attribute::make(
                 get: fn(?string $value) => $this->getCleanDescription(),
             );
         }
+    }
+
+    private function getDescriptionWithAllLocales()
+    {
+        $translations = $this->getAllTranslations('description');
+        $allLocales = ['ar', 'en']; // اللغات المدعومة
+        
+        $result = [];
+        foreach ($allLocales as $locale) {
+            $result[$locale] = $translations[$locale] ?? '';
+        }
+        
+        return $result;
     }
 
     private function getCleanDescription()
