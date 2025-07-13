@@ -64,9 +64,21 @@ class ProductService
             });
         }
 
+        if (isset($filters['category_ids'])) {
+            $query->whereHas('categories', function ($query) use ($filters) {
+                $query->whereIn('category_id', $filters['category_ids']);
+            });
+        }
+
         if (isset($filters['brand_id'])) {
             $query->whereHas('brands', function ($query) use ($filters) {
                 $query->where('brand_id', $filters['brand_id']);
+            });
+        }
+
+        if (isset($filters['brand_ids'])) {
+            $query->whereHas('brands', function ($query) use ($filters) {
+                $query->whereIn('brand_id', $filters['brand_ids']);
             });
         }
 
