@@ -130,16 +130,24 @@ class Product extends Model
 
     protected function description(): Attribute
     {
-        return Attribute::make(
-            get: fn(?string $value) => $this->getCleanDescription(),
-        );
+        $descType = request()->input('desc_type', 'html');
+
+        if ($descType == 'html') {
+            return Attribute::make(
+                get: fn(?string $value) => $this->getDescriptionWithAllLocales(),
+            );
+        } else {
+            return Attribute::make(
+                get: fn(?string $value) => $this->getCleanDescription(),
+            );
+        }
     }
 
     private function getDescriptionWithAllLocales()
     {
         $translations = $this->getAllTranslations('description');
         $allLocales = ['ar', 'en']; // اللغات المدعومة
-        
+
         // إذا كانت الترجمات فارغة أو null أو غير موجودة، نرجع object مع قيم فارغة
         if (empty($translations) || !is_array($translations) || $translations === null) {
             $result = [];
@@ -148,12 +156,12 @@ class Product extends Model
             }
             return $result;
         }
-        
+
         $result = [];
         foreach ($allLocales as $locale) {
             $result[$locale] = $translations[$locale] ?? '';
         }
-        
+
         return $result;
     }
 
@@ -161,7 +169,7 @@ class Product extends Model
     {
         $translations = $this->getAllTranslations('description');
         $allLocales = ['ar', 'en']; // اللغات المدعومة
-        
+
         // إذا كانت الترجمات فارغة أو null أو غير موجودة، نرجع object مع قيم فارغة
         if (empty($translations) || !is_array($translations) || $translations === null) {
             $result = [];
@@ -170,7 +178,7 @@ class Product extends Model
             }
             return $result;
         }
-        
+
         $cleanTranslations = [];
         foreach ($allLocales as $locale) {
             $html = $translations[$locale] ?? '';
