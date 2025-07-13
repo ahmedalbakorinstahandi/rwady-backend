@@ -13,7 +13,7 @@ class CouponService
     {
         $query = Coupon::query();
 
-        FilterService::applyFilters(
+        $coupons = FilterService::applyFilters(
             $query,
             $data,
             ['code'],
@@ -23,7 +23,7 @@ class CouponService
             ['type']
         );
 
-        return $query;
+        return $coupons;
     }
 
     public function show($id)
