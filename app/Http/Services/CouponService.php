@@ -29,6 +29,7 @@ class CouponService
     public function show($id)
     {
         $coupon = Coupon::where('id', $id)->first();
+        
         if (!$coupon) {
             return MessageService::abort(404, 'messages.coupon.not_found');
         }
