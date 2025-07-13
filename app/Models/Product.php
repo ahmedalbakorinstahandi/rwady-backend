@@ -126,11 +126,39 @@ class Product extends Model
         );
     }
 
+
+
     protected function description(): Attribute
     {
-        return Attribute::make(
-            get: fn(?string $value) => $this->getAllTranslations('description'),
-        );
+        $descType = request()->input('desc_type', 'html');
+
+        if ($descType == 'html') {
+            return Attribute::make(
+                get: fn(?string $value) => $this->getAllTranslations('description'),
+            );
+        } else {
+            return Attribute::make(
+                get: fn(?string $value) => $this->getCleanDescription(),
+            );
+        }
+    }
+
+    private function getCleanDescription()
+    {
+        $translations = $this->getAllTranslations('description');
+        $cleanTranslations = [];
+
+        foreach ($translations as $locale => $html) {
+            if (is_string($html)) {
+                // Remove HTML tags and decode HTML entities
+                $cleanText = strip_tags($html);
+                $cleanText = html_entity_decode($cleanText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $cleanText = trim($cleanText);
+                $cleanTranslations[$locale] = $cleanText;
+            }
+        }
+
+        return $cleanTranslations;
     }
 
     protected function ribbonText(): Attribute
