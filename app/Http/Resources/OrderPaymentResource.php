@@ -12,13 +12,14 @@ class OrderPaymentResource extends JsonResource
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
-            'payment_method_id' => $this->payment_method_id,
             'amount' => $this->amount,
-            'transaction_id' => $this->transaction_id,
+            'description' => $this->description,
             'status' => $this->status,
-            'payment_details' => $this->payment_details,
+            'is_refund' => $this->is_refund,
+            'method' => $this->method,
+            'attached' => $this->attached,
+            'metadata' => $this->metadata,
             'order' => new OrderResource($this->whenLoaded('order')),
-            'payment_method' => new PaymentMethodResource($this->whenLoaded('paymentMethod')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
