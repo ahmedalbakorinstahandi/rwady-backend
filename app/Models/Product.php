@@ -130,17 +130,9 @@ class Product extends Model
 
     protected function description(): Attribute
     {
-        $descType = request()->input('desc_type', 'html');
-
-        if ($descType == 'html') {
-            return Attribute::make(
-                get: fn(?string $value) => $this->getDescriptionWithAllLocales(),
-            );
-        } else {
-            return Attribute::make(
-                get: fn(?string $value) => $this->getCleanDescription(),
-            );
-        }
+        return Attribute::make(
+            get: fn(?string $value) => $this->getDescriptionWithAllLocales(),
+        );
     }
 
     private function getDescriptionWithAllLocales()
@@ -148,8 +140,8 @@ class Product extends Model
         $translations = $this->getAllTranslations('description');
         $allLocales = ['ar', 'en']; // اللغات المدعومة
         
-        // إذا كانت الترجمات فارغة أو null، نرجع object مع قيم فارغة
-        if (empty($translations) || !is_array($translations)) {
+        // إذا كانت الترجمات فارغة أو null أو غير موجودة، نرجع object مع قيم فارغة
+        if (empty($translations) || !is_array($translations) || $translations === null) {
             $result = [];
             foreach ($allLocales as $locale) {
                 $result[$locale] = '';
@@ -181,6 +173,11 @@ class Product extends Model
         }
 
         return $cleanTranslations;
+    }
+
+    public function getCleanDescriptionAttribute()
+    {
+        return $this->getCleanDescription();
     }
 
     protected function ribbonText(): Attribute
