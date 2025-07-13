@@ -148,6 +148,15 @@ class Product extends Model
         $translations = $this->getAllTranslations('description');
         $allLocales = ['ar', 'en']; // اللغات المدعومة
         
+        // إذا كانت الترجمات فارغة أو null، نرجع object مع قيم فارغة
+        if (empty($translations) || !is_array($translations)) {
+            $result = [];
+            foreach ($allLocales as $locale) {
+                $result[$locale] = '';
+            }
+            return $result;
+        }
+        
         $result = [];
         foreach ($allLocales as $locale) {
             $result[$locale] = $translations[$locale] ?? '';
