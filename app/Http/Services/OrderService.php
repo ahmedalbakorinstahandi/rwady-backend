@@ -238,7 +238,7 @@ class OrderService
                     "address" => $order->address?->address ?? '',
                     "city" => $order->address?->city ?? '',
                 ],
-                'additionalInfo' => [],
+                // 'additionalInfo' => [],
             ];
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
