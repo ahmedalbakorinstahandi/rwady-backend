@@ -13,6 +13,7 @@ use App\Services\MessageService;
 use App\Http\Services\Payment\QiPaymentService;
 use App\Http\Services\AqsatiInstallmentService;
 use App\Models\CouponUsage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class OrderService
@@ -216,13 +217,25 @@ class OrderService
             $qiPaymentService = new QiPaymentService();
 
 
+            Log::info(url('/api/webhook/qi-payment'));
             $paymentData = [
-                'amount' => $order->total_amount,
-                'currency' => 'IQD',
                 'requestId' =>  "{$order->id}",
-                'description' => trans('messages.payment.description'),
+                // 
+                'amount' => $order->total_amount,
+                'locale' => 'en_US',
+                'currency' => 'IQD',
+                // 'description' => trans('messages.payment.description'),
                 'finishPaymentUrl' => $successUrl . '/' . $order_id,
                 'notificationUrl' =>  url('/api/webhook/qi-payment'),
+                'customerInfo' => [
+                    "firstName" => $user->name ?? '',
+                    "phone" => $user->phone,
+                    "accountId" => $user->id,
+                    "accountNumber" => $user->phone,
+                    "address" => $order->address->address,
+                    "city" => $order->address->city,
+                ],
+                'additionalInfo' => [],
             ];
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
