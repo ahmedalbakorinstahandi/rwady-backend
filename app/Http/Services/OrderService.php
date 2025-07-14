@@ -243,12 +243,12 @@ class OrderService
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
 
-            abort(response()->json(
-                [
-                    'paymentSession' => $paymentSession,
-                    'url' => url('/api/webhook/qi-payment')
-                ]
-            ));
+            // abort(response()->json(
+            //     [
+            //         'paymentSession' => $paymentSession,
+            //         'url' => url('/api/webhook/qi-payment')
+            //     ]
+            // ));
 
             $order->metadata = $paymentSession;
 
