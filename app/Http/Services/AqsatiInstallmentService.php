@@ -25,19 +25,19 @@ class AqsatiInstallmentService
                 'Identity' => $data['identity']
             ]);
 
-            if (!$response->successful()) {
-                Log::error('Aqsati API request failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                    'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/GetCustomerInformation"
-                ]);
+            // if (!$response->successful()) {
+            //     Log::error('Aqsati API request failed', [
+            //         'status' => $response->status(),
+            //         'body' => $response->body(),
+            //         'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/GetCustomerInformation"
+            //     ]);
                 
-                return [
-                    'success' => false,
-                    'key' => 'api_error',
-                    'message' => 'Failed to connect to Aqsati service'
-                ];
-            }
+            //     return [
+            //         'success' => false,
+            //         'key' => 'api_error',
+            //         'message' => 'Failed to connect to Aqsati service'
+            //     ];
+            // }
 
             $responseData = $response->json();
             
@@ -85,19 +85,19 @@ class AqsatiInstallmentService
                 'countOfMonth' => $data['count_of_month'],
             ]);
 
-            if (!$response->successful()) {
-                Log::error('Aqsati validate plan API request failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                    'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/ValidatorOfInstallment"
-                ]);
+            // if (!$response->successful()) {
+            //     Log::error('Aqsati validate plan API request failed', [
+            //         'status' => $response->status(),
+            //         'body' => $response->body(),
+            //         'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/ValidatorOfInstallment"
+            //     ]);
                 
-                return [
-                    'success' => false,
-                    'key' => 'api_error',
-                    'message' => 'Failed to connect to Aqsati service'
-                ];
-            }
+            //     return [
+            //         'success' => false,
+            //         'key' => 'api_error',
+            //         'message' => 'Failed to connect to Aqsati service'
+            //     ];
+            // }
 
             $responseData = $response->json();
             
@@ -148,19 +148,19 @@ class AqsatiInstallmentService
                 'Authorization' => $this->token
             ])->post("{$this->baseUrl}/aqsati/ThirdParty/api/Integration/CreateInstallment", $payload);
 
-            if (!$response->successful()) {
-                Log::error('Aqsati confirm installment API request failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                    'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/CreateInstallment"
-                ]);
+            // if (!$response->successful()) {
+            //     Log::error('Aqsati confirm installment API request failed', [
+            //         'status' => $response->status(),
+            //         'body' => $response->body(),
+            //         'url' => "{$this->baseUrl}/aqsati/ThirdParty/api/Integration/CreateInstallment"
+            //     ]);
                 
-                return [
-                    'success' => false,
-                    'key' => 'api_error',
-                    'message' => 'Failed to connect to Aqsati service'
-                ];
-            }
+            //     return [
+            //         'success' => false,
+            //         'key' => 'api_error',
+            //         'message' => 'Failed to connect to Aqsati service'
+            //     ];
+            // }
 
             $responseData = $response->json();
             
