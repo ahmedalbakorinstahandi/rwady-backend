@@ -60,17 +60,20 @@ class QiPaymentWebhookController extends Controller
 
 
         // clear cart
+        $user = User::auth();
+        $user->cartItems()->delete();
 
-        $user = User::where('id', $order->user_id)->first();
 
-        $orderProducts = $order->orderProducts;
+        // $user = User::where('id', $order->user_id)->first();
 
-        foreach ($orderProducts as $orderProduct) {
-            $cartItem = $user->cartItems()->where('product_id', $orderProduct->product_id)->where('color_id', $orderProduct->color_id)->first();
-            if ($cartItem) {
-                $cartItem->delete();
-            }
-        }
+        // $orderProducts = $order->orderProducts;
+
+        // foreach ($orderProducts as $orderProduct) {
+        //     $cartItem = $user->cartItems()->where('product_id', $orderProduct->product_id)->where('color_id', $orderProduct->color_id)->first();
+        //     if ($cartItem) {
+        //         $cartItem->delete();
+        //     }
+        // }
 
         // TODO : Send notification to user and admin
 

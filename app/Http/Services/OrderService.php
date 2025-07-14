@@ -235,9 +235,9 @@ class OrderService
             $order->payment_fees = 0;
             $order->save();
 
+
             // TODO : Send notification to user and admin
-
-
+            $user->cartItems()->delete();
         } elseif ($data['payment_method'] == 'transfer') {
             $order->payment_method = 'transfer';
             $order->payment_fees = 0;
@@ -256,6 +256,8 @@ class OrderService
                     'attached' => $data['attached'],
                 ]);
             }
+
+            $user->cartItems()->delete();
 
             // TODO : Send notification to user and admin
 
@@ -304,6 +306,8 @@ class OrderService
                 'validate_plan' => $validation,
             ]);
         }
+
+
         if (isset($data['address'])) {
             // create address
             $addressService = new AddressService();
@@ -382,6 +386,10 @@ class OrderService
             'status' => 'completed',
             'method' => 'installment',
         ]);
+
+
+        $user = User::auth();
+        $user->cartItems()->delete();
 
         return $order;
     }
