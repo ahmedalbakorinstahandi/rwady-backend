@@ -217,9 +217,6 @@ class OrderService
             $qiPaymentService = new QiPaymentService();
 
 
-            Log::info('successUrl');
-            Log::info($successUrl . '/' . $order_id);
-            Log::info(url('/api/webhook/qi-payment'));
 
             $paymentData = [
                 'requestId' =>  "{$order->id}",
@@ -242,13 +239,6 @@ class OrderService
             ];
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
-
-            // abort(response()->json(
-            //     [
-            //         'paymentSession' => $paymentSession,
-            //         'url' => url('/api/webhook/qi-payment')
-            //     ]
-            // ));
 
             $order->metadata = $paymentSession;
 
