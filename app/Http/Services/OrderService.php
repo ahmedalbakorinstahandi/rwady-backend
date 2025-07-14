@@ -380,7 +380,7 @@ class OrderService
                 'ar' => 'دفع بواسطة التقسيط',
                 'en' => 'Payment by installment',
             ],
-            'status' => 'confirmed',
+            'status' => 'completed',
             'method' => 'installment',
         ]);
 
