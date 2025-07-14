@@ -221,8 +221,10 @@ class OrderService
                 'currency' => 'IQD',
                 'requestId' =>  "{$order->id}",
                 'description' => trans('messages.payment.description'),
-                'successRedirectUrl' => $successUrl . '/' . $order_id,
-                'failRedirectUrl' => $failUrl . '/' . $order_id,
+                // 'successRedirectUrl' => $successUrl . '/' . $order_id,
+                // 'failRedirectUrl' => $failUrl . '/' . $order_id,
+                'successRedirectUrl' => 'https://www.facebook.com/',
+                'failRedirectUrl' => 'https://www.facebook.com/',
                 'notificationUrl' =>  url('/api/webhook/qi-payment'),
             ];
 
