@@ -217,7 +217,10 @@ class OrderService
             $qiPaymentService = new QiPaymentService();
 
 
+            Log::info('successUrl');
+            Log::info($successUrl . '/' . $order_id);
             Log::info(url('/api/webhook/qi-payment'));
+
             $paymentData = [
                 'requestId' =>  "{$order->id}",
                 // 
@@ -232,8 +235,8 @@ class OrderService
                     "phone" => $user->phone,
                     "accountId" => $user->id,
                     "accountNumber" => $user->phone,
-                    "address" => $order->address->address,
-                    "city" => $order->address->city,
+                    "address" => $order->address?->address ?? '',
+                    "city" => $order->address?->city ?? '',
                 ],
                 'additionalInfo' => [],
             ];
