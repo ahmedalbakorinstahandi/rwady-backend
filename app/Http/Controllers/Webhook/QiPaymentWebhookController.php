@@ -32,9 +32,16 @@ class QiPaymentWebhookController extends Controller
         // مثال على المعالجة
         // Order::where('payment_id', $payload['paymentId'])->update(['status' => $payload['status']]);
 
-        $order = Order::where('payment_session_id', 'qi-' . $payload['paymentId'])->first();
+        // البحث عن الطلب باستخدام paymentId أو requestId
+        $order = Order::where('payment_session_id', 'qi-' . $payload['paymentId'])
+            ->orWhere('payment_session_id', 'qi-' . $payload['requestId'])
+            ->first();
+            
         if (!$order) {
-            Log::warning('Order not found', ['paymentId' => $payload['paymentId']]);
+            Log::warning('Order not found', [
+                'paymentId' => $payload['paymentId'],
+                'requestId' => $payload['requestId'] ?? 'not provided'
+            ]);
             MessageService::abort(404, 'messages.order.not_found');
         }
 
@@ -60,8 +67,10 @@ class QiPaymentWebhookController extends Controller
 
 
         // clear cart
-        $user = User::auth();
-        $user->cartItems()->delete();
+        $user = User::find($order->user_id);
+        if ($user) {
+            $user->cartItems()->delete();
+        }
 
 
         // $user = User::where('id', $order->user_id)->first();
