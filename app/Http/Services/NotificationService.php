@@ -4,7 +4,7 @@ namespace App\Http\Services;
 
 use App\Services\FilterService;
 use App\Services\MessageService;
-use App\Http\Permissions\General\NotificationPermission;
+use App\Http\Permissions\NotificationPermission;
 use App\Http\Services\Salons\SalonService;
 use App\Models\Notification;
 use App\Models\User;
