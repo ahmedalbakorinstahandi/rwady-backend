@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Http\Notifications\OrderNotification;
 use App\Http\Permissions\OrderPermission;
 use App\Models\Coupon;
 use App\Models\Order;
@@ -248,8 +249,8 @@ class OrderService
             $order->payment_fees = 0;
             $order->save();
 
+            OrderNotification::newOrder($order);
 
-            // TODO : Send notification to user and admin
             $user->cartItems()->delete();
         } elseif ($data['payment_method'] == 'transfer') {
             $order->payment_method = 'transfer';
@@ -272,8 +273,7 @@ class OrderService
 
             $user->cartItems()->delete();
 
-            // TODO : Send notification to user and admin
-
+            OrderNotification::newOrder($order);
         } elseif ($data['payment_method'] == 'installment') {
             $order->payment_method = 'installment';
             $order->payment_fees = config('services.aqsati.our_fees', 5);
@@ -382,6 +382,8 @@ class OrderService
             MessageService::abort(400, $confirmation['message']);
         }
 
+        OrderNotification::newOrder($order);
+
         $orderMetadata = $order->metadata ?? [];
         $order->metadata = array_merge($orderMetadata, [
             'confirm_otp' => $confirmation,
@@ -409,7 +411,25 @@ class OrderService
 
     public function update($order, $data)
     {
+        if ($order->status != $data['status']) {
+
+            
+            $order->status = $data['status'];
+            $order->save();
+
+            
+            $order->statuses()->create([
+                'statusable_id' => $order->id,
+                'statusable_type' => Order::class,
+                'status' => $data['status'],
+            ]);
+            
+            OrderNotification::updateOrderStatus($order);
+        }
+ 
+
         $order->update($data);
+
 
         $order = $this->show($order->id);
 

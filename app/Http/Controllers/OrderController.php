@@ -61,6 +61,8 @@ class OrderController extends Controller
         ]);
     }
 
+    
+
     public function checkOrderDetails(CheckOrderDeailsRequest $request)
     {
         $data = $this->orderService->checkOrderDetails($request->validated());

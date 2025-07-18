@@ -6,6 +6,7 @@ use App\Services\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Notifications\OrderNotification;
 use App\Http\Services\Payment\QiSignatureValidator;
 use App\Models\Order;
 use App\Models\User;
@@ -83,7 +84,7 @@ class QiPaymentWebhookController extends Controller
         //     }
         // }
 
-        // TODO : Send notification to user and admin
+        OrderNotification::newOrder($order);
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Http\Notifications\UserNotification;
 use App\Models\User;
 use App\Services\MessageService;
 use App\Services\PhoneService;
@@ -33,6 +34,8 @@ class AuthService
                     'is_verified' => false,
                     'language' => request()->header('Accept-Language', 'en')
                 ]);
+
+                UserNotification::newUser($user);
 
                 return 'messages.otp_sent';
             } else {

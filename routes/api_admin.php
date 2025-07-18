@@ -72,7 +72,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{id}', [OrderController::class, 'show']);
-        // Route::put('/{id}', [OrderController::class, 'update']);
+        Route::put('/{id}', [OrderController::class, 'update']);
         // Route::delete('/{id}', [OrderController::class, 'delete']);
     });
 
