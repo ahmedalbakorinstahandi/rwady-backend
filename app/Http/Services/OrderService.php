@@ -14,6 +14,7 @@ use App\Services\MessageService;
 use App\Http\Services\Payment\QiPaymentService;
 use App\Http\Services\AqsatiInstallmentService;
 use App\Models\CouponUsage;
+use App\Models\Status;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -418,18 +419,15 @@ class OrderService
             $order->save();
 
             
-            $order->statuses()->create([
+            Status::create([
                 'statusable_id' => $order->id,
                 'statusable_type' => Order::class,
                 'status' => $data['status'],
             ]);
-            
+
             OrderNotification::updateOrderStatus($order);
         }
  
-
-        $order->update($data);
-
 
         $order = $this->show($order->id);
 
