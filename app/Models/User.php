@@ -30,7 +30,7 @@ class User extends Authenticatable
         'otp',
         'otp_expire_at',
     ];
-    
+
 
 
     protected function casts(): array
@@ -121,5 +121,15 @@ class User extends Authenticatable
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public static function notificationsUnreadCount()
+    {
+        $user = User::auth();
+        if ($user) {
+            return  Notification::where('user_id', $user->id)->whereNull('read_at')->count();
+        } else {
+            return  Notification::whereNull('user_id')->count();
+        }
     }
 }
