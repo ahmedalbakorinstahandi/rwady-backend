@@ -64,11 +64,6 @@ class ProductService
             });
         }
 
-        if (isset($filters['category_ids'])) {
-            $query->whereHas('categories', function ($query) use ($filters) {
-                $query->whereIn('category_id', $filters['category_ids']);
-            });
-        }
 
         if (isset($filters['brand_id'])) {
             $query->whereHas('brands', function ($query) use ($filters) {
@@ -76,7 +71,13 @@ class ProductService
             });
         }
 
-        if (isset($filters['brand_ids'])) {
+        if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
+            $query->whereHas('categories', function ($query) use ($filters) {
+                $query->whereIn('category_id', $filters['category_ids']);
+            });
+        }
+
+        if (isset($filters['brand_ids']) && is_array($filters['brand_ids'])) {
             $query->whereHas('brands', function ($query) use ($filters) {
                 $query->whereIn('brand_id', $filters['brand_ids']);
             });
@@ -92,7 +93,7 @@ class ProductService
 
         if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
             $user = $this->getCurrentUser();
-            
+
             if ($user) {
                 $query->whereHas('favorites', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
