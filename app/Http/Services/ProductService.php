@@ -71,17 +71,39 @@ class ProductService
             });
         }
 
+        // ## OR
+        // if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
+        //     $query->whereHas('categories', function ($query) use ($filters) {
+        //         $query->whereIn('category_id', $filters['category_ids']);
+        //     });
+        // }
+
+        // if (isset($filters['brand_ids']) && is_array($filters['brand_ids'])) {
+        //     $query->whereHas('brands', function ($query) use ($filters) {
+        //         $query->whereIn('brand_id', $filters['brand_ids']);
+        //     });
+        // }
+        // ##
+
+       
+        ## AND
         if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
-            $query->whereHas('categories', function ($query) use ($filters) {
-                $query->whereIn('category_id', $filters['category_ids']);
-            });
+            foreach ($filters['category_ids'] as $categoryId) {
+                $query->whereHas('categories', function ($query) use ($categoryId) {
+                    $query->where('category_id', $categoryId);
+                });
+            }
         }
 
+
         if (isset($filters['brand_ids']) && is_array($filters['brand_ids'])) {
-            $query->whereHas('brands', function ($query) use ($filters) {
-                $query->whereIn('brand_id', $filters['brand_ids']);
-            });
+            foreach ($filters['brand_ids'] as $brandId) {
+                $query->whereHas('brands', function ($query) use ($brandId) {
+                    $query->where('brand_id', $brandId);
+                });
+            }
         }
+        ##
 
         if (isset($filters['is_recommended'])) {
             $query->where('is_recommended', $filters['is_recommended']);
