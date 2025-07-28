@@ -58,6 +58,8 @@ class PromotionService
             $promotion->products()->sync($productData);
         }
 
+        $promotion = $this->show($promotion->id);
+
         return $promotion;
     }
 
@@ -76,6 +78,8 @@ class PromotionService
             $productData = array_fill_keys($data['products'], []);
             $promotion->products()->sync($productData);
         }
+
+        $promotion = $this->show($promotion->id);
 
 
         return $promotion;
