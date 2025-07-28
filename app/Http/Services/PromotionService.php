@@ -10,12 +10,12 @@ class PromotionService
 {
     public function index($filters = [])
     {
-        $qury = Promotion::query();
+        $query = Promotion::query();
 
-        $qury = PromotionPermission::filterIndex($qury);
+        $query = PromotionPermission::filterIndex($query);
 
-        $promottions = FilterService::applyFilters(
-            $qury,
+        $promotions = FilterService::applyFilters(
+            $query,
             $filters,
             ['title'],
             ['discount_value', 'min_cart_total'],
@@ -24,7 +24,6 @@ class PromotionService
             ['type', 'discount_type', 'status'],
         );
 
-
-        return $promottions;
+        return $promotions;
     }
 }
