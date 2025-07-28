@@ -24,7 +24,14 @@ class Order extends Model
         'payment_method',
         'metadata',
         'payment_session_id',
+        'promotion_id',
+        'promotion_title',
+        'promotion_cart_discount_value',
+        'promotion_cart_discount_type',
+        'promotion_free_shipping',
     ];
+
+
 
 
     public function getTotalAmountAttribute()
@@ -127,5 +134,12 @@ class Order extends Model
             get: fn($value) => json_decode($value, true),
             set: fn($value) => json_encode($value),
         );
+    }
+
+
+    // promotion
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class);
     }
 }

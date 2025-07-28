@@ -84,7 +84,7 @@ return [
         'updated' => 'Cart item updated successfully',
         'deleted' => 'Cart item deleted successfully',
         'already_in_cart' => 'Item already in cart',
-    ],  
+    ],
 
     'payment' => [
         'description' => 'New order',
@@ -117,4 +117,11 @@ return [
         'item_not_found' => 'Setting not found',
         'item_already_exists' => 'Setting already exists',
     ],
+
+    'promotion' => [
+        'not_found' => 'Promotion not found',
+        'created_successfully' => 'Promotion created successfully',
+        'updated_successfully' => 'Promotion updated successfully',
+        'deleted_successfully' => 'Promotion deleted successfully',
+    ]
 ];

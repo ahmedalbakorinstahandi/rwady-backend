@@ -18,8 +18,13 @@ class OrderProduct extends Model
         'cost_price',
         'status',
         'shipping_rate',
-        'color_id'
+        'color_id',
+        'promotion_id',
+        'promotion_title',
+        'promotion_discount_type',
+        'promotion_discount_value',
     ];
+
 
     public function order(): BelongsTo
     {
@@ -34,5 +39,10 @@ class OrderProduct extends Model
     public function color(): BelongsTo
     {
         return $this->belongsTo(ProductColor::class, 'color_id')->withTrashed();
+    }
+
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class)->withTrashed();
     }
 }

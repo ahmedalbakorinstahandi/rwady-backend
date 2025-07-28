@@ -116,4 +116,11 @@ return [
         'item_not_found' => 'الإعداد غير موجود',
         'item_already_exists' => 'الإعداد موجود بالفعل',
     ],
+
+    'promotion' => [
+        'not_found' => 'حملة الترويج غير موجودة',
+        'created_successfully' => 'تم إنشاء حملة الترويج بنجاح',
+        'updated_successfully' => 'تم تحديث حملة الترويج بنجاح',
+        'deleted_successfully' => 'تم حذف حملة الترويج بنجاح',
+    ]
 ];
