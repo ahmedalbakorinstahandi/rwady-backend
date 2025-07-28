@@ -12,15 +12,17 @@ class PromotionResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
             'type' => $this->type,
-            'value' => $this->value,
-            'is_active' => $this->is_active,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
-            'media' => MediaResource::collection($this->whenLoaded('media')),
+            'discount_type' => $this->discount_type,
+            'discount_value' => $this->discount_value,
+            'min_cart_total' => $this->min_cart_total,
+            'start_at' => $this->start_at,
+            'end_at' => $this->end_at,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'products' => ProductResource::collection($this->whenLoaded('products')),
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
         ];
     }
-} 
+}
