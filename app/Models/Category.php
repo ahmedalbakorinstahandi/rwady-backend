@@ -124,7 +124,12 @@ class Category extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'category_products', 'category_id', 'product_id');
+        return $this->belongsToMany(
+            Product::class,
+            'category_products',
+            'category_id',
+            'product_id'
+        );
     }
 
     public function seo(): MorphOne

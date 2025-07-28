@@ -261,7 +261,12 @@ class Product extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'category_products', 'product_id', 'category_id');
+        return $this->belongsToMany(
+            Category::class,
+            'category_products',
+            'product_id',
+            'category_id'
+        );
     }
 
     public function brand(): BelongsTo
@@ -296,7 +301,12 @@ class Product extends Model
 
     public function relatedProducts(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'related_product_items', 'product_id', 'related_product_id');
+        return $this->belongsToMany(
+            Product::class,
+            'related_product_items',
+            'product_id',
+            'related_product_id'
+        );
     }
 
     public function media(): HasMany

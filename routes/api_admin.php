@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -91,5 +92,14 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [CouponController::class, 'create']);
         Route::put('/{id}', [CouponController::class, 'update']);
         Route::delete('/{id}', [CouponController::class, 'delete']);
+    });
+
+    // Promotion
+    Route::prefix('promotions')->group(function () {
+        Route::get('/', [PromotionController::class, 'index']);
+        Route::get('/{id}', [PromotionController::class, 'show']);
+        Route::post('/', [PromotionController::class, 'create']);
+        Route::put('/{id}', [PromotionController::class, 'update']);
+        Route::delete('/{id}', [PromotionController::class, 'delete']);
     });
 });
