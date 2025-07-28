@@ -21,5 +21,7 @@ class PromotionPermission
                         ->orWhere('end_at', '>=', now());
                 });
         }
+
+        return $query;
     }
 }

@@ -14,6 +14,8 @@ class PromotionService
 
         $query = PromotionPermission::filterIndex($query);
 
+
+
         $promotions = FilterService::applyFilters(
             $query,
             $filters,
