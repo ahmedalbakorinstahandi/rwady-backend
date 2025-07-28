@@ -73,7 +73,9 @@ class PromotionController extends Controller
     {
         $data = $request->validated();
 
-        $promotion = $this->promotionService->update($id, $data);
+        $promotion = $this->promotionService->show($id);
+
+        $promotion = $this->promotionService->update($promotion, $data);
 
         return ResponseService::response(
             [
