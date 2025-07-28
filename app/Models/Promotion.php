@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\LanguageTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,11 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
-use Symfony\Contracts\Translation\TranslatorTrait;
-
 class Promotion extends Model
 {
-    use HasFactory, SoftDeletes, HasTranslations, TranslatorTrait;
+    use HasFactory, SoftDeletes, HasTranslations, LanguageTrait;
 
     protected $fillable = [
         'title',
