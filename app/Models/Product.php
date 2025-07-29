@@ -122,6 +122,22 @@ class Product extends Model
         return $allPromotions->sortByDesc('calculated_discount')->first();
     }
 
+    public function getFinalPriceAfterPromotionAttribute()
+    {
+        $finalPrice = $this->final_price;
+        $bestPromotion = $this->best_promotion;
+
+        if (!$bestPromotion) {
+            return $finalPrice;
+        }
+
+        $discount = $bestPromotion->calculated_discount ?? 0;
+        $priceAfterPromotion = max(0, $finalPrice - $discount);
+
+        return $priceAfterPromotion;
+    }
+
+
 
 
     // current price after discount if exists and is between start and end date
