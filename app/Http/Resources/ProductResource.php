@@ -51,7 +51,7 @@ class ProductResource extends JsonResource
             'discount_percentage_text' => $this->discount_percentage,
             'sort_orders' => $this->orders,
             'total_orders' => $this->total_orders,
-            'promotion' => new $this->getBestPromotionAttribute(),
+            'promotion' => $this->getBestPromotionAttribute(),
             // 'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_category_products' => $this->whenLoaded('relatedCategory', function () {
