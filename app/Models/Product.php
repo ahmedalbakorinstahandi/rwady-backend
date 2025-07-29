@@ -83,7 +83,7 @@ class Product extends Model
     {
         $finalPrice = $this->final_price;
 
-        // 1. اجلب كل الترويجات الخاصة بالمنتج
+        // 1. ترويجات المنتج
         $productPromotions = Promotion::where('type', 'product')
             ->where('status', 'active')
             ->where('start_at', '<=', now())
@@ -93,7 +93,7 @@ class Product extends Model
             })
             ->get();
 
-        // 2. اجلب كل الترويجات الخاصة بالفئات
+        // 2. ترويجات الفئات
         $categoryPromotions = Promotion::where('type', 'category')
             ->where('status', 'active')
             ->where('start_at', '<=', now())
@@ -112,29 +112,16 @@ class Product extends Model
 
         // 4. احسب قيمة الخصم لكل ترويج
         $allPromotions = $allPromotions->map(function ($promotion) use ($finalPrice) {
-            if ($promotion->discount_type == 'fixed') {
-                $promotion->calculated_discount = (float) $promotion->discount_value;
-            } elseif ($promotion->discount_type == 'percentage') {
-                $promotion->calculated_discount = ($promotion->discount_value / 100) * $finalPrice;
-            } else {
-                $promotion->calculated_discount = 0;
-            }
+            $promotion->calculated_discount = $promotion->discount_type === 'fixed'
+                ? (float)$promotion->discount_value
+                : ($promotion->discount_value / 100) * $finalPrice;
             return $promotion;
         });
 
-        // 5. أكبر ترويج كـ قيمة
-        $maxByValue = $allPromotions->sortByDesc('calculated_discount')->first();
-
-        // 6. أكبر ترويج كـ نسبة (لو بدك تخزنه)
-        $maxByPercentage = $allPromotions->where('discount_type', 'percentage')
-            ->sortByDesc('discount_value')
-            ->first();
-
-        return [
-            'best_by_value' => $maxByValue,
-            'best_by_percentage' => $maxByPercentage,
-        ];
+        // 5. اختَر الترويج ذو أعلى قيمة خصم
+        return $allPromotions->sortByDesc('calculated_discount')->first();
     }
+
 
 
     // current price after discount if exists and is between start and end date
