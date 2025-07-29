@@ -79,6 +79,64 @@ class Product extends Model
         'out_of_stock' => 'string',
     ];
 
+    public function getBestPromotionAttribute()
+    {
+        $finalPrice = $this->final_price;
+
+        // 1. اجلب كل الترويجات الخاصة بالمنتج
+        $productPromotions = Promotion::where('type', 'product')
+            ->where('status', 'active')
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->whereHas('products', function ($query) {
+                $query->where('product_id', $this->id);
+            })
+            ->get();
+
+        // 2. اجلب كل الترويجات الخاصة بالفئات
+        $categoryPromotions = Promotion::where('type', 'category')
+            ->where('status', 'active')
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->whereHas('categories.products', function ($query) {
+                $query->where('product_id', $this->id);
+            })
+            ->get();
+
+        // 3. دمجهم
+        $allPromotions = $productPromotions->merge($categoryPromotions);
+
+        if ($allPromotions->isEmpty()) {
+            return null;
+        }
+
+        // 4. احسب قيمة الخصم لكل ترويج
+        $allPromotions = $allPromotions->map(function ($promotion) use ($finalPrice) {
+            if ($promotion->discount_type == 'fixed') {
+                $promotion->calculated_discount = (float) $promotion->discount_value;
+            } elseif ($promotion->discount_type == 'percentage') {
+                $promotion->calculated_discount = ($promotion->discount_value / 100) * $finalPrice;
+            } else {
+                $promotion->calculated_discount = 0;
+            }
+            return $promotion;
+        });
+
+        // 5. أكبر ترويج كـ قيمة
+        $maxByValue = $allPromotions->sortByDesc('calculated_discount')->first();
+
+        // 6. أكبر ترويج كـ نسبة (لو بدك تخزنه)
+        $maxByPercentage = $allPromotions->where('discount_type', 'percentage')
+            ->sortByDesc('discount_value')
+            ->first();
+
+        return [
+            'best_by_value' => $maxByValue,
+            'best_by_percentage' => $maxByPercentage,
+        ];
+    }
+
+
     // current price after discount if exists and is between start and end date
     public function getFinalPriceAttribute()
     {
