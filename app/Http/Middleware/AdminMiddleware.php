@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
+use App\Services\MessageService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +17,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        $user = User::auth();
+
+        if (!$user->isAdmin()) {
+            MessageService::abort(400, 'messages.unauthorized');
+        }
+
         return $next($request);
     }
 }

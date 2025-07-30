@@ -24,11 +24,13 @@ class Order extends Model
         'payment_method',
         'metadata',
         'payment_session_id',
-        'promotion_id',
-        'promotion_title',
+        'promotion_cart_id',
+        'promotion_cart_title',
         'promotion_cart_discount_value',
         'promotion_cart_discount_type',
         'promotion_free_shipping',
+        'promotion_shipping_id',
+        'promotion_shipping_title',
     ];
 
 
@@ -74,7 +76,15 @@ class Order extends Model
 
 
 
+        if ($this->promotion_cart_id) {
+            if ($this->promotion_cart_discount_type == 'percentage') {
+                $totalAmount = $totalAmount - ($totalAmount * ($this->promotion_cart_discount_value / 100));
+            } else {
+                $totalAmount = $totalAmount - $this->promotion_cart_discount_value;
+            }
+        }
 
+        
         return $totalAmount;
     }
 
@@ -138,8 +148,13 @@ class Order extends Model
 
 
     // promotion
-    public function promotion(): BelongsTo
+    public function promotionCart(): BelongsTo
     {
-        return $this->belongsTo(Promotion::class);
+        return $this->belongsTo(Promotion::class, 'promotion_cart_id');
+    }
+
+    public function promotionShipping(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class, 'promotion_shipping_id');
     }
 }

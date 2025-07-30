@@ -14,6 +14,7 @@ use App\Services\MessageService;
 use App\Http\Services\Payment\QiPaymentService;
 use App\Http\Services\AqsatiInstallmentService;
 use App\Models\CouponUsage;
+use App\Models\Promotion;
 use App\Models\Status;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -59,10 +60,13 @@ class OrderService
             'orderProducts.product.colors',
             'orderProducts.product.categories',
             'orderProducts.product.brands',
+            'orderProducts.promotion',
             'couponUsage.coupon',
             'payments',
             'statuses',
-            'address'
+            'address',
+            'promotionCart',
+            'promotionShipping',
         ];
 
 
@@ -159,6 +163,7 @@ class OrderService
         $successUrl = $data['success_url'];
         $failUrl = $data['fail_url'];
 
+
         $order = Order::create($data);
 
         $order->code = 'ORD-' . $order->id;
@@ -213,6 +218,25 @@ class OrderService
                 'promotion_discount_value' => $promotion ? $promotion->discount_value : null,
             ]);
         }
+
+
+        $promotionCartTotal = Promotion::where('type', 'cart_total')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+        if ($promotionCartTotal && $order->total_amount >= $promotionCartTotal->min_cart_total) {
+            $order->promotion_cart_id = $promotionCartTotal->id;
+            $order->promotion_cart_title = $promotionCartTotal->title;
+            $order->promotion_cart_discount_type = $promotionCartTotal->discount_type;
+            $order->promotion_cart_discount_value = $promotionCartTotal->discount_value;
+        }
+
+        $promotionFreeShipping = Promotion::where('type', 'shipping')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+        if ($promotionFreeShipping) {
+            $order->promotion_shipping_id = $promotionFreeShipping->id;
+            $order->promotion_shipping_title = $promotionFreeShipping->title;
+            $order->promotion_free_shipping = true;
+        }
+
 
         if ($data['payment_method'] == 'qi') {
 
@@ -420,11 +444,11 @@ class OrderService
     {
         if ($order->status != $data['status']) {
 
-            
+
             $order->status = $data['status'];
             $order->save();
 
-            
+
             Status::create([
                 'statusable_id' => $order->id,
                 'statusable_type' => Order::class,
@@ -433,7 +457,7 @@ class OrderService
 
             OrderNotification::updateOrderStatus($order);
         }
- 
+
 
         $order = $this->show($order->id);
 

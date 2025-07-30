@@ -46,11 +46,13 @@ return new class extends Migration
 
         // orders
         Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('promotion_id')->nullable()->constrained('promotions');
-            $table->longText('promotion_title')->nullable();
+            $table->foreignId('promotion_cart_id')->nullable()->constrained('promotions');
+            $table->longText('promotion_cart_title')->nullable();
             $table->double('promotion_cart_discount_value')->nullable();
             $table->double('promotion_cart_discount_type')->nullable();
             $table->boolean('promotion_free_shipping')->default(false);
+            $table->foreignId('promotion_shipping_id')->nullable()->constrained('promotions');
+            $table->longText('promotion_shipping_title')->nullable();
         });
 
 
