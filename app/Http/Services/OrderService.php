@@ -196,6 +196,8 @@ class OrderService
                 MessageService::abort(404, 'messages.product.not_found');
             }
 
+            $promotion = $product->getBestPromotionAttribute();
+
             $orderProduct = OrderProduct::create([
                 'order_id' => $order->id,
                 'product_id' => $product->id,
@@ -205,6 +207,10 @@ class OrderService
                 'status' => 'pending',
                 'shipping_rate' => $product->getShippingRateAttribute($productData['quantity']) * $productData['quantity'],
                 'color_id' => $productData['color_id'] ?? null,
+                'promotion_id' => $promotion ? $promotion->id : null,
+                'promotion_title' => $promotion ? $promotion->title : null,
+                'promotion_discount_type' => $promotion ? $promotion->discount_type : null,
+                'promotion_discount_value' => $promotion ? $promotion->discount_value : null,
             ]);
         }
 

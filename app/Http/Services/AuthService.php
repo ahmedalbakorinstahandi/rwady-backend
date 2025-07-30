@@ -42,6 +42,10 @@ class AuthService
                 MessageService::abort(400, 'messages.unauthorized');
             }
         } else {
+            if ($data['role'] == 'admin' && !$user->isAdmin()) {
+                MessageService::abort(400, 'messages.unauthorized');
+            }
+
             if ($user->status == 'banned') {
                 MessageService::abort(400, 'messages.user.banned');
             } else {
