@@ -28,8 +28,8 @@ class Promotion extends Model
     protected $casts = [
         'start_at' => 'datetime',
         'end_at' => 'datetime',
-        'min_cart_total' => 'decimal:2',
-        'discount_value' => 'decimal:2',
+        'min_cart_total' => 'double',
+        'discount_value' => 'double',
     ];
 
     public $translatable = ['title'];
