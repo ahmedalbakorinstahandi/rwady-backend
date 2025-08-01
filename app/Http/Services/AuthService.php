@@ -48,7 +48,7 @@ class AuthService
 
                 $message = 'Your verification code is: ' . $otp;
 
-                BulkSMSIraqService::send($full_phone, $message, 'plain', $language);
+                BulkSMSIraqService::send($full_phone, $message, 'whatsapp', $language);
 
                 return 'messages.otp_sent';
             } else {
@@ -69,7 +69,7 @@ class AuthService
 
                 $message = 'Your verification code is: ' . $otp;
 
-                BulkSMSIraqService::send($full_phone, $message, 'plain', $language);
+                BulkSMSIraqService::send($full_phone, $message, 'whatsapp', $language);
 
                 return 'messages.otp_sent';
             }
