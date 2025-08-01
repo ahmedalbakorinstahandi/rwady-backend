@@ -29,8 +29,8 @@ class OrderService
         $searchFields = ['name', 'description'];
         $numericFields = [];
         $dateFields = ['created_at'];
-        $exactMatchFields = ['availability', 'parent_id'];
-        $inFields = [];
+        $exactMatchFields = ['availability', 'parent_id', 'status'];
+        $inFields = ['status'];
 
         $query = OrderPermission::filterIndex($query);
 
