@@ -21,6 +21,8 @@ class CreateOrderRequest extends BaseFormRequest
             'attached' => 'nullable|string|required_if:payment_method,transfer',
             'identity' => 'nullable|string|required_if:payment_method,installment',
 
+            'direct_order' => 'nullable|boolean',
+
             'address' => 'nullable|array',
             'address.extra_address' => 'nullable|string|max:255',
             'address.longitude' => 'required|numeric',

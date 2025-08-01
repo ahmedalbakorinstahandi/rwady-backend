@@ -14,6 +14,7 @@ use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,11 @@ Route::prefix('user')->group(function () {
         Route::post('/{id}/confirm-otp', [OrderController::class, 'confirmOtp']);
     });
 
+    Route::prefix('promotions')->group(function () {
+        Route::get('/', [PromotionController::class, 'index']);
+        Route::get('/{id}', [PromotionController::class, 'show']);
+    });
+
     Route::prefix('installments')->group(function () {
         Route::post('/check-eligibility', [InstallmentController::class, 'checkEligibility']);
         Route::post('/validate-plan', [InstallmentController::class, 'validatePlan']);
@@ -93,6 +99,4 @@ Route::prefix('user')->group(function () {
     Route::prefix('order-payments')->group(function () {
         Route::get('/', [OrderPaymentController::class, 'index']);
     });
-
-
 });

@@ -39,6 +39,8 @@ class PromotionService
             MessageService::abort(404, 'messages.promotion.not_found');
         }
 
+        PromotionPermission::show($promotion);
+
         return $promotion;
     }
 
