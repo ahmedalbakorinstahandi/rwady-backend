@@ -29,7 +29,7 @@ class AuthService
         $user = User::where('phone', $full_phone)->first();
 
         $otp = rand(10000, 99999);
-        $otp_expire_at = now()->addMinutes(10);
+        $otp_expire_at = now()->addMinutes(5);
 
         if (!$user) {
             if ($data['role'] == 'customer') {
