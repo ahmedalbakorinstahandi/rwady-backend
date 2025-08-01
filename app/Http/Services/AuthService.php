@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Notifications\UserNotification;
 use App\Models\User;
+use App\Services\BulkSMSIraqService;
 use App\Services\MessageService;
 use App\Services\PhoneService;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -12,6 +13,14 @@ class AuthService
 {
     public function login($data)
     {
+
+        $locale = explode(',', request()->header('Accept-Language', 'en'))[0];
+
+        if (in_array($locale, ['ar', 'en'])) {
+            $language = $locale;
+        } else {
+            $language = 'ar';
+        }
 
         $phone = PhoneService::parsePhoneParts($data['phone']);
 
@@ -32,10 +41,14 @@ class AuthService
                     'otp' => $otp,
                     'otp_expire_at' => $otp_expire_at,
                     'is_verified' => false,
-                    'language' => request()->header('Accept-Language', 'en')
+                    'language' => $language
                 ]);
 
                 UserNotification::newUser($user);
+
+                $message = 'Your verification code is: ' . $otp;
+
+                BulkSMSIraqService::send($full_phone, $message, 'plain', $language);
 
                 return 'messages.otp_sent';
             } else {
@@ -53,6 +66,11 @@ class AuthService
                     'otp' => $otp,
                     'otp_expire_at' => $otp_expire_at,
                 ]);
+
+                $message = 'Your verification code is: ' . $otp;
+
+                BulkSMSIraqService::send($full_phone, $message, 'plain', $language);
+
                 return 'messages.otp_sent';
             }
         }

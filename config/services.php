@@ -50,4 +50,11 @@ return [
         'aqsati_installment_fees' => 15,
         'our_fees' => 5,
     ],
+
+    'bulksms' => [
+        'url'    => env('BULKSMS_URL', 'https://gateway.standingtech.com/api/v4/sms/send'),
+        'key'    => env('BULKSMS_KEY'),
+        'sender' => env('BULKSMS_SENDER', 'YourSenderID'),
+    ],
+
 ];
