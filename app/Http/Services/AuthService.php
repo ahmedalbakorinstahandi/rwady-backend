@@ -28,7 +28,7 @@ class AuthService
 
         $user = User::where('phone', $full_phone)->first();
 
-        $otp = rand(100000, 999999);
+        $otp = rand(10000, 99999);
         $otp_expire_at = now()->addMinutes(10);
 
         if (!$user) {
@@ -46,9 +46,7 @@ class AuthService
 
                 UserNotification::newUser($user);
 
-                $message = 'Your verification code is: ' . $otp;
-
-                BulkSMSIraqService::send($full_phone, $message, 'whatsapp', $language);
+                BulkSMSIraqService::send($full_phone, $otp, 'whatsapp', $language);
 
                 return 'messages.otp_sent';
             } else {
@@ -67,9 +65,8 @@ class AuthService
                     'otp_expire_at' => $otp_expire_at,
                 ]);
 
-                $message = 'Your verification code is: ' . $otp;
 
-                BulkSMSIraqService::send($full_phone, $message, 'whatsapp', $language);
+                BulkSMSIraqService::send($full_phone, $otp, 'whatsapp', $language);
 
                 return 'messages.otp_sent';
             }
