@@ -203,9 +203,17 @@ class FirebaseService
     {
         $messaging = self::getFirebaseMessaging()->createMessaging();
 
-        $tokens = PersonalAccessToken::whereIn('tokenable_id', $users_ids)->whereNull('logouted_at')->pluck('device_token')->toArray();
+        // اجلب جميع device tokens
+        $tokens = PersonalAccessToken::whereIn('tokenable_id', $users_ids)
+            ->whereNull('logouted_at')
+            ->whereNotNull('device_token')
+            ->pluck('device_token')
+            ->unique()
+            ->toArray();
 
+        Log::info('tokens', $tokens);
 
+        // خزّن الإشعار في قاعدة البيانات
         NotificationService::storeNotification(
             $users_ids,
             $notificationable,
@@ -216,25 +224,90 @@ class FirebaseService
             $isCustom
         );
 
+        // تجهيز بيانات الإشعار
         $data['notificationable_id'] = $notificationable['id'] ?? null;
         $type = $notificationable['type'] ?? 'Custom';
         $data['notificationable_type'] = $type;
 
+        // تحضير النصوص
         if ($isCustom) {
-            $messageConfig = self::sendToTokens($tokens, $title,  $body,  $data, $channelId);
+            $notificationTitle = $title;
+            $notificationBody = $body;
         } else {
             $customReplace = $replace;
             unset($customReplace['locales']);
-            $messageConfig = self::sendToTokens($tokens, __($title, $customReplace), __($body, $customReplace), $data, $channelId);
+            $notificationTitle = __($title, $customReplace);
+            $notificationBody = __($body, $customReplace);
         }
-        $message = CloudMessage::fromArray($messageConfig);
 
+        // إذا لم يوجد أي tokens نتوقف
+        if (empty($tokens)) {
+            return [
+                'success' => false,
+                'message' => 'No device tokens found'
+            ];
+        }
 
         try {
-            $response = $messaging->send($message);
+            // Build common notification + data part once
+            $notification = Notification::create($notificationTitle, $notificationBody);
+
+            $androidConfig = null;
+            if ($channelId) {
+                $androidConfig = [
+                    'notification' => [
+                        'channel_id' => $channelId,
+                    ],
+                ];
+            }
+
+            // Multicast message
+            $message = CloudMessage::new()
+                ->withNotification($notification)
+                ->withData(
+                    data: collect($data)
+                        ->map(fn($value) => json_encode($value))
+                        ->toArray()
+                );
+
+            if ($androidConfig) {
+                $message = $message->withAndroidConfig($androidConfig);
+            }
+
+            $response = $messaging->sendMulticast($message, $tokens);
+
+            Log::info('Notification sent successfully', [
+                'successes' => $response->successes()->count(),
+                'failures' => $response->failures()->count(),
+                'total' => count($tokens),
+            ]);
+
+            // Log detailed failure information if there are failures
+            if ($response->failures()->count() > 0) {
+                $failureDetails = [];
+                foreach ($response->failures() as $failure) {
+                    $failureDetails[] = [
+                        'token' => $failure->target()->value(),
+                        'error' => $failure->error()->getMessage(),
+                        'code' => $failure->error()->getCode(),
+                    ];
+                }
+
+                Log::warning('Firebase notification failures detected', [
+                    'total_failures' => $response->failures()->count(),
+                    'failure_details' => $failureDetails,
+                ]);
+            }
+
+
             return [
                 'success' => true,
-                'message' => 'Notification sent successfully',
+                'message' => sprintf(
+                    'Sent to %d tokens (%d success, %d failure)',
+                    count($tokens),
+                    $response->successes()->count(),
+                    $response->failures()->count()
+                ),
                 'response' => $response,
             ];
         } catch (\Throwable $e) {

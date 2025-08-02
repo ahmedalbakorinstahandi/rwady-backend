@@ -21,6 +21,7 @@ class CategoryResource extends JsonResource
             'products_count' => $this->products->count(),
             'parent' => new CategoryResource($this->whenLoaded('parent')),
             'children' => CategoryResource::collection($this->whenLoaded('children')),
+            'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             // 'products' => ProductResource::collection($this->whenLoaded('products')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),

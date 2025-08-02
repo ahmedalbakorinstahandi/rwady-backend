@@ -136,4 +136,53 @@ class Category extends Model
     {
         return $this->morphOne(Seo::class, 'seoable');
     }
+
+    public function getBestPromotionAttribute()
+    {
+        // 1. ترويجات القسم المباشرة
+        $categoryPromotions = Promotion::where('type', 'category')
+            ->where('status', 'active')
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->whereHas('categories', function ($query) {
+                $query->where('category_id', $this->id);
+            })
+            ->get();
+
+        // 2. ترويجات الأقسام الأب (إذا كان القسم له أب)
+        $parentCategoryPromotions = collect();
+        if ($this->parent_id) {
+            $parentCategoryPromotions = Promotion::where('type', 'category')
+                ->where('status', 'active')
+                ->where('start_at', '<=', now())
+                ->where('end_at', '>=', now())
+                ->whereHas('categories', function ($query) {
+                    $query->where('category_id', $this->parent_id);
+                })
+                ->get();
+        }
+
+        // 3. دمج الترويجات
+        $allPromotions = $categoryPromotions->merge($parentCategoryPromotions);
+
+        if ($allPromotions->isEmpty()) {
+            return null;
+        }
+
+        // 4. احسب قيمة الخصم لكل ترويج
+        // للأقسام، نستخدم متوسط سعر المنتجات في القسم أو قيمة ثابتة
+        $averageProductPrice = $this->products()->avg('final_price') ?? 0;
+        
+        $allPromotions = $allPromotions->map(function ($promotion) use ($averageProductPrice) {
+            $promotion->calculated_discount = $promotion->discount_type === 'fixed'
+                ? (float)$promotion->discount_value
+                : ($promotion->discount_value / 100) * $averageProductPrice;
+            return $promotion;
+        });
+
+        // 5. اختَر الترويج ذو أعلى قيمة خصم
+        return $allPromotions->sortByDesc('calculated_discount')->first();
+    }
+
+    
 }
