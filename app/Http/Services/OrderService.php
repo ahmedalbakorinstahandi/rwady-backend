@@ -150,6 +150,7 @@ class OrderService
             'promotion_cart_total_discount_value' => $promotionCartTotal ? $promotionCartTotalDiscountValue : null,
             'promotion_cart_total' => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
             'shipping_fees' => $shippingFees,
+            'promotion_free_shipping' => $promotionFreeShipping ? new PromotionResource($promotionFreeShipping) : null,
             'amount_with_shipping' => $amount + $shippingFees,
             'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
             'amount_with_shipping_after_coupon' => $subtotal,
