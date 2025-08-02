@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Notifications\OrderNotification;
 use App\Http\Permissions\OrderPermission;
+use App\Http\Resources\PromotionResource;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -127,6 +128,8 @@ class OrderService
 
         $promotionCartTotal = Promotion::where('type', 'cart_total')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
 
+        $promotionCartTotalDiscountValue = null;
+
         if ($promotionCartTotal && $amount >= $promotionCartTotal->min_cart_total) {
 
             if ($promotionCartTotal->discount_type == 'fixed') {
@@ -143,8 +146,9 @@ class OrderService
         }
 
         return [
-            'amount' => $amount - $promotionCartTotal ? $promotionCartTotalDiscountValue : 0,
+            'amount' => $amount - ($promotionCartTotal ? $promotionCartTotalDiscountValue : 0),
             'promotion_cart_total_discount_value' => $promotionCartTotal ? $promotionCartTotalDiscountValue : null,
+            'promotion_cart_total' => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
             'shipping_fees' => $shippingFees,
             'amount_with_shipping' => $amount + $shippingFees,
             'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
