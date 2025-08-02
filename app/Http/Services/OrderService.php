@@ -124,8 +124,27 @@ class OrderService
         $subtotal = $amount + $shippingFees - $couponDiscountValue;
         $paymentFeesValue = $subtotal * ($paymentFeesPercentage / 100);
 
+
+        $promotionCartTotal = Promotion::where('type', 'cart_total')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+        if ($promotionCartTotal && $amount >= $promotionCartTotal->min_cart_total) {
+
+            if ($promotionCartTotal->discount_type == 'fixed') {
+                $promotionCartTotalDiscountValue = $amount - $promotionCartTotal->discount_value;
+            } else {
+                $promotionCartTotalDiscountValue = $amount - ($amount * ($promotionCartTotal->discount_value / 100));
+            }
+        }
+
+        $promotionFreeShipping = Promotion::where('type', 'shipping')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+        if ($promotionFreeShipping) {
+            $shippingFees = 0;
+        }
+
         return [
-            'amount' => $amount,
+            'amount' => $amount - $promotionCartTotal ? $promotionCartTotalDiscountValue : 0,
+            'promotion_cart_total_discount_value' => $promotionCartTotal ? $promotionCartTotalDiscountValue : null,
             'shipping_fees' => $shippingFees,
             'amount_with_shipping' => $amount + $shippingFees,
             'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
