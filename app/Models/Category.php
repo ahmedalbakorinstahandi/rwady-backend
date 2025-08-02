@@ -156,8 +156,11 @@ class Category extends Model
             ->whereHas('categories', function($query) use ($categoryIds) {
                 $query->whereIn('category_id', $categoryIds);
             })
-            ->orderByRaw("FIELD(category_id, " . $categoryIds->implode(',') . ")")
-            ->latest()
+            ->join('promotion_categories', 'promotions.id', '=', 'promotion_categories.promotion_id')
+            ->whereIn('promotion_categories.category_id', $categoryIds)
+            ->orderByRaw("FIELD(promotion_categories.category_id, " . $categoryIds->implode(',') . ")")
+            ->select('promotions.*')
+            ->latest('promotions.created_at')
             ->first();
 
         return $promotion;
