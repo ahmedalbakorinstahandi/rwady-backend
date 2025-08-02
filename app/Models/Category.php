@@ -143,7 +143,7 @@ class Category extends Model
         $categoryIds = collect([$this->id]);
         $currentCategory = $this;
         
-        while ($currentCategory->parent_id) {
+        while ($currentCategory && $currentCategory->parent_id) {
             $categoryIds->push($currentCategory->parent_id);
             $currentCategory = $currentCategory->parent;
         }
