@@ -11,7 +11,7 @@ class PromotionPermission
     {
         $user = User::auth();
 
-        if (!$user->isAdmin()) {
+        if (!$user || !$user->isAdmin()) {
             return $query->where('status', 'active')
                 ->where(function ($q) {
                     $q->whereNull('start_at')
