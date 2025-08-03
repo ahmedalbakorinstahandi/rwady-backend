@@ -30,7 +30,7 @@ class PromotionPermission
     {
         $user = User::auth();
 
-        if (!$user->isAdmin()) {
+        if (!$user || !$user->isAdmin()) {
             if ($promotion->status != 'active') {
                 MessageService::abort(403, 'messages.promotion.not_found');
             }
