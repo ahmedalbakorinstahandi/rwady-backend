@@ -20,7 +20,7 @@ class AdminMiddleware
 
         $user = User::auth();
 
-        if (!$user->isAdmin()) {
+        if (!$user || !$user->isAdmin()) {
             MessageService::abort(400, 'messages.unauthorized');
         }
 
