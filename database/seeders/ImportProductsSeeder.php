@@ -19,7 +19,7 @@ class ImportProductsSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvPath =  storage_path('files/catalog_2025-08-04_16-00.csv');
+        $csvPath = storage_path('files/catalog_2025-08-04_16-00.csv');
         if (!file_exists($csvPath)) {
             $this->command->error("File not found: {$csvPath}");
             return;
