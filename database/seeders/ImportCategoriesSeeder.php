@@ -15,7 +15,7 @@ class ImportCategoriesSeeder extends Seeder
 {
     public function run(): void
     {
-        $csvPath = storage_path('app/categories.csv');
+        $csvPath = storage_path('files/categories.csv');
         if (!file_exists($csvPath)) {
             $this->command->error('File not found: categories.csv');
             return;
