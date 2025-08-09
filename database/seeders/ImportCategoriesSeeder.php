@@ -20,7 +20,7 @@ class ImportCategoriesSeeder extends Seeder
             $this->command->error("File not found: {$csvPath}");
             return;
         }
-        
+
         $csv = Reader::createFromPath($csvPath, 'r');
         $csv->setHeaderOffset(0);
 
@@ -68,7 +68,6 @@ class ImportCategoriesSeeder extends Seeder
                         $category->parent_id = $parentId;
                         $category->availability = (bool) ($row['category_is_available'] ?? true);
                         $category->description = ['ar' => $row['category_description'] ?? '', 'en' => $row['category_description'] ?? ''];
-                        $category->order_by = is_numeric($row['category_order_by'] ?? '') ? (int) $row['category_order_by'] : 0;
 
                         if (!empty($row['category_image'])) {
                             try {
