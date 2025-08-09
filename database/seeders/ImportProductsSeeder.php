@@ -79,7 +79,7 @@ class ImportProductsSeeder extends Seeder
                     );
                     $brandId = $brand->id;
 
-                    OrderHelper::assign($brand, 'orders');
+                    // OrderHelper::assign($brand, 'orders');
                 }
 
 
