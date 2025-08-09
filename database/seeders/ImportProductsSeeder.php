@@ -32,7 +32,7 @@ class ImportProductsSeeder extends Seeder
 
         
 
-        DB::transaction(function () use ($records) {
+        // DB::transaction(function () use ($records) {
             
             foreach ($records as $row) {
 
@@ -242,6 +242,6 @@ class ImportProductsSeeder extends Seeder
                     }
                 }
             }
-        });
+        // });
     }
 }
