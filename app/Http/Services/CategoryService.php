@@ -16,6 +16,8 @@ class CategoryService
     {
         $query = Category::query()->with('children');
 
+        $filters['limit']= 500;
+
         $filters['sort_field'] = 'orders';
         $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
 
