@@ -41,10 +41,9 @@ class Brand extends Model
     protected $appends = ['image_url'];
     public function getImageUrlAttribute()
     {
-
         $local = LanguageService::getLocale();
         if (empty($this->image) || is_null($this->image) || !isset($this->image)) {
-            return "https://ui-avatars.com/api/?name={$this->name[$local]}&size=256&background=random&length=1";
+            return \App\Services\AvatarService::generateAvatar($this->name[$local], 256, 'random', 1);
         }
 
         return url('storage/' . $this->image);
