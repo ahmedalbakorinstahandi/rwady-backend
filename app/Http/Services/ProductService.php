@@ -130,19 +130,19 @@ class ProductService
         $relations = [];
 
         if (!empty($filters['with_media'])) {
-            $relations['media'] = fn($q) => $q->select('id', 'product_id', 'url');
+            $relations['media'];
         }
 
         if (!empty($filters['with_colors']) || isset($filters['color'])) {
-            $relations['colors'] = fn($q) => $q->select('id', 'product_id', 'color');
+            $relations['colors'];
         }
 
         if (!empty($filters['with_categories']) || isset($filters['category_id']) || isset($filters['category_ids'])) {
-            $relations['categories'] = fn($q) => $q->select('id', 'name');
+            $relations['categories'];
         }
 
         if (!empty($filters['with_brands']) || isset($filters['brand_id']) || isset($filters['brand_ids'])) {
-            $relations['brands'] = fn($q) => $q->select('id', 'name');
+            $relations['brands'];
         }
 
         if (!empty($relations)) {
