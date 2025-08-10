@@ -125,24 +125,24 @@ class ProductService
         // إضافة فلتر صلاحيات
         $query = ProductPermission::filterIndex($query);
 
-        
+
         // 🛠 Eager Loading ذكي
         $relations = [];
 
         if (!empty($filters['with_media'])) {
-            $relations['media'];
+            $relations[] = 'media';
         }
 
         if (!empty($filters['with_colors']) || isset($filters['color'])) {
-            $relations['colors'];
+            $relations[] = 'colors';
         }
 
         if (!empty($filters['with_categories']) || isset($filters['category_id']) || isset($filters['category_ids'])) {
-            $relations['categories'];
+            $relations[] = 'categories';
         }
 
         if (!empty($filters['with_brands']) || isset($filters['brand_id']) || isset($filters['brand_ids'])) {
-            $relations['brands'];
+            $relations[] = 'brands';
         }
 
         if (!empty($relations)) {
