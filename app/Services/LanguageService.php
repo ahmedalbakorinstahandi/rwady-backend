@@ -10,7 +10,15 @@ class LanguageService
 
     public static function getLocale()
     {
-        return request()->header('Accept-Language', config('translatable.default_locale'));
+        $acceptLanguage = request()->header('Accept-Language');
+        if (!$acceptLanguage) {
+            return 'en';
+        }
+
+        $languages = explode(',', $acceptLanguage);
+        $primaryLang = explode(';', $languages[0])[0];
+
+        return in_array($primaryLang, ['ar', 'en']) ? $primaryLang : 'en';
     }
 
 

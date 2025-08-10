@@ -66,7 +66,7 @@ class ImportCategoriesSeeder extends Seeder
                         $category = new Category();
                         $category->name = ['ar' => $name, 'en' => $name];
                         $category->parent_id = $parentId;
-                        $category->availability = (bool) ($row['category_is_available'] ?? true);
+                        $category->availability = $row['category_is_available'] == 'TRUE' ? true : false;
                         $category->description = ['ar' => $row['category_description'] ?? '', 'en' => $row['category_description'] ?? ''];
 
                         if (!empty($row['category_image'])) {
