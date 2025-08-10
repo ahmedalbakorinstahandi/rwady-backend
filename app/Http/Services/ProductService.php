@@ -125,17 +125,7 @@ class ProductService
         // إضافة فلتر صلاحيات
         $query = ProductPermission::filterIndex($query);
 
-        // تطبيق الفلاتر العامة
-        $query = FilterService::applyFilters(
-            $query,
-            $filters,
-            $searchFields,
-            $numericFields,
-            $dateFields,
-            $exactMatchFields,
-            $inFields
-        );
-
+        
         // 🛠 Eager Loading ذكي
         $relations = [];
 
@@ -158,6 +148,18 @@ class ProductService
         if (!empty($relations)) {
             $query->with($relations);
         }
+
+        // تطبيق الفلاتر العامة
+        $query = FilterService::applyFilters(
+            $query,
+            $filters,
+            $searchFields,
+            $numericFields,
+            $dateFields,
+            $exactMatchFields,
+            $inFields
+        );
+
 
         return $query;
     }
