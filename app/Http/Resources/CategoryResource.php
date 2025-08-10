@@ -18,7 +18,7 @@ class CategoryResource extends JsonResource
             'image_url' => $this->image ? url('storage/' . $this->image) : null,
             'availability' => $this->availability,
             'orders' => $this->orders,
-            'products_count' => $this->products->count(),
+            // 'products_count' => $this->products->count(),
             'parent' => new CategoryResource($this->whenLoaded('parent')),
             'children' => CategoryResource::collection($this->whenLoaded('children')),
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
