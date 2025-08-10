@@ -121,7 +121,7 @@ class ProductService
                     $query->where('user_id', $user->id);
                 });
             }
-        }
+        } 
 
         if (isset($filters['is_new'])) {
             $query->orderBy('created_at', 'desc');
