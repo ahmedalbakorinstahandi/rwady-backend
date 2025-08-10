@@ -29,6 +29,9 @@ class Category extends Model
     public $translatable = ['name', 'description'];
 
     // costs 
+    protected $casts = [
+        'availability' => 'boolean',
+    ];
 
 
 

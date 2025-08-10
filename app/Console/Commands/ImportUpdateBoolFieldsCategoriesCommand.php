@@ -48,7 +48,7 @@ class ImportUpdateBoolFieldsCategoriesCommand extends Command
             }
 
             $category->update([
-                'availability' => $row['category_is_available'] == 'TRUE' ? true : false,
+                'availability' => $row['category_is_available'] == 'true' ? true : false,
             ]);
 
             $count++;
