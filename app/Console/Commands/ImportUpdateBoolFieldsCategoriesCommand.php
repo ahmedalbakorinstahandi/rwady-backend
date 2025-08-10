@@ -53,7 +53,7 @@ class ImportUpdateBoolFieldsCategoriesCommand extends Command
 
             $count++;
 
-            $this->info("Updated category {$categoryName} {$category->id} {$category->availability}");
+            $this->info("Updated category {$categoryName} {$category->id} {$row['category_is_available']}");
 
             if ($count % 10 === 0) {
                 $this->info("Updated {$count} categories so far...");
