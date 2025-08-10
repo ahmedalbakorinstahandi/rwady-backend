@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\LanguageService;
 use App\Traits\LanguageTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,8 +42,9 @@ class Brand extends Model
     public function getImageUrlAttribute()
     {
 
+        $local = LanguageService::getLocale();
         if (empty($this->image) || is_null($this->image) || !isset($this->image)) {
-            return "https://ui-avatars.com/api/?name={$this->name}&size=256&background=random&length=1";
+            return "https://ui-avatars.com/api/?name={$this->name[$local]}&size=256&background=random&length=1";
         }
 
         return url('storage/' . $this->image);

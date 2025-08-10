@@ -8,6 +8,12 @@ class LanguageService
 {
 
 
+    public static function getLocale()
+    {
+        return request()->header('Accept-Language', config('translatable.default_locale'));
+    }
+
+
     public static function getMultiLanguage()
     {
         // Get_Multi_Language
