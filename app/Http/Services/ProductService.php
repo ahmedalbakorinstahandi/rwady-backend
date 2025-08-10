@@ -19,10 +19,10 @@ class ProductService
 
     public function index(array $filters = [])
     {
-        $query = Product::query();
+        $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
 
         $filters['sort_field'] = 'orders';
-        $filters['sort_order'] = $filters['sort_order'] ?? 'asc';
+        $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
 
         $searchFields = ['name', 'description', 'sku'];
         $numericFields = [
@@ -45,7 +45,7 @@ class ProductService
             'price_discount_end',
             'cost_price_discount_start',
             'cost_price_discount_end',
-            'created_at'
+            'created_at',
         ];
         $exactMatchFields = [
             'id',
@@ -58,21 +58,35 @@ class ProductService
         ];
         $inFields = [];
 
-        // فلترة حسب التصنيفات
         if (isset($filters['category_id'])) {
             $query->whereHas('categories', function ($query) use ($filters) {
                 $query->where('category_id', $filters['category_id']);
             });
         }
 
-        // فلترة حسب الماركة
+
         if (isset($filters['brand_id'])) {
             $query->whereHas('brands', function ($query) use ($filters) {
                 $query->where('brand_id', $filters['brand_id']);
             });
         }
 
-        // فلترة متعددة - AND
+        // ## OR
+        // if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
+        //     $query->whereHas('categories', function ($query) use ($filters) {
+        //         $query->whereIn('category_id', $filters['category_ids']);
+        //     });
+        // }
+
+        // if (isset($filters['brand_ids']) && is_array($filters['brand_ids'])) {
+        //     $query->whereHas('brands', function ($query) use ($filters) {
+        //         $query->whereIn('brand_id', $filters['brand_ids']);
+        //     });
+        // }
+        // ##
+
+       
+        ## AND
         if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
             foreach ($filters['category_ids'] as $categoryId) {
                 $query->whereHas('categories', function ($query) use ($categoryId) {
@@ -81,6 +95,7 @@ class ProductService
             }
         }
 
+
         if (isset($filters['brand_ids']) && is_array($filters['brand_ids'])) {
             foreach ($filters['brand_ids'] as $brandId) {
                 $query->whereHas('brands', function ($query) use ($brandId) {
@@ -88,21 +103,19 @@ class ProductService
                 });
             }
         }
+        ##
 
-        // منتجات مميزة
         if (isset($filters['is_recommended'])) {
             $query->where('is_recommended', $filters['is_recommended']);
         }
 
-        // الأكثر مبيعًا
         if (isset($filters['most_sold'])) {
-            $query->withCount('orderProducts')
-                ->orderBy('order_products_count', 'desc');
+            $query->withCount('orderProducts')->orderBy('order_products_count', 'desc');
         }
 
-        // المفضلة
-        if (!empty($filters['is_favorite'])) {
+        if (isset($filters['is_favorite']) && $filters['is_favorite'] == true) {
             $user = $this->getCurrentUser();
+
             if ($user) {
                 $query->whereHas('favorites', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
@@ -110,46 +123,19 @@ class ProductService
             }
         }
 
-        // الأحدث
         if (isset($filters['is_new'])) {
             $query->orderBy('created_at', 'desc');
         }
 
-        // اللون
+        // color
         if (isset($filters['color'])) {
             $query->whereHas('colors', function ($query) use ($filters) {
                 $query->where('color', $filters['color']);
             });
         }
 
-        // إضافة فلتر صلاحيات
         $query = ProductPermission::filterIndex($query);
 
-
-        // 🛠 Eager Loading ذكي
-        $relations = [];
-
-        if (!empty($filters['with_media'])) {
-            $relations[] = 'media';
-        }
-
-        if (!empty($filters['with_colors']) || isset($filters['color'])) {
-            $relations[] = 'colors';
-        }
-
-        if (!empty($filters['with_categories']) || isset($filters['category_id']) || isset($filters['category_ids'])) {
-            $relations[] = 'categories';
-        }
-
-        if (!empty($filters['with_brands']) || isset($filters['brand_id']) || isset($filters['brand_ids'])) {
-            $relations[] = 'brands';
-        }
-
-        if (!empty($relations)) {
-            $query->with($relations);
-        }
-
-        // تطبيق الفلاتر العامة
         $query = FilterService::applyFilters(
             $query,
             $filters,
@@ -160,10 +146,8 @@ class ProductService
             $inFields
         );
 
-
         return $query;
     }
-
 
     public function show(int $id)
     {
