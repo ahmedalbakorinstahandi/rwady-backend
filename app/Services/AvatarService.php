@@ -33,8 +33,8 @@ class AvatarService
      */
     private static function createSimpleAvatar($text, $size, $background, $length)
     {
-        // أخذ الحرف الأول من النص
-        $firstChar = mb_substr($text, 0, $length);
+        // استخدام النص كاملاً بدلاً من حرف واحد
+        $displayText = $text;
         
         // ألوان خلفية عشوائية بسيطة
         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -43,10 +43,13 @@ class AvatarService
             $background = $colors[array_rand($colors)];
         }
         
+        // حساب حجم الخط بناءً على طول النص
+        $fontSize = min($size * 0.3, $size / (mb_strlen($displayText) * 0.8));
+        
         // إنشاء SVG بسيط
         $svg = '<svg width="' . $size . '" height="' . $size . '" xmlns="http://www.w3.org/2000/svg">';
         $svg .= '<rect width="100%" height="100%" fill="' . $background . '"/>';
-        $svg .= '<text x="50%" y="50%" font-family="Arial, sans-serif" font-size="' . ($size * 0.4) . '" fill="white" text-anchor="middle" dy=".3em">' . htmlspecialchars($firstChar) . '</text>';
+        $svg .= '<text x="50%" y="50%" font-family="Arial, sans-serif" font-size="' . $fontSize . '" fill="white" text-anchor="middle" dy=".3em">' . htmlspecialchars($displayText) . '</text>';
         $svg .= '</svg>';
         
         return 'data:image/svg+xml;base64,' . base64_encode($svg);

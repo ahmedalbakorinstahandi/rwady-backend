@@ -43,7 +43,7 @@ class Brand extends Model
     {
         $local = LanguageService::getLocale();
         if (empty($this->image) || is_null($this->image) || !isset($this->image)) {
-            return \App\Services\AvatarService::generateAvatar($this->name[$local], 256, 'random', 1);
+            return \App\Services\AvatarService::generateAvatar($this->name[$local], 256, 'random', 0);
         }
 
         return url('storage/' . $this->image);
