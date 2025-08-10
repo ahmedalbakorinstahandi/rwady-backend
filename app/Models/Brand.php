@@ -40,6 +40,11 @@ class Brand extends Model
     protected $appends = ['image_url'];
     public function getImageUrlAttribute()
     {
+
+        if (empty($this->image) || is_null($this->image) || !isset($this->image)) {
+            return "https://ui-avatars.com/api/?name={$this->name}&size=256&background=random&length=1";
+        }
+
         return url('storage/' . $this->image);
     }
 
