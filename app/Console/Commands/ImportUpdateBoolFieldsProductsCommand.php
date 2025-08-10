@@ -43,10 +43,10 @@ class ImportUpdateBoolFieldsProductsCommand extends Command
             }
 
             $product->update([
-                'stock_unlimited' =>  $row['product_is_inventory_tracked'] != 'TRUE' ? true : false,
-                'availability' => $row['product_is_available'] == 'TRUE' ? true : false,
-                'requires_shipping' => $row['product_is_shipping_required'] == 'TRUE' ? true : false,
-                'is_recommended' => $row['product_is_featured'] == 'TRUE' ? true : false,
+                'stock_unlimited' =>  $row['product_is_inventory_tracked'] == 'true' ? true : false,
+                'availability' => $row['product_is_available'] == 'true' ? true : false,
+                'requires_shipping' => $row['product_is_shipping_required'] == 'true' ? true : false,
+                'is_recommended' => $row['product_is_featured'] == 'true' ? true : false,
             ]);
 
 
