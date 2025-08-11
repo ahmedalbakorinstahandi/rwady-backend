@@ -69,6 +69,7 @@ class UserService
 
         $data['status'] = 'active';
         $data['is_verified'] = true;
+        $data['language'] = 'ar';
 
         // check if phone is already in use
         if (User::where('phone', $data['phone'])->exists()) {
