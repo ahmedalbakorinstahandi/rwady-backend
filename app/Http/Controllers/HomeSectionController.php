@@ -116,6 +116,6 @@ class HomeSectionController extends Controller
         cache()->flush();
         
         // Clear user auth cache
-        User::clearAuthCache();
+
     }
 }

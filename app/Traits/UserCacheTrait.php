@@ -42,12 +42,4 @@ trait UserCacheTrait
         $cacheKey = $this->getUserCacheKey($key);
         Cache::forget($cacheKey);
     }
-
-    /**
-     * Clear all cache for current user
-     */
-    protected function clearAllUserCache()
-    {
-        User::clearAuthCache();
-    }
 } 

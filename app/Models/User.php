@@ -89,32 +89,29 @@ class User extends Authenticatable
             return null;
         }
 
-        $user = Auth::guard('sanctum')->user();
-        $cacheKey = 'current_user_' . $user->id;
-
-        // Use cache to avoid repeated database queries
-        return cache()->remember($cacheKey, 60, function () use ($user) {
-            return User::where('id', $user->id)->first();
-        });
-    }
-
-    public static function clearAuthCache()
-    {
-        if (Auth::guard('sanctum')->check()) {
-            $user = Auth::guard('sanctum')->user();
-            $cacheKey = 'current_user_' . $user->id;
-            cache()->forget($cacheKey);
+        $token = request()->bearerToken();
+        if (!$token) {
+            return null;
         }
+
+        $cacheKey = 'request_user_' . $token;
+        
+        // Get user from cache (stored by SetLocaleMiddleware)
+        return cache()->get($cacheKey);
     }
+
+
 
     public static function clearUserCache($userId = null)
     {
         if ($userId) {
-            $cacheKey = 'current_user_' . $userId;
-            cache()->forget($cacheKey);
-        } else {
-            // Clear current user cache
-            self::clearAuthCache();
+            // Clear cache for specific user by finding their active tokens
+            // This is useful when user data is updated
+            $user = User::find($userId);
+            if ($user) {
+                // Clear any cached user data
+                cache()->forget('current_user_' . $userId);
+            }
         }
     }
 

@@ -121,7 +121,7 @@ class HomeSectionService
         $this->clearAllHomeSectionsCache();
         
         // Clear user auth cache
-        User::clearAuthCache();
+
     }
     
     private function storeCacheKey($cacheKey)

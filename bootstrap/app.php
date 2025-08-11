@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Register custom middleware
         $middleware->alias([
-            'clear.user.cache' => \App\Http\Middleware\ClearUserCacheMiddleware::class,
+            // Custom middleware aliases can be added here
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
