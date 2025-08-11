@@ -11,7 +11,7 @@ class CreateUserRequest extends BaseFormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'phone:AUTO'],
             'avatar' => 'nullable|string|max:100',
             'role' => 'required|in:customer,admin',
         ];

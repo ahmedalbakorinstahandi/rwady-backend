@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6cca055107719671c0f102b2d9f1681b",
+    "content-hash": "cf84d10d3d10f7a6ce74d0bda609ba37",
     "packages": [
         {
             "name": "beste/clock",
@@ -904,16 +904,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "9.0.7",
+            "version": "9.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "097efaedf74e6683f64d20d20e43d0cc03413a8e"
+                "reference": "723841920f2fdd9f1b65bce30264bcd1aebd4412"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/097efaedf74e6683f64d20d20e43d0cc03413a8e",
-                "reference": "097efaedf74e6683f64d20d20e43d0cc03413a8e",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/723841920f2fdd9f1b65bce30264bcd1aebd4412",
+                "reference": "723841920f2fdd9f1b65bce30264bcd1aebd4412",
                 "shasum": ""
             },
             "require": {
@@ -927,7 +927,7 @@
             "require-dev": {
                 "ext-dom": "*",
                 "friendsofphp/php-cs-fixer": "^3.71",
-                "infection/infection": "^0.28.0",
+                "infection/infection": "^0.29|^0.31.0",
                 "nette/php-generator": "^4.1",
                 "php-coveralls/php-coveralls": "^2.7",
                 "phpstan/extension-installer": "^1.4.3",
@@ -976,7 +976,7 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2025-06-09T07:28:09+00:00"
+            "time": "2025-08-04T08:11:48+00:00"
         },
         {
             "name": "giggsey/locale",
