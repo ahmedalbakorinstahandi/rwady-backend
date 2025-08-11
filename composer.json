@@ -7,7 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "giggsey/libphonenumber-for-php": "*",
+        "giggsey/libphonenumber-for-php": "^9.0",
         "intervention/image": "^3.11",
         "kreait/firebase-php": "^7.19",
         "laravel/framework": "^12.0",
