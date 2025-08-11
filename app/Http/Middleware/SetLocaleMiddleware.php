@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
-use App\Services\MessageService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +28,9 @@ class SetLocaleMiddleware
             $token = $request->bearerToken();
             if ($token) {
                 $cacheKey = 'request_user_' . $token;
-                cache()->put($cacheKey, $user, 300); // 5 minutes max
+
+                // Store or update user in cache with TTL refresh
+                cache()->put($cacheKey, $user, 300); // 5 minutes - refreshes TTL if exists
             }
         }
 
@@ -42,14 +43,8 @@ class SetLocaleMiddleware
 
         $response = $next($request);
 
-        // Clean up cache at the end of request
-        if (Auth::guard('sanctum')->check()) {
-            $token = $request->bearerToken();
-            if ($token) {
-                $cacheKey = 'request_user_' . $token;
-                cache()->forget($cacheKey);
-            }
-        }
+        // Don't manually clean up cache - let Redis handle TTL expiration
+        // This prevents issues with concurrent requests and ensures data consistency
 
         return $response;
     }
