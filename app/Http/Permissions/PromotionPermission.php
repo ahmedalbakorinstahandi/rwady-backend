@@ -12,14 +12,16 @@ class PromotionPermission
         $user = User::auth();
 
         if (!$user || !$user->isAdmin()) {
+            $today = now()->startOfDay();
+            
             return $query->where('status', 'active')
-                ->where(function ($q) {
+                ->where(function ($q) use ($today) {
                     $q->whereNull('start_at')
-                        ->orWhere('start_at', '<=', now());
+                        ->orWhere('start_at', '<=', $today);
                 })
-                ->where(function ($q) {
+                ->where(function ($q) use ($today) {
                     $q->whereNull('end_at')
-                        ->orWhere('end_at', '>=', now());
+                        ->orWhere('end_at', '>=', $today);
                 });
         }
 
@@ -36,7 +38,11 @@ class PromotionPermission
             }
 
             if ($promotion->start_at && $promotion->end_at) {
-                if ($promotion->start_at > now() || $promotion->end_at < now()) {
+                $today = now()->startOfDay();
+                $startDate = $promotion->start_at->startOfDay();
+                $endDate = $promotion->end_at->startOfDay();
+                
+                if ($startDate > $today || $endDate < $today) {
                     MessageService::abort(403, 'messages.promotion.not_found');
                 }
             }
