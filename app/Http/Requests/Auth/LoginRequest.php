@@ -9,7 +9,7 @@ class LoginRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'phone:AUTO'],
             'role' => 'required|string|in:customer,admin',
         ];
     }
