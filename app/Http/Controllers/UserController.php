@@ -83,6 +83,7 @@ class UserController extends Controller
             'data' => $data,
             'status' => 200,
             'resource' => UserResource::class,
+            'message' => 'messages.user.created_successfully',
         ]);
     }
 
@@ -97,6 +98,7 @@ class UserController extends Controller
             'data' => $data,
             'status' => 200,
             'resource' => UserResource::class,
+            'message' => 'messages.user.updated_successfully',
         ]);
     }
 
@@ -110,6 +112,7 @@ class UserController extends Controller
             'success' => true,
             'data' => $data,
             'status' => 200,
+            'message' => 'messages.user.deleted_successfully',
         ]);
     }
 }

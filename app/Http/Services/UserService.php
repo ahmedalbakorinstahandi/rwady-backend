@@ -53,6 +53,8 @@ class UserService
             MessageService::abort(404, 'messages.user.not_found');
         }
 
+        $user->load('addresses');
+
         return $user;
     }
 
@@ -68,7 +70,14 @@ class UserService
         $data['status'] = 'active';
         $data['is_verified'] = true;
 
+        // check if phone is already in use
+        if (User::where('phone', $data['phone'])->exists()) {
+            MessageService::abort(400, 'messages.user.phone_already_in_use');
+        }
+
         $user = User::create($data);
+
+        $user = $this->show($user->id);
 
         return $user;
     }
@@ -81,7 +90,14 @@ class UserService
             $data['phone'] = $full_phone;
         }
 
+        // check if phone is already in use
+        if (User::where('phone', $data['phone'])->where('id', '!=', $user->id)->exists()) {
+            MessageService::abort(400, 'messages.user.phone_already_in_use');
+        }
+
         $user->update($data);
+
+        $user = $this->show($user->id);
 
         return $user;
     }

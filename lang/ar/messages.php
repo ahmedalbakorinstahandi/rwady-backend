@@ -122,5 +122,13 @@ return [
         'created_successfully' => 'تم إنشاء حملة الترويج بنجاح',
         'updated_successfully' => 'تم تحديث حملة الترويج بنجاح',
         'deleted_successfully' => 'تم حذف حملة الترويج بنجاح',
+    ],
+
+    'user' => [
+        'phone_already_in_use' => 'رقم الهاتف موجود بالفعل',
+        'not_found' => 'المستخدم غير موجود',
+        'created_successfully' => 'تم إنشاء المستخدم بنجاح',
+        'updated_successfully' => 'تم تحديث المستخدم بنجاح',
+        'deleted_successfully' => 'تم حذف المستخدم بنجاح',
     ]
 ];

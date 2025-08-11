@@ -123,5 +123,13 @@ return [
         'created_successfully' => 'Promotion created successfully',
         'updated_successfully' => 'Promotion updated successfully',
         'deleted_successfully' => 'Promotion deleted successfully',
+    ],
+
+    'user' => [
+        'phone_already_in_use' => 'Phone already in use',
+        'not_found' => 'User not found',
+        'created_successfully' => 'User created successfully',
+        'updated_successfully' => 'User updated successfully',
+        'deleted_successfully' => 'User deleted successfully',
     ]
 ];
