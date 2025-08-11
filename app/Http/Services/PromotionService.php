@@ -47,6 +47,13 @@ class PromotionService
     public function create($data)
     {
         $data = LanguageService::prepareTranslatableData($data, new Promotion);
+        
+        
+        // if type is shipping, set discount_type to fixed and discount_value to 0
+        if ($data['type'] == 'shipping') {
+            $data['discount_type'] = 'percentage';
+            $data['discount_value'] = 100;
+        }
 
         $promotion = Promotion::create($data);
 
@@ -59,6 +66,7 @@ class PromotionService
             $productData = array_fill_keys($data['products'], []);
             $promotion->products()->sync($productData);
         }
+
 
         $promotion = $this->show($promotion->id);
 

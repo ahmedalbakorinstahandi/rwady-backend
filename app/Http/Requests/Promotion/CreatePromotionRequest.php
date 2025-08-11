@@ -14,8 +14,8 @@ class CreatePromotionRequest extends BaseFormRequest
         return [
             'title' => LanguageService::translatableFieldRules('required|string|max:255'),
             'type' => 'required|in:product,category,cart_total,shipping',
-            'discount_type' => 'required|in:percentage,fixed',
-            'discount_value' => 'required|numeric|min:0',
+            'discount_type' => 'required_if:type,product,category,cart_total|in:percentage,fixed',
+            'discount_value' => 'required_if:type,product,category,cart_total|numeric|min:0',
             'start_at' => 'nullable|date_format:Y-m-d H:i',
             'end_at' => 'nullable|date_format:Y-m-d H:i|after_or_equal:start_at',
             'status' => 'required|in:draft,active,inactive',
