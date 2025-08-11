@@ -24,7 +24,7 @@ class UserNotification
             $users->pluck('id'),
             [
                 'id' => $user->id,
-                'type' => User::class,
+                'type' => 'user',
             ],
             $title,
             $body,

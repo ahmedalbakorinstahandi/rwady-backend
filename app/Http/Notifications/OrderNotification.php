@@ -24,7 +24,7 @@ class OrderNotification
             $users->pluck('id'),
             [
                 'id' => $order->id,
-                'type' => Order::class
+                'type' => 'order',
             ],
             $title,
             $body,
@@ -77,7 +77,7 @@ class OrderNotification
             $users->pluck('id'),
             [
                 'id' => $order->id,
-                'type' => Order::class,
+                'type' => 'order',
             ],
             $title,
             $body,
