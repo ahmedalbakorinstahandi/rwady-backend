@@ -11,7 +11,7 @@ class UpdateUserRequest extends BaseFormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
-            'phone' => ['nullable', 'phone:AUTO'],
+            'phone' => 'nullable|phone',
             'avatar' => 'nullable|string|max:100',
             'status' => 'nullable|in:active,banned',
         ];
