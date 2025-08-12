@@ -58,49 +58,21 @@ class ProductResource extends JsonResource
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_products' => $this->whenLoaded('categories', function () {
                 try {
-                    // Get products from current categories if no related products found
-                    $categoryProducts = collect($this->relatedCategoryProducts ?? []);
+                    // First: Get manually related products
                     $manualRelatedProducts = collect($this->relatedProducts ?? []);
                     
-                    $merged = $categoryProducts->merge($manualRelatedProducts);
+                    // Second: Get products from same lowest level categories
+                    $sameLevelProducts = collect($this->sameLevelProducts ?? []);
                     
-                    if ($merged->isEmpty()) {
-                        // Get products from leaf categories (most specific categories)
-                        $leafCategoryProducts = collect($this->leafCategoryProducts ?? []);
-                        
-                        if ($leafCategoryProducts->isNotEmpty()) {
-                            $merged = $leafCategoryProducts;
-                        } else {
-                            // Fallback: Get products from current product's categories
-                            $categoryIds = $this->categories->pluck('id');
-                            
-                            if ($categoryIds->isNotEmpty()) {
-                                $limit = $this->related_category_limit ?: 10;
-                                $merged = Product::query()
-                                    ->where('id', '!=', $this->id)
-                                    ->whereHas('categories', function($q) use ($categoryIds) {
-                                        $q->whereIn('category_id', $categoryIds);
-                                    })
-                                    ->with(['media', 'colors'])
-                                    ->inRandomOrder()
-                                    ->limit($limit)
-                                    ->get();
-                            }
-                        }
-                    } else {
-                        $limit = $this->related_category_limit ?: 10;
-                        $merged = $merged->unique('id')
-                            ->take($limit);
-                    }
+                    // Merge both collections
+                    $merged = $manualRelatedProducts->merge($sameLevelProducts);
                     
-                    // Ensure we always return a collection
-                    if ($merged instanceof \Illuminate\Database\Eloquent\Collection) {
-                        return ProductResource::collection($merged);
-                    }
+                    // Remove duplicates and apply limit
+                    $limit = $this->related_category_limit ?: 10;
+                    $merged = $merged->unique('id')->take($limit);
                     
-                    return ProductResource::collection(collect($merged));
+                    return ProductResource::collection($merged);
                 } catch (\Exception $e) {
-                    // Fallback to empty collection if there's an error
                     return ProductResource::collection(collect([]));
                 }
             }, []),

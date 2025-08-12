@@ -321,10 +321,10 @@ class Product extends Model
     }
 
     /**
-     * Get products from leaf categories (most specific categories)
-     * This finds products from the deepest categories the product belongs to
+     * Get products from the same lowest level categories
+     * This finds products from the most specific categories the product belongs to
      */
-    public function getLeafCategoryProductsAttribute()
+    public function getSameLevelProductsAttribute()
     {
         // Get all categories this product belongs to
         $productCategories = $this->categories()->with('children')->get();
@@ -333,20 +333,26 @@ class Product extends Model
             return collect();
         }
         
-        // Find leaf categories (categories with no children)
-        $leafCategories = Category::getLeafCategories($productCategories);
+        // Find the lowest level categories (categories with no children)
+        $lowestCategories = collect();
         
-        if ($leafCategories->isEmpty()) {
+        foreach ($productCategories as $category) {
+            if ($category->children->isEmpty()) {
+                $lowestCategories->push($category);
+            }
+        }
+        
+        if ($lowestCategories->isEmpty()) {
             return collect();
         }
         
-        $leafCategoryIds = $leafCategories->pluck('id');
+        $lowestCategoryIds = $lowestCategories->pluck('id');
         
-        // Get products from leaf categories
+        // Get products from the same lowest level categories
         $query = Product::query()
             ->where('id', '!=', $this->id)
-            ->whereHas('categories', function($q) use ($leafCategoryIds) {
-                $q->whereIn('category_id', $leafCategoryIds);
+            ->whereHas('categories', function($q) use ($lowestCategoryIds) {
+                $q->whereIn('category_id', $lowestCategoryIds);
             })
             ->with(['media', 'colors']);
         
