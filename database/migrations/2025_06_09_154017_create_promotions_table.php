@@ -49,7 +49,7 @@ return new class extends Migration
             $table->foreignId('promotion_cart_id')->nullable()->constrained('promotions');
             $table->longText('promotion_cart_title')->nullable();
             $table->double('promotion_cart_discount_value')->nullable();
-            $table->double('promotion_cart_discount_type')->nullable();
+            $table->string('promotion_cart_discount_type')->nullable();
             $table->boolean('promotion_free_shipping')->default(false);
             $table->foreignId('promotion_shipping_id')->nullable()->constrained('promotions');
             $table->longText('promotion_shipping_title')->nullable();
@@ -60,7 +60,7 @@ return new class extends Migration
         Schema::table('order_products', function (Blueprint $table) {
             $table->foreignId('promotion_id')->nullable()->constrained('promotions');
             $table->longText('promotion_title')->nullable();
-            $table->double('promotion_discount_type')->nullable();
+            $table->string('promotion_discount_type')->nullable();
             $table->double('promotion_discount_value')->nullable();
         });
 

@@ -294,7 +294,9 @@ class OrderService
                 // 'additionalInfo' => [],
             ];
 
+
             $paymentSession = $qiPaymentService->createPayment($paymentData);
+            abort(response()->json($paymentSession));
 
             $order->metadata = $paymentSession;
 
