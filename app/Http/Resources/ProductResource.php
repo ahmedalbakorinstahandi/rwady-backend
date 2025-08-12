@@ -57,40 +57,45 @@ class ProductResource extends JsonResource
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
             'related_products' => function () {
-                // Get products from current categories if no related products found
-                $categoryProducts = collect($this->relatedCategoryProducts ?? []);
-                $manualRelatedProducts = collect($this->relatedProducts ?? []);
-                
-                $merged = $categoryProducts->merge($manualRelatedProducts);
-                
-                if ($merged->isEmpty()) {
-                    // Get products from current product's categories
-                    $categoryIds = $this->whenLoaded('categories', function() {
-                        return $this->categories->pluck('id');
-                    }, collect([]));
+                try {
+                    // Get products from current categories if no related products found
+                    $categoryProducts = collect($this->relatedCategoryProducts ?? []);
+                    $manualRelatedProducts = collect($this->relatedProducts ?? []);
                     
-                    if ($categoryIds->isNotEmpty()) {
-                        $merged = Product::query()
-                            ->where('id', '!=', $this->id)
-                            ->whereHas('categories', function($q) use ($categoryIds) {
-                                $q->whereIn('category_id', $categoryIds);
-                            })
-                            ->with(['media', 'colors'])
-                            ->inRandomOrder()
-                            ->limit($this->related_category_limit ?: 10)
-                            ->get();
+                    $merged = $categoryProducts->merge($manualRelatedProducts);
+                    
+                    if ($merged->isEmpty()) {
+                        // Get products from current product's categories
+                        $categoryIds = $this->whenLoaded('categories', function() {
+                            return $this->categories->pluck('id');
+                        }, collect([]));
+                        
+                        if ($categoryIds->isNotEmpty()) {
+                            $merged = Product::query()
+                                ->where('id', '!=', $this->id)
+                                ->whereHas('categories', function($q) use ($categoryIds) {
+                                    $q->whereIn('category_id', $categoryIds);
+                                })
+                                ->with(['media', 'colors'])
+                                ->inRandomOrder()
+                                ->limit($this->related_category_limit ?: 10)
+                                ->get();
+                        }
+                    } else {
+                        $merged = $merged->unique('id')
+                            ->take($this->related_category_limit ?: 10);
                     }
-                } else {
-                    $merged = $merged->unique('id')
-                        ->take($this->related_category_limit ?: 10);
+                    
+                    // Ensure we always return a collection
+                    if ($merged instanceof \Illuminate\Database\Eloquent\Collection) {
+                        return ProductResource::collection($merged);
+                    }
+                    
+                    return ProductResource::collection(collect($merged));
+                } catch (\Exception $e) {
+                    // Fallback to empty collection if there's an error
+                    return ProductResource::collection(collect([]));
                 }
-                
-                // Ensure we always return a collection
-                if ($merged instanceof \Illuminate\Database\Eloquent\Collection) {
-                    return ProductResource::collection($merged);
-                }
-                
-                return ProductResource::collection(collect($merged));
             },
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
