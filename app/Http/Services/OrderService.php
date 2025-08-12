@@ -296,7 +296,7 @@ class OrderService
 
 
             $paymentSession = $qiPaymentService->createPayment($paymentData);
-            // abort(response()->json($paymentSession));
+            abort(response()->json($paymentSession));
 
             $order->metadata = $paymentSession;
 
