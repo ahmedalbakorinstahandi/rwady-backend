@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -55,15 +56,30 @@ class ProductResource extends JsonResource
             'final_price_after_promotion' => $this->final_price_after_promotion,
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'merged_related_products' => $this->whenLoaded('relatedCategory', function () {
-                // دمج المنتجات المرتبطة بالفئة مع المنتجات المرتبطة يدوياً
+            'related_products' => $this->whenLoaded('relatedCategory', function () {
+                // Get products from current categories if no related products found
                 $categoryProducts = collect($this->relatedCategoryProducts ?? []);
                 $manualRelatedProducts = collect($this->relatedProducts ?? []);
                 
-                // دمج المجموعتين مع إزالة التكرار
-                $merged = $categoryProducts->merge($manualRelatedProducts)
-                    ->unique('id')
-                    ->take($this->related_category_limit ?: 10); // حد أقصى للمنتجات المرتبطة
+                $merged = $categoryProducts->merge($manualRelatedProducts);
+                
+                if ($merged->isEmpty()) {
+                    // Get products from current product's categories
+                    $categoryIds = $this->categories->pluck('id');
+                    
+                    $merged = Product::query()
+                        ->where('id', '!=', $this->id)
+                        ->whereHas('categories', function($q) use ($categoryIds) {
+                            $q->whereIn('category_id', $categoryIds);
+                        })
+                        ->with(['media', 'colors'])
+                        ->inRandomOrder()
+                        ->limit($this->related_category_limit ?: 10)
+                        ->get();
+                } else {
+                    $merged = $merged->unique('id')
+                        ->take($this->related_category_limit ?: 10);
+                }
                 
                 return ProductResource::collection($merged);
             }, collect([])),
