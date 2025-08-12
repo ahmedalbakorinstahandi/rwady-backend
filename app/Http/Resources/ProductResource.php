@@ -56,7 +56,7 @@ class ProductResource extends JsonResource
             'final_price_after_promotion' => $this->final_price_after_promotion,
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_products' => $this->whenLoaded('relatedCategory', function () {
+            'related_products' => function () {
                 // Get products from current categories if no related products found
                 $categoryProducts = collect($this->relatedCategoryProducts ?? []);
                 $manualRelatedProducts = collect($this->relatedProducts ?? []);
@@ -65,24 +65,33 @@ class ProductResource extends JsonResource
                 
                 if ($merged->isEmpty()) {
                     // Get products from current product's categories
-                    $categoryIds = $this->categories->pluck('id');
+                    $categoryIds = $this->whenLoaded('categories', function() {
+                        return $this->categories->pluck('id');
+                    }, collect([]));
                     
-                    $merged = Product::query()
-                        ->where('id', '!=', $this->id)
-                        ->whereHas('categories', function($q) use ($categoryIds) {
-                            $q->whereIn('category_id', $categoryIds);
-                        })
-                        ->with(['media', 'colors'])
-                        ->inRandomOrder()
-                        ->limit($this->related_category_limit ?: 10)
-                        ->get();
+                    if ($categoryIds->isNotEmpty()) {
+                        $merged = Product::query()
+                            ->where('id', '!=', $this->id)
+                            ->whereHas('categories', function($q) use ($categoryIds) {
+                                $q->whereIn('category_id', $categoryIds);
+                            })
+                            ->with(['media', 'colors'])
+                            ->inRandomOrder()
+                            ->limit($this->related_category_limit ?: 10)
+                            ->get();
+                    }
                 } else {
                     $merged = $merged->unique('id')
                         ->take($this->related_category_limit ?: 10);
                 }
                 
-                return ProductResource::collection($merged);
-            }, collect([])),
+                // Ensure we always return a collection
+                if ($merged instanceof \Illuminate\Database\Eloquent\Collection) {
+                    return ProductResource::collection($merged);
+                }
+                
+                return ProductResource::collection(collect($merged));
+            },
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
