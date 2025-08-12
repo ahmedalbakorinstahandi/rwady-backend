@@ -56,7 +56,7 @@ class ProductResource extends JsonResource
             'final_price_after_promotion' => $this->final_price_after_promotion,
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_products' => function () {
+            'related_products' => $this->whenLoaded('categories', function () {
                 try {
                     // Get products from current categories if no related products found
                     $categoryProducts = collect($this->relatedCategoryProducts ?? []);
@@ -66,9 +66,7 @@ class ProductResource extends JsonResource
                     
                     if ($merged->isEmpty()) {
                         // Get products from current product's categories
-                        $categoryIds = $this->whenLoaded('categories', function() {
-                            return $this->categories->pluck('id');
-                        }, collect([]));
+                        $categoryIds = $this->categories->pluck('id');
                         
                         if ($categoryIds->isNotEmpty()) {
                             $limit = $this->related_category_limit ?: 10;
@@ -98,7 +96,7 @@ class ProductResource extends JsonResource
                     // Fallback to empty collection if there's an error
                     return ProductResource::collection(collect([]));
                 }
-            },
+            }, []),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
