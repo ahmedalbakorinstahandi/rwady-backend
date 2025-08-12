@@ -125,6 +125,58 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id')->with('children');
     }
 
+    /**
+     * Get all descendants (children, grandchildren, etc.)
+     */
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
+
+    /**
+     * Get all ancestors (parent, grandparent, etc.)
+     */
+    public function ancestors()
+    {
+        $ancestors = collect();
+        $current = $this->parent;
+        
+        while ($current) {
+            $ancestors->push($current);
+            $current = $current->parent;
+        }
+        
+        return $ancestors;
+    }
+
+    /**
+     * Check if this category is a leaf (has no children)
+     */
+    public function isLeaf()
+    {
+        return $this->children()->count() === 0;
+    }
+
+    /**
+     * Get leaf categories from a collection of categories
+     * This finds the most specific (deepest) categories
+     */
+    public static function getLeafCategories($categories)
+    {
+        $leafCategories = collect();
+        
+        foreach ($categories as $category) {
+            if ($category->isLeaf()) {
+                $leafCategories->push($category);
+            } else {
+                // Recursively get leaf categories from children
+                $childLeaves = self::getLeafCategories($category->children);
+                $leafCategories = $leafCategories->merge($childLeaves);
+            }
+        }
+        
+        return $leafCategories->unique('id');
+    }
 
 
     public function products()

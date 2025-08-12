@@ -65,20 +65,27 @@ class ProductResource extends JsonResource
                     $merged = $categoryProducts->merge($manualRelatedProducts);
                     
                     if ($merged->isEmpty()) {
-                        // Get products from current product's categories
-                        $categoryIds = $this->categories->pluck('id');
+                        // Get products from leaf categories (most specific categories)
+                        $leafCategoryProducts = collect($this->leafCategoryProducts ?? []);
                         
-                        if ($categoryIds->isNotEmpty()) {
-                            $limit = $this->related_category_limit ?: 10;
-                            $merged = Product::query()
-                                ->where('id', '!=', $this->id)
-                                ->whereHas('categories', function($q) use ($categoryIds) {
-                                    $q->whereIn('category_id', $categoryIds);
-                                })
-                                ->with(['media', 'colors'])
-                                ->inRandomOrder()
-                                ->limit($limit)
-                                ->get();
+                        if ($leafCategoryProducts->isNotEmpty()) {
+                            $merged = $leafCategoryProducts;
+                        } else {
+                            // Fallback: Get products from current product's categories
+                            $categoryIds = $this->categories->pluck('id');
+                            
+                            if ($categoryIds->isNotEmpty()) {
+                                $limit = $this->related_category_limit ?: 10;
+                                $merged = Product::query()
+                                    ->where('id', '!=', $this->id)
+                                    ->whereHas('categories', function($q) use ($categoryIds) {
+                                        $q->whereIn('category_id', $categoryIds);
+                                    })
+                                    ->with(['media', 'colors'])
+                                    ->inRandomOrder()
+                                    ->limit($limit)
+                                    ->get();
+                            }
                         }
                     } else {
                         $limit = $this->related_category_limit ?: 10;

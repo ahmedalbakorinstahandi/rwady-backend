@@ -320,6 +320,42 @@ class Product extends Model
             ->get();
     }
 
+    /**
+     * Get products from leaf categories (most specific categories)
+     * This finds products from the deepest categories the product belongs to
+     */
+    public function getLeafCategoryProductsAttribute()
+    {
+        // Get all categories this product belongs to
+        $productCategories = $this->categories()->with('children')->get();
+        
+        if ($productCategories->isEmpty()) {
+            return collect();
+        }
+        
+        // Find leaf categories (categories with no children)
+        $leafCategories = Category::getLeafCategories($productCategories);
+        
+        if ($leafCategories->isEmpty()) {
+            return collect();
+        }
+        
+        $leafCategoryIds = $leafCategories->pluck('id');
+        
+        // Get products from leaf categories
+        $query = Product::query()
+            ->where('id', '!=', $this->id)
+            ->whereHas('categories', function($q) use ($leafCategoryIds) {
+                $q->whereIn('category_id', $leafCategoryIds);
+            })
+            ->with(['media', 'colors']);
+        
+        $limit = $this->related_category_limit ?: 10;
+        return $query->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
+
 
     public function categories(): BelongsToMany
     {
