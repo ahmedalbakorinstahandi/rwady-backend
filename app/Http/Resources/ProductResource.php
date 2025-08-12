@@ -71,6 +71,7 @@ class ProductResource extends JsonResource
                         }, collect([]));
                         
                         if ($categoryIds->isNotEmpty()) {
+                            $limit = $this->related_category_limit ?: 10;
                             $merged = Product::query()
                                 ->where('id', '!=', $this->id)
                                 ->whereHas('categories', function($q) use ($categoryIds) {
@@ -78,12 +79,13 @@ class ProductResource extends JsonResource
                                 })
                                 ->with(['media', 'colors'])
                                 ->inRandomOrder()
-                                ->limit($this->related_category_limit ?: 10)
+                                ->limit($limit)
                                 ->get();
                         }
                     } else {
+                        $limit = $this->related_category_limit ?: 10;
                         $merged = $merged->unique('id')
-                            ->take($this->related_category_limit ?: 10);
+                            ->take($limit);
                     }
                     
                     // Ensure we always return a collection

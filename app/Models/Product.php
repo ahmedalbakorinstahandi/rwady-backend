@@ -314,8 +314,9 @@ class Product extends Model
             });
         }
 
+        $limit = $this->related_category_limit ?: 10;
         return $query->inRandomOrder()
-            ->limit($this->related_category_limit)
+            ->limit($limit)
             ->get();
     }
 
