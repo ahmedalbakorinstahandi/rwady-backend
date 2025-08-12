@@ -33,7 +33,7 @@ class OrderProduct extends Model
     protected function promotionTitle(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('promotion_title'),
+            get: fn(?string $value) => $this->getAllTranslations('promotion_title'),
         );
     }
 

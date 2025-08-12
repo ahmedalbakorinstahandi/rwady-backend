@@ -40,14 +40,14 @@ class Order extends Model
     protected function promotionCartTitle(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('promotion_cart_title'),
+            get: fn(?string $value) => $this->getAllTranslations('promotion_cart_title'),
         );
     }
 
     protected function promotionShippingTitle(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => $this->getAllTranslations('promotion_shipping_title'),
+            get: fn(?string $value) => $this->getAllTranslations('promotion_shipping_title'),
         );
     }
 
