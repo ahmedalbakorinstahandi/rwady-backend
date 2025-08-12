@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\LanguageTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class OrderProduct extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations, LanguageTrait;
 
     protected $fillable = [
         'order_id',
@@ -24,6 +27,15 @@ class OrderProduct extends Model
         'promotion_discount_type',
         'promotion_discount_value',
     ];
+
+    public $translatable = ['promotion_title'];
+
+    protected function promotionTitle(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => $this->getAllTranslations('promotion_title'),
+        );
+    }
 
 
     public function order(): BelongsTo

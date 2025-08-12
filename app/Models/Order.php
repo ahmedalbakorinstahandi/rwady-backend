@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\LanguageTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Spatie\Translatable\HasTranslations;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations, LanguageTrait;
 
     protected $fillable = [
         'user_id',
@@ -33,7 +35,21 @@ class Order extends Model
         'promotion_shipping_title',
     ];
 
+    public $translatable = ['promotion_cart_title', 'promotion_shipping_title'];
 
+    protected function promotionCartTitle(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => $this->getAllTranslations('promotion_cart_title'),
+        );
+    }
+
+    protected function promotionShippingTitle(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => $this->getAllTranslations('promotion_shipping_title'),
+        );
+    }
 
 
     public function getTotalAmountAttribute()
