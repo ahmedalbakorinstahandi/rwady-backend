@@ -56,7 +56,7 @@ class ProductResource extends JsonResource
             'final_price_after_promotion' => $this->final_price_after_promotion,
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_products' => $this->whenLoaded('categories', function () {
+            'related_products' => $this->whenLoaded('relatedProducts', function () {
                 try {
                     // First: Get manually related products
                     $manualRelatedProducts = collect($this->relatedProducts ?? []);
