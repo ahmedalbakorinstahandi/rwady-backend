@@ -55,15 +55,23 @@ class ProductResource extends JsonResource
             'final_price_after_promotion' => $this->final_price_after_promotion,
             'promotion' => new PromotionResource($this->getBestPromotionAttribute()),
             'related_category' => new CategoryResource($this->whenLoaded('relatedCategory')),
-            'related_category_products' => $this->whenLoaded('relatedCategory', function () {
-                return ProductResource::collection($this->relatedCategoryProducts);
+            'merged_related_products' => $this->whenLoaded('relatedCategory', function () {
+                // دمج المنتجات المرتبطة بالفئة مع المنتجات المرتبطة يدوياً
+                $categoryProducts = collect($this->relatedCategoryProducts ?? []);
+                $manualRelatedProducts = collect($this->relatedProducts ?? []);
+                
+                // دمج المجموعتين مع إزالة التكرار
+                $merged = $categoryProducts->merge($manualRelatedProducts)
+                    ->unique('id')
+                    ->take($this->related_category_limit ?: 10); // حد أقصى للمنتجات المرتبطة
+                
+                return ProductResource::collection($merged);
             }, collect([])),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'brands' => BrandResource::collection($this->whenLoaded('brands')),
             'colors' => ProductColorResource::collection($this->whenLoaded('colors')),
             'cart_items' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order_products' => OrderProductResource::collection($this->whenLoaded('orderProducts')),
-            'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts')),
             'media' => MediaResource::collection($this->whenLoaded('media')),
             'seo' => new SeoResource($this->whenLoaded('seo')),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

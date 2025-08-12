@@ -28,14 +28,7 @@ class OrderProduct extends Model
         'promotion_discount_value',
     ];
 
-    public $translatable = ['promotion_title'];
 
-    protected function promotionTitle(): Attribute
-    {
-        return Attribute::make(
-            get: fn(?string $value) => $this->getAllTranslations('promotion_title'),
-        );
-    }
 
 
     public function order(): BelongsTo
