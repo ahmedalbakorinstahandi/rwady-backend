@@ -34,7 +34,11 @@ class QiPaymentWebhookController extends Controller
         // Order::where('payment_id', $payload['paymentId'])->update(['status' => $payload['status']]);
 
         // البحث عن الطلب باستخدام paymentId أو requestId
-        $order = Order::where('payment_session_id', 'qi-' . $payload['requestId'])
+
+
+        // order id split  requestId by -  and get index 1 
+        $orderId = explode('-', $payload['requestId'])[1];
+        $order = Order::where('payment_session_id', $orderId)
             ->first();
 
         if (!$order) {

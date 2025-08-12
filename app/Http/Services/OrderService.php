@@ -275,7 +275,7 @@ class OrderService
 
 
             $paymentData = [
-                'requestId' =>  "{$order->id}",
+                'requestId' =>  "{$order->id}-" . Str::random(10),
                 // 
                 'amount' => $order->total_amount,
                 'locale' => 'en_US',
