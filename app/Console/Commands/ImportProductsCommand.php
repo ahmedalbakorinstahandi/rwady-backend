@@ -16,12 +16,13 @@ use League\Csv\Reader;
 
 class ImportProductsCommand extends Command
 {
-    protected $signature = 'import:products {file}';
+    protected $signature = 'import:products';
     protected $description = 'Import products from CSV file with logging progress';
 
     public function handle(): void
     {
-        $csvPath = $this->argument('file');
+        // file storage/files/catalog_2025-08-04_16-00.csv
+        $csvPath = "storage/files/catalog_2025-08-04_16-00.csv";
         if (!file_exists($csvPath)) {
             Log::error("File not found: {$csvPath}");
             return;
