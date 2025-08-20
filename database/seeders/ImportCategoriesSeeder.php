@@ -74,7 +74,10 @@ class ImportCategoriesSeeder extends Seeder
                                 $tempFile = tempnam(sys_get_temp_dir(), 'img_');
                                 file_put_contents($tempFile, file_get_contents($row['category_image']));
                                 
-                                $imagePath = ImageService::storeImage($tempFile, 'categories');
+                                // استخراج اسم الصورة من الرابط
+                                $imageName = $this->extractImageNameFromUrl($row['category_image']);
+                                
+                                $imagePath = ImageService::storeImageWithOriginalName($tempFile, 'categories', $imageName);
                                 $category->image = $imagePath;
                                 
                                 unlink($tempFile);
@@ -112,5 +115,33 @@ class ImportCategoriesSeeder extends Seeder
         }
 
         $this->command->info('✅ Smart hierarchical category import completed.');
+    }
+
+    /**
+     * استخراج اسم الصورة من الرابط
+     */
+    private function extractImageNameFromUrl($url)
+    {
+        // استخراج اسم الملف من الرابط
+        $parsedUrl = parse_url($url);
+        $path = $parsedUrl['path'] ?? '';
+        
+        // استخراج اسم الملف مع اللاحقة
+        $fileName = basename($path);
+        
+        // إزالة اللاحقة (.png, .jpg, .jpeg, .webp, إلخ)
+        $nameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+        
+        // تنظيف الاسم من الأحرف الخاصة
+        $cleanName = preg_replace('/[^a-zA-Z0-9\-\_\s]/', '_', $nameWithoutExtension);
+        $cleanName = preg_replace('/\s+/', '_', $cleanName); // استبدال المسافات بـ _
+        $cleanName = trim($cleanName, '._-');
+        
+        // إذا كان الاسم فارغاً، استخدم اسم افتراضي
+        if (empty($cleanName)) {
+            $cleanName = 'category_image';
+        }
+        
+        return $cleanName;
     }
 }

@@ -14,6 +14,8 @@ cd /
 cd home/rwady-backend/htdocs/backend.rwady.com
 git pull
 
+ssh -t root@82.198.225.45 "cd /home/rwady-backend/htdocs/backend.rwady.com && php artisan import:products storage/files/catalog_2025-08-04_16-00.csv"
+
 
 
 5213 7203 0423 8582 
@@ -41,3 +43,5 @@ git pull
   // php artisan storage:link
   // change permissions of storage/app permissions to 777
   // chown root:root storage/app -R
+
+php artisan import:products storage/files/catalog_2025-08-04_16-00.csv

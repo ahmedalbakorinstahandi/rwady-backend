@@ -144,7 +144,11 @@ class ImportProductsCommand extends Command
         try {
             $tempFile = tempnam(sys_get_temp_dir(), 'img_');
             file_put_contents($tempFile, file_get_contents($url));
-            $imagePath = ImageService::storeImage($tempFile, 'products');
+            
+            // استخراج اسم الصورة من الرابط
+            $imageName = $this->extractImageNameFromUrl($url);
+            
+            $imagePath = ImageService::storeImageWithOriginalName($tempFile, 'products', $imageName);
             unlink($tempFile);
 
             $media = Media::create([
@@ -159,5 +163,33 @@ class ImportProductsCommand extends Command
         } catch (\Exception $e) {
             $this->error("Failed to download image for product {$product->sku}: {$e->getMessage()}");
         }
+    }
+
+    /**
+     * استخراج اسم الصورة من الرابط
+     */
+    private function extractImageNameFromUrl($url)
+    {
+        // استخراج اسم الملف من الرابط
+        $parsedUrl = parse_url($url);
+        $path = $parsedUrl['path'] ?? '';
+        
+        // استخراج اسم الملف مع اللاحقة
+        $fileName = basename($path);
+        
+        // إزالة اللاحقة (.png, .jpg, .jpeg, .webp, إلخ)
+        $nameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+        
+        // تنظيف الاسم من الأحرف الخاصة
+        $cleanName = preg_replace('/[^a-zA-Z0-9\-\_\s]/', '_', $nameWithoutExtension);
+        $cleanName = preg_replace('/\s+/', '_', $cleanName); // استبدال المسافات بـ _
+        $cleanName = trim($cleanName, '._-');
+        
+        // إذا كان الاسم فارغاً، استخدم اسم افتراضي
+        if (empty($cleanName)) {
+            $cleanName = 'product_image';
+        }
+        
+        return $cleanName;
     }
 }
