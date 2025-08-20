@@ -11,4 +11,4 @@ Artisan::command('inspire', function () {
 
 
 // file storage/files/catalog_2025-08-04_16-00.csv
-Schedule::command(ImportProductsCommand::class, ['file' => 'storage/files/catalog_2025-08-04_16-00.csv'])->everyMinute();
+Schedule::command('import:products', ['storage/files/catalog_2025-08-04_16-00.csv'])->everyMinute();
