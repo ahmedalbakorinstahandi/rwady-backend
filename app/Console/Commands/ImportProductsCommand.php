@@ -16,25 +16,19 @@ use League\Csv\Reader;
 
 class ImportProductsCommand extends Command
 {
-    protected $signature = 'import:products {file?}';
+    protected $signature = 'import:products';
     protected $description = 'Import products from CSV file with logging progress';
 
     public function handle(): void
     {
-        $arg = $this->argument('file') ?? 'files/catalog_2025-08-04_16-00.csv';
-
-        // إذا بدأ بمسار مطلق خليه كما هو، غير هيك افترضه داخل storage/app
-        $csvPath = str_starts_with($arg, '/')
-            ? $arg
-            : storage_path('app/' . ltrim($arg, '/'));
-
-        Log::info('Import start', ['path' => $csvPath, 'cwd' => getcwd()]);
-
-        if (!is_file($csvPath) || !is_readable($csvPath)) {
-            Log::error("File not found or unreadable: {$csvPath}");
-            $this->error("CSV missing: {$csvPath}");
+        // file storage/files/catalog_2025-08-04_16-00.csv
+        $csvPath = "storage/files/catalog_2025-08-04_16-00.csv";
+        if (!file_exists($csvPath)) {
+            Log::error("File not found: {$csvPath}");
             return;
         }
+
+        Log::info("Importing products from {$csvPath}");
 
         $csv = Reader::createFromPath($csvPath, 'r');
         $csv->setHeaderOffset(0);
@@ -55,16 +49,16 @@ class ImportProductsCommand extends Command
 
             $categoryIds = collect();
 
-            for ($i = 1; $i <= 8; $i++) {
+             for ($i = 1; $i <= 8; $i++) {
                 $rawValue = trim($row["product_category_{$i}"] ?? '');
-
+            
                 if (!$rawValue) {
                     continue;
                 }
-
-                $parts = array_map('trim', explode('/', $rawValue));
-
-                foreach ($parts as $part) {
+            
+                 $parts = array_map('trim', explode('/', $rawValue));
+            
+                 foreach ($parts as $part) {
                     if ($part) {
                         $category = Category::where('name->ar', $part)->first();
                         if ($category) {
@@ -75,7 +69,7 @@ class ImportProductsCommand extends Command
             }
 
             $categoryIds = $categoryIds->unique()->values()->toArray();
-
+            
 
             $brandId = null;
             $brandName = trim($row['product_brand'] ?? '');
@@ -154,10 +148,10 @@ class ImportProductsCommand extends Command
         try {
             $tempFile = tempnam(sys_get_temp_dir(), 'img_');
             file_put_contents($tempFile, file_get_contents($url));
-
+            
             // استخراج اسم الصورة من الرابط
             $imageName = $this->extractImageNameFromUrl($url);
-
+            
             $imagePath = ImageService::storeImageWithOriginalName($tempFile, 'products', $imageName);
             unlink($tempFile);
 
@@ -183,23 +177,23 @@ class ImportProductsCommand extends Command
         // استخراج اسم الملف من الرابط
         $parsedUrl = parse_url($url);
         $path = $parsedUrl['path'] ?? '';
-
+        
         // استخراج اسم الملف مع اللاحقة
         $fileName = basename($path);
-
+        
         // إزالة اللاحقة (.png, .jpg, .jpeg, .webp, إلخ)
         $nameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-
+        
         // تنظيف الاسم من الأحرف الخاصة
         $cleanName = preg_replace('/[^a-zA-Z0-9\-\_\s]/', '_', $nameWithoutExtension);
         $cleanName = preg_replace('/\s+/', '_', $cleanName); // استبدال المسافات بـ _
         $cleanName = trim($cleanName, '._-');
-
+        
         // إذا كان الاسم فارغاً، استخدم اسم افتراضي
         if (empty($cleanName)) {
             $cleanName = 'product_image';
         }
-
+        
         return $cleanName;
     }
 }
