@@ -28,6 +28,8 @@ class ImportProductsCommand extends Command
             return;
         }
 
+        return;
+
         Log::info("Importing products from {$csvPath}");
 
         $csv = Reader::createFromPath($csvPath, 'r');
