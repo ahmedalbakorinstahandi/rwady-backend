@@ -82,7 +82,7 @@ class ImageService
         
         // إضافة timestamp لتجنب تكرار الأسماء
         $timestamp = time();
-        $imageName = "{$cleanName}_{$timestamp}.webp";
+        $imageName = "{$cleanName}.webp";
         
         $new_path = storage_path("app/public/{$folder}/{$imageName}");
 
