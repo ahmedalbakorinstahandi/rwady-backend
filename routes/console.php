@@ -10,9 +10,9 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::command('import:products')
-    ->everyTenMinutes()
-    ->withoutOverlapping()
-    ->runInBackground()
-    ->appendOutputTo(storage_path('logs/import_products.log'))
-;
+// Schedule::command('import:products')
+//     ->everyTenMinutes()
+//     ->withoutOverlapping()
+//     ->runInBackground()
+//     ->appendOutputTo(storage_path('logs/import_products.log'))
+// ;
