@@ -10,6 +10,7 @@ use App\Models\CategoryProduct;
 use App\Services\ImageService;
 use App\Services\OrderHelper;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use League\Csv\Reader;
 
@@ -41,7 +42,7 @@ class ImportProductsCommand extends Command
                 continue;
             }
 
-            $this->info("Processing product SKU: {$sku}");
+            Log::info("Processing product SKU: {$sku}");
 
             $categoryIds = collect();
 
@@ -132,11 +133,11 @@ class ImportProductsCommand extends Command
 
             $count++;
             if ($count % 10 === 0) {
-                $this->info("Imported {$count} products so far...");
+                Log::info("Imported {$count} products so far...");
             }
         }
 
-        $this->info("✅ Import completed. Total products imported: {$count}");
+        Log::info("✅ Import completed. Total products imported: {$count}");
     }
 
     private function downloadAndAttachImage($product, $url)
