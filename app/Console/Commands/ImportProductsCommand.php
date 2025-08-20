@@ -28,7 +28,7 @@ class ImportProductsCommand extends Command
             return;
         }
 
-        return;
+        // return;
 
         Log::info("Importing products from {$csvPath}");
 
