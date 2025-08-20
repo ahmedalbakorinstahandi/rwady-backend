@@ -11,7 +11,7 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('import:products')
-    ->everyMinute()
+    ->everyTenMinutes()
     ->withoutOverlapping()
     ->runInBackground()
     ->appendOutputTo(storage_path('logs/import_products.log'))
