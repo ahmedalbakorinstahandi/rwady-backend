@@ -23,7 +23,7 @@ class ImportProductsCommand extends Command
     {
         $csvPath = $this->argument('file');
         if (!file_exists($csvPath)) {
-            $this->error("File not found: {$csvPath}");
+            Log::error("File not found: {$csvPath}");
             return;
         }
 
@@ -162,7 +162,7 @@ class ImportProductsCommand extends Command
 
             OrderHelper::assign($media, 'orders');
         } catch (\Exception $e) {
-            $this->error("Failed to download image for product {$product->sku}: {$e->getMessage()}");
+            Log::error("Failed to download image for product {$product->sku}: {$e->getMessage()}");
         }
     }
 
