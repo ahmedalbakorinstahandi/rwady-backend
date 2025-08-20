@@ -14,5 +14,5 @@ Schedule::command('import:products', ['files/catalog_2025-08-04_16-00.csv'])
     ->everyMinute()
     ->withoutOverlapping()
     ->runInBackground()
-    // ->appendOutputTo(storage_path('logs/import_products.log'))
+    ->appendOutputTo(storage_path('logs/import_products.log'))
     ;
