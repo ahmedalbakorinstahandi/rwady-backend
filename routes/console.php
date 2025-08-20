@@ -10,5 +10,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-// file storage/files/catalog_2025-08-04_16-00.csv
-Schedule::command(ImportProductsCommand::class)->everyMinute();
+Schedule::command('import:products', ['files/catalog_2025-08-04_16-00.csv'])
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/import_products.log'));

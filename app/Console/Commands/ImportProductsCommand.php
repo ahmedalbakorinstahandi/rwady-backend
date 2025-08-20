@@ -21,15 +21,21 @@ class ImportProductsCommand extends Command
 
     public function handle(): void
     {
-        // file storage/files/catalog_2025-08-04_16-00.csv
-        $csvPath = "storage/files/catalog_2025-08-04_16-00.csv";
-        if (!file_exists($csvPath)) {
-            Log::error("File not found: {$csvPath}");
+        $arg = $this->argument('file') ?? 'files/catalog_2025-08-04_16-00.csv';
+
+        // إذا بدأ بمسار مطلق خليه كما هو، غير هيك افترضه داخل storage/app
+        $csvPath = str_starts_with($arg, '/')
+            ? $arg
+            : storage_path('app/' . ltrim($arg, '/'));
+    
+        Log::info('Import start', ['path' => $csvPath, 'cwd' => getcwd()]);
+    
+        if (!is_file($csvPath) || !is_readable($csvPath)) {
+            Log::error("File not found or unreadable: {$csvPath}");
+            $this->error("CSV missing: {$csvPath}");
             return;
         }
-
-        Log::info("Importing products from {$csvPath}");
-
+    
         $csv = Reader::createFromPath($csvPath, 'r');
         $csv->setHeaderOffset(0);
         $records = $csv->getRecords();
