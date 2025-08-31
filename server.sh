@@ -14,7 +14,9 @@ cd /
 cd home/rwady-backend/htdocs/backend.rwady.com
 git pull
 
-ssh -t root@82.198.225.45 "cd /home/rwady-backend/htdocs/backend.rwady.com && php artisan import:products storage/files/catalog_2025-08-04_16-00.csv"
+ssh -t root@82.198.225.45 "cd /home/rwady-backend/htdocs/backend.rwady.com && git pull"
+
+# ssh -t root@82.198.225.45 "cd /home/rwady-backend/htdocs/backend.rwady.com && php artisan import:products storage/files/catalog_2025-08-04_16-00.csv"
 
 
 

@@ -21,7 +21,7 @@ class ProductService
     {
         $query = Product::query()->with(['media', 'colors', 'categories', 'brands']);
 
-        $filters['sort_field'] = 'orders';
+        $filters['sort_field'] = $filters['sort_field'] ?? 'orders';
         $filters['sort_order'] =  $filters['sort_order'] ?? 'asc';
 
         $searchFields = ['name', 'description', 'sku'];
@@ -85,7 +85,7 @@ class ProductService
         // }
         // ##
 
-       
+
         ## AND
         if (isset($filters['category_ids']) && is_array($filters['category_ids'])) {
             foreach ($filters['category_ids'] as $categoryId) {
@@ -121,7 +121,7 @@ class ProductService
                     $query->where('user_id', $user->id);
                 });
             }
-        } 
+        }
 
         if (isset($filters['is_new'])) {
             $query->orderBy('created_at', 'desc');
