@@ -78,6 +78,7 @@ class ProductBulkController extends Controller
             'length',
             'width',
             'height',
+            'requires_shipping',
             'shipping_type',
             'shipping_rate_single',
             'is_recommended',
@@ -89,10 +90,14 @@ class ProductBulkController extends Controller
             'media',        // روابط مفرّقة بفاصلة
             // 'internal_url', // الرابط الداخلي الكامل للمنتج
             'related_category_id',
+            'related_category_limit',
             'related_products', // IDs مفرّقة بفاصلة
             'seo_meta_title',
-            'seo_meta_description'
-        ];
+            'seo_meta_description',
+            'seo_keywords',
+
+            'sort_order',
+         ];
         $csv->insertOne($headers);
 
         foreach ($products as $p) {
@@ -105,7 +110,7 @@ class ProductBulkController extends Controller
                 $media_links[$i] = 'https://rwady-backend.ahmed-albakor.com/storage/' . $media_links[$i];
             }
 
-            $media = implode('|', $media_links);
+            $media = implode("\n", $media_links);
 
             // ابنِ رابط داخلي (عدّل الحقل/الراوت حسب مشروعك)
             // لو عندك حقل slug:
@@ -134,6 +139,7 @@ class ProductBulkController extends Controller
                 $p->length,
                 $p->width,
                 $p->height,
+                $this->fromBool($p->requires_shipping),
                 $p->shipping_type,
                 $p->shipping_rate_single,
                 $this->fromBool($p->is_recommended),
@@ -145,9 +151,12 @@ class ProductBulkController extends Controller
                 $media,
                 // $internalUrl,
                 $p->related_category_id,
+                $p->related_category_limit,
                 $relatedIds,
                 optional($p->seo)->meta_title,
                 optional($p->seo)->meta_description,
+                optional($p->seo)->keywords,
+                $p->orders,
             ]);
         }
 
