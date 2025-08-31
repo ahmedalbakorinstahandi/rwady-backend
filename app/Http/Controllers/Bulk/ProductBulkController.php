@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Response;
 use League\Csv\Writer;
 use League\Csv\Reader;
 use SplTempFileObject;
+use Illuminate\Support\Facades\Storage;
 
 class ProductBulkController extends Controller
 {
@@ -115,9 +116,18 @@ class ProductBulkController extends Controller
 
         $filename = 'products_export_' . now()->format('Ymd_His') . '.csv';
         $csvContent = $csv->toString();
-        return Response::make($csvContent, 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8', 
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        
+        // Store file locally for 5 minutes
+        Storage::put('public/exports/' . $filename, $csvContent);
+        
+        // Generate temporary URL valid for 5 minutes
+        $url = Storage::temporaryUrl(
+            'public/exports/' . $filename,
+            now()->addMinutes(5)
+        );
+        
+        return response()->json([
+            'url' => $url
         ]);
     }
 
