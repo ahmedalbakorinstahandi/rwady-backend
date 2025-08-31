@@ -32,6 +32,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::put('/{id}/reorder', [HomeSectionController::class, 'reorder']);
     });
 
+    Route::prefix('bulk')->group(function () {
+        Route::get('/export', [ProductController::class, 'export']);   // تصدير
+        Route::post('/import', [ProductController::class, 'import']);  // استيراد
+    });
+
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('/{id}', [ProductController::class, 'show']);
@@ -40,9 +45,6 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::delete('/{id}', [ProductController::class, 'delete']);
         Route::put('/{id}/reorder', [ProductBulkController::class, 'reorder']);
         Route::put('/{id}/media/{mediaId}/reorder', [ProductBulkController::class, 'reorderMedia']);
-
-        Route::get('/products/export', [ProductController::class, 'export']);   // تصدير
-        Route::post('/products/import', [ProductController::class, 'import']);  // استيراد
     });
 
     Route::prefix('categories')->group(function () {
