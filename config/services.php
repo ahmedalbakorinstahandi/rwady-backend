@@ -40,7 +40,7 @@ return [
         'password' => env('QI_PASSWORD'),
         'terminal_id' => env('QI_TERMINAL_ID'),
         'base_url' => env('QI_BASE_URL'),
-        'fees' => 3,
+        'fees' => 5.2631,
     ],
 
     'aqsati' => [
@@ -48,7 +48,7 @@ return [
         'token' => env('AQSATI_TOKEN'),
         'count_of_month' => 10,
         'aqsati_installment_fees' => 15,
-        'our_fees' => 5,
+        'our_fees' => 6.052565,
     ],
 
     'bulksms' => [
