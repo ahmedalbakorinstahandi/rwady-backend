@@ -72,7 +72,7 @@ class ProductBulkController extends Controller
             'category_ids', // IDs مفرّقة بفاصلة
             'brand_ids',    // IDs مفرّقة بفاصلة
             'media',        // روابط مفرّقة بفاصلة
-            'internal_url', // الرابط الداخلي الكامل للمنتج
+            // 'internal_url', // الرابط الداخلي الكامل للمنتج
             'related_category_id',
             'related_products', // IDs مفرّقة بفاصلة
             'seo_meta_title','seo_meta_description'
@@ -82,11 +82,19 @@ class ProductBulkController extends Controller
         foreach ($products as $p) {
             $categoryIds = $p->categories->pluck('id')->implode(',');
             $brandIds = $p->brands->pluck('id')->implode(',');
-            $media = $p->media->pluck('path')->implode(',');
+            $media = $p->media->pluck('path')->implode('|');
+
+            // add https://rwady-backend.ahmed-albakor.com/storage for media
+            $media_links = explode('|', $media);
+            foreach ($media_links as $m) {
+                $m = 'https://rwady-backend.ahmed-albakor.com/storage/' . $m;
+            }
+
+            $media = implode('|', $media_links);
 
             // ابنِ رابط داخلي (عدّل الحقل/الراوت حسب مشروعك)
             // لو عندك حقل slug:
-            $internalUrl = url('/products/' . ($p->slug ?? $p->id));
+            // $internalUrl = url('/products/' . ($p->slug ?? $p->id));
 
             $relatedIds = method_exists($p, 'relatedProducts')
                 ? $p->relatedProducts()->pluck('products.id')->implode(',')
@@ -106,7 +114,7 @@ class ProductBulkController extends Controller
                 $categoryIds,
                 $brandIds,
                 $media,
-                $internalUrl,
+                // $internalUrl,
                 $p->related_category_id,
                 $relatedIds,
                 optional($p->seo)->meta_title,
