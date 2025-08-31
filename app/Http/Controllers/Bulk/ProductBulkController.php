@@ -46,10 +46,10 @@ class ProductBulkController extends Controller
         }
         if ($request->filled('q')) {
             $term = $request->input('q');
-            $q->where(function($x) use ($term) {
+            $q->where(function ($x) use ($term) {
                 $x->where('name->ar', 'like', "%{$term}%")
-                  ->orWhere('name->en', 'like', "%{$term}%")
-                  ->orWhere('sku', 'like', "%{$term}%");
+                    ->orWhere('name->en', 'like', "%{$term}%")
+                    ->orWhere('sku', 'like', "%{$term}%");
             });
         }
 
@@ -61,21 +61,37 @@ class ProductBulkController extends Controller
         // الأعمدة المُصدّرة
         $headers = [
             'sku',
-            'name_ar','name_en',
-            'description_ar','description_en',
-            'price','price_after_discount','cost_price',
-            'availability','stock','stock_unlimited','out_of_stock',
-            'minimum_purchase','maximum_purchase',
-            'weight','length','width','height',
-            'shipping_type','shipping_rate_single',
-            'is_recommended','ribbon_text_ar','ribbon_text_en','ribbon_color',
+            'name_ar',
+            'name_en',
+            'description_ar',
+            'description_en',
+            'price',
+            'price_after_discount',
+            'cost_price',
+            'availability',
+            'stock',
+            'stock_unlimited',
+            'out_of_stock',
+            'minimum_purchase',
+            'maximum_purchase',
+            'weight',
+            'length',
+            'width',
+            'height',
+            'shipping_type',
+            'shipping_rate_single',
+            'is_recommended',
+            'ribbon_text_ar',
+            'ribbon_text_en',
+            'ribbon_color',
             'category_ids', // IDs مفرّقة بفاصلة
             'brand_ids',    // IDs مفرّقة بفاصلة
             'media',        // روابط مفرّقة بفاصلة
             // 'internal_url', // الرابط الداخلي الكامل للمنتج
             'related_category_id',
             'related_products', // IDs مفرّقة بفاصلة
-            'seo_meta_title','seo_meta_description'
+            'seo_meta_title',
+            'seo_meta_description'
         ];
         $csv->insertOne($headers);
 
@@ -84,10 +100,9 @@ class ProductBulkController extends Controller
             $brandIds = $p->brands->pluck('id')->implode(',');
             $media = $p->media->pluck('path')->implode('|');
 
-            // add https://rwady-backend.ahmed-albakor.com/storage for media
             $media_links = explode('|', $media);
-            foreach ($media_links as $m) {
-                $m = 'https://rwady-backend.ahmed-albakor.com/storage/' . $m;
+            for ($i = 0; $i < count($media_links); $i++) {
+                $media_links[$i] = 'https://rwady-backend.ahmed-albakor.com/storage/' . $media_links[$i];
             }
 
             $media = implode('|', $media_links);
@@ -102,15 +117,29 @@ class ProductBulkController extends Controller
 
             $csv->insertOne([
                 $p->sku,
-                $p->name['ar'], $p->name['en'],
-                $p->description['ar'], $p->description['en'],
-                $p->price, $p->price_after_discount, $p->cost_price,
-                $this->fromBool($p->availability), $p->stock, $this->fromBool($p->stock_unlimited), $p->out_of_stock,
-                $p->minimum_purchase, $p->maximum_purchase,
-                $p->weight, $p->length, $p->width, $p->height,
-                $p->shipping_type, $p->shipping_rate_single,
+                $p->name['ar'],
+                $p->name['en'],
+                $p->description['ar'],
+                $p->description['en'],
+                $p->price,
+                $p->price_after_discount,
+                $p->cost_price,
+                $this->fromBool($p->availability),
+                $p->stock,
+                $this->fromBool($p->stock_unlimited),
+                $p->out_of_stock,
+                $p->minimum_purchase,
+                $p->maximum_purchase,
+                $p->weight,
+                $p->length,
+                $p->width,
+                $p->height,
+                $p->shipping_type,
+                $p->shipping_rate_single,
                 $this->fromBool($p->is_recommended),
-                $p->ribbon_text['ar'], $p->ribbon_text['en'], $p->ribbon_color,
+                $p->ribbon_text['ar'],
+                $p->ribbon_text['en'],
+                $p->ribbon_color,
                 $categoryIds,
                 $brandIds,
                 $media,
@@ -124,16 +153,16 @@ class ProductBulkController extends Controller
 
         $filename = 'products_export_' . now()->format('Ymd_His') . '.csv';
         $csvContent = $csv->toString();
-        
+
         // Store file locally for 5 minutes
         Storage::put('public/exports/' . $filename, $csvContent);
-        
+
         // Generate temporary URL valid for 5 minutes
         $url = Storage::temporaryUrl(
             'public/exports/' . $filename,
             now()->addMinutes(5)
         );
-        
+
         return response()->json([
             'url' => $url
         ]);
@@ -164,7 +193,10 @@ class ProductBulkController extends Controller
         $csv->setHeaderOffset(0);
         $rows = $csv->getRecords();
 
-        $created = 0; $updated = 0; $skipped = 0; $errors = [];
+        $created = 0;
+        $updated = 0;
+        $skipped = 0;
+        $errors = [];
 
         foreach ($rows as $idx => $row) {
             try {
@@ -190,12 +222,12 @@ class ProductBulkController extends Controller
                 $data = [
                     // الاسم مطلوب بالعربي عند الإنشاء فقط:
                     'name' => [
-                        'ar' => $row['name_ar'] ?? ($product ? $product->getTranslation('name','ar') : 'منتج بدون اسم'),
-                        'en' => $row['name_en'] ?? ($product ? $product->getTranslation('name','en') : ''),
+                        'ar' => $row['name_ar'] ?? ($product ? $product->getTranslation('name', 'ar') : 'منتج بدون اسم'),
+                        'en' => $row['name_en'] ?? ($product ? $product->getTranslation('name', 'en') : ''),
                     ],
                     'description' => [
-                        'ar' => $row['description_ar'] ?? ($product ? $product->getTranslation('description','ar') : ''),
-                        'en' => $row['description_en'] ?? ($product ? $product->getTranslation('description','en') : ''),
+                        'ar' => $row['description_ar'] ?? ($product ? $product->getTranslation('description', 'ar') : ''),
+                        'en' => $row['description_en'] ?? ($product ? $product->getTranslation('description', 'en') : ''),
                     ],
                     'price' => $this->toNumber($row['price'] ?? null),
                     'price_after_discount' => $this->toNumber($row['price_after_discount'] ?? null),
@@ -214,8 +246,8 @@ class ProductBulkController extends Controller
                     'shipping_rate_single' => $this->toNumber($row['shipping_rate_single'] ?? null),
                     'is_recommended' => $this->toBool($row['is_recommended'] ?? null),
                     'ribbon_text' => [
-                        'ar' => $row['ribbon_text_ar'] ?? ($product ? $product->getTranslation('ribbon_text','ar') : ''),
-                        'en' => $row['ribbon_text_en'] ?? ($product ? $product->getTranslation('ribbon_text','en') : ''),
+                        'ar' => $row['ribbon_text_ar'] ?? ($product ? $product->getTranslation('ribbon_text', 'ar') : ''),
+                        'en' => $row['ribbon_text_en'] ?? ($product ? $product->getTranslation('ribbon_text', 'en') : ''),
                     ],
                     'ribbon_color' => $row['ribbon_color'] ?? ($product->ribbon_color ?? null),
                     'related_category_id' => $this->toIntOrNull($row['related_category_id'] ?? null),
@@ -302,7 +334,7 @@ class ProductBulkController extends Controller
         if (is_bool($val)) return $val;
         if ($val === null) return null;
         $s = strtolower(trim((string)$val));
-        return in_array($s, ['1','true','yes','y','on'], true);
+        return in_array($s, ['1', 'true', 'yes', 'y', 'on'], true);
     }
 
     private function fromBool($val)
