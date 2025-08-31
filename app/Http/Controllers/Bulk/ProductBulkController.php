@@ -103,11 +103,16 @@ class ProductBulkController extends Controller
         foreach ($products as $p) {
             $categoryIds = $p->categories->pluck('id')->implode(',');
             $brandIds = $p->brands->pluck('id')->implode(',');
-            $media = $p->media->pluck('path')->implode('|');
+            $media = $p->media;
 
-            $media_links = explode('|', $media);
-            for ($i = 0; $i < count($media_links); $i++) {
-                $media_links[$i] = 'https://rwady-backend.ahmed-albakor.com/storage/' . $media_links[$i];
+            $media_links = [];
+           
+            for ($i = 0; $i < count($media); $i++) {
+                if ($media[$i]->source == 'file') {
+                    $media_links[$i] = 'https://rwady-backend.ahmed-albakor.com/storage/' . $media[$i]->path;
+                } else {
+                    $media_links[$i] = $media[$i]->path;
+                }
             }
 
             $media = implode("\n", $media_links);
