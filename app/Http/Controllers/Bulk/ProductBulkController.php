@@ -114,9 +114,9 @@ class ProductBulkController extends Controller
         }
 
         $filename = 'products_export_' . now()->format('Ymd_His') . '.csv';
-        $csv->output($filename);
-        return Response::make('', 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
+        $csvContent = $csv->toString();
+        return Response::make($csvContent, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8', 
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ]);
     }
