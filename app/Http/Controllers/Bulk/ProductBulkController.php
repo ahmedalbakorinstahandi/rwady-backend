@@ -94,15 +94,15 @@ class ProductBulkController extends Controller
 
             $csv->insertOne([
                 $p->sku,
-                $p->getTranslation('name','ar'), $p->getTranslation('name','en'),
-                $p->getTranslation('description','ar'), $p->getTranslation('description','en'),
+                $p->name['ar'], $p->name['en'],
+                $p->description['ar'], $p->description['en'],
                 $p->price, $p->price_after_discount, $p->cost_price,
                 $this->fromBool($p->availability), $p->stock, $this->fromBool($p->stock_unlimited), $p->out_of_stock,
                 $p->minimum_purchase, $p->maximum_purchase,
                 $p->weight, $p->length, $p->width, $p->height,
                 $p->shipping_type, $p->shipping_rate_single,
                 $this->fromBool($p->is_recommended),
-                $p->getTranslation('ribbon_text','ar'), $p->getTranslation('ribbon_text','en'), $p->ribbon_color,
+                $p->ribbon_text['ar'], $p->ribbon_text['en'], $p->ribbon_color,
                 $categoryIds,
                 $brandIds,
                 $media,
