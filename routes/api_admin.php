@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Bulk\ProductBulkController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -37,8 +38,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'delete']);
-        Route::put('/{id}/reorder', [ProductController::class, 'reorder']);
-        Route::put('/{id}/media/{mediaId}/reorder', [ProductController::class, 'reorderMedia']);
+        Route::put('/{id}/reorder', [ProductBulkController::class, 'reorder']);
+        Route::put('/{id}/media/{mediaId}/reorder', [ProductBulkController::class, 'reorderMedia']);
+
+        Route::get('/products/export', [ProductController::class, 'export']);   // تصدير
+        Route::post('/products/import', [ProductController::class, 'import']);  // استيراد
     });
 
     Route::prefix('categories')->group(function () {
