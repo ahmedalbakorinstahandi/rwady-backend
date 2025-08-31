@@ -67,7 +67,12 @@ class ProductBulkController extends Controller
             'description_en',
             'price',
             'price_after_discount',
+            'price_discount_start',
+            'price_discount_end',
             'cost_price',
+            'cost_price_after_discount',
+            'cost_price_discount_start',
+            'cost_price_discount_end',
             'availability',
             'stock',
             'stock_unlimited',
@@ -97,7 +102,14 @@ class ProductBulkController extends Controller
             'seo_keywords',
 
             'sort_order',
-         ];
+        ];
+
+
+
+
+
+
+
         $csv->insertOne($headers);
 
         foreach ($products as $p) {
@@ -106,7 +118,7 @@ class ProductBulkController extends Controller
             $media = $p->media;
 
             $media_links = [];
-           
+
             for ($i = 0; $i < count($media); $i++) {
                 if ($media[$i]->source == 'file') {
                     $media_links[$i] = 'https://rwady-backend.ahmed-albakor.com/storage/' . $media[$i]->path;
@@ -133,7 +145,12 @@ class ProductBulkController extends Controller
                 $p->description['en'],
                 $p->price,
                 $p->price_after_discount,
+                $p->price_discount_start,
+                $p->price_discount_end,
                 $p->cost_price,
+                $p->cost_price_after_discount,
+                $p->cost_price_discount_start,
+                $p->cost_price_discount_end,
                 $this->fromBool($p->availability),
                 $p->stock,
                 $this->fromBool($p->stock_unlimited),
