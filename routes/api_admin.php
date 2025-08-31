@@ -33,8 +33,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
     });
 
     Route::prefix('bulk')->group(function () {
-        Route::get('/export', [ProductController::class, 'export']);   // تصدير
-        Route::post('/import', [ProductController::class, 'import']);  // استيراد
+        Route::prefix('products')->group(function () {
+            Route::get('/export', [ProductController::class, 'export']);   // تصدير
+            Route::post('/import', [ProductController::class, 'import']);  // استيراد
+        });
     });
 
     Route::prefix('products')->group(function () {
