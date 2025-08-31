@@ -40,12 +40,12 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [ProductController::class, 'create']);
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'delete']);
-        Route::put('/{id}/reorder', [ProductBulkController::class, 'reorder']);
-        Route::put('/{id}/media/{mediaId}/reorder', [ProductBulkController::class, 'reorderMedia']);
+        Route::put('/{id}/reorder', [ProductController::class, 'reorder']);
+        Route::put('/{id}/media/{mediaId}/reorder', [ProductController::class, 'reorderMedia']);
 
         Route::prefix('bulk')->group(function () {
-            Route::get('/export', [ProductController::class, 'export']);   // تصدير
-            Route::post('/import', [ProductController::class, 'import']);  // استيراد
+            Route::get('/export', [ProductBulkController::class, 'export']);   // تصدير
+            Route::post('/import', [ProductBulkController::class, 'import']);  // استيراد
         });
     });
 
