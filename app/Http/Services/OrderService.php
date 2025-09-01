@@ -133,9 +133,9 @@ class OrderService
         if ($promotionCartTotal && $amount >= $promotionCartTotal->min_cart_total) {
 
             if ($promotionCartTotal->discount_type == 'fixed') {
-                $promotionCartTotalDiscountValue = $amount - $promotionCartTotal->discount_value;
+                $promotionCartTotalDiscountValue = $promotionCartTotal->discount_value;
             } else {
-                $promotionCartTotalDiscountValue = $amount - ($amount * ($promotionCartTotal->discount_value / 100));
+                $promotionCartTotalDiscountValue = $amount * ($promotionCartTotal->discount_value / 100);
             }
         }
 
