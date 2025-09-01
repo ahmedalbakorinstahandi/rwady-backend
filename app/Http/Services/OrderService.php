@@ -146,17 +146,17 @@ class OrderService
         }
 
         return [
-            'amount' => $amount - ($promotionCartTotal ? $promotionCartTotalDiscountValue : 0),
-            'promotion_cart_total_discount_value' => $promotionCartTotal ? $promotionCartTotalDiscountValue : null,
+            'amount' => round($amount - ($promotionCartTotal ? $promotionCartTotalDiscountValue : 0), 2),
+            'promotion_cart_total_discount_value' => round($promotionCartTotal ? $promotionCartTotalDiscountValue : null, 2),
             'promotion_cart_total' => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
             'shipping_fees' => $shippingFees,
             'promotion_free_shipping' => $promotionFreeShipping ? new PromotionResource($promotionFreeShipping) : null,
-            'amount_with_shipping' => $amount + $shippingFees,
+            'amount_with_shipping' => round($amount + $shippingFees, 2),
             'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
-            'amount_with_shipping_after_coupon' => $subtotal,
+            'amount_with_shipping_after_coupon' => round($subtotal, 2),
             'payment_fees_percentage' => $paymentFeesPercentage,
-            'payment_fees_value' => $paymentFeesValue,
-            'amount_with_shipping_after_coupon_and_payment_fees' => $subtotal + $paymentFeesValue,
+            'payment_fees_value' => round($paymentFeesValue, 2),
+            'amount_with_shipping_after_coupon_and_payment_fees' => round($subtotal + $paymentFeesValue, 2),
             'installment_count' => $paymentMethod == 'installment' ? 10 : null,
         ];
     }
