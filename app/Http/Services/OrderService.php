@@ -83,81 +83,223 @@ class OrderService
     }
 
 
-    public function checkOrderDetails($data)
+    // public function checkOrderDetails($data)
+    // {
+    //     $productsData = $data['products'];
+    //     $paymentMethod = $data['payment_method'];
+
+    //     $paymentFeesPercentage = 0;
+    //     if ($paymentMethod === 'qi') {
+    //         $paymentFeesPercentage = config('services.qi.fees', 10);
+    //     } elseif ($paymentMethod === 'installment') {
+    //         $paymentFeesPercentage = config('services.aqsati.aqsati_installment_fees', 15) + config('services.aqsati.our_fees', 5);
+    //     }
+
+    //     $amount = 0;
+    //     $shippingFees = 0;
+
+    //     foreach ($productsData as $item) {
+    //         $product = Product::find($item['product_id']);
+    //         if (!$product) {
+    //             MessageService::abort(404, 'messages.product.not_found');
+    //         }
+
+    //         $products[] = $product;
+    //         $amount += $product->final_price * $item['quantity'];
+    //         $shippingFees += $product->getShippingRateAttribute($item['quantity']) * $item['quantity'];
+    //     }
+
+    //     $coupon = null;
+    //     $couponDiscountValue = 0;
+    //     if (!empty($data['coupon_code'])) {
+    //         $coupon = Coupon::where('code', $data['coupon_code'])->first();
+    //         if (!$coupon || !$coupon->is_active) {
+    //             MessageService::abort(404, 'messages.coupon.invalid');
+    //         }
+
+    //         $couponDiscountValue = $coupon->type === 'percentage'
+    //             ? $amount * ($coupon->amount / 100)
+    //             : $coupon->amount;
+    //     }
+
+    //     $promotionCartTotal = Promotion::where('type', 'cart_total')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+    //     $promotionCartTotalDiscountValue = null;
+
+    //     if ($promotionCartTotal && $amount >= $promotionCartTotal->min_cart_total) {
+
+    //         if ($promotionCartTotal->discount_type == 'fixed') {
+    //             $promotionCartTotalDiscountValue = $promotionCartTotal->discount_value;
+    //         } else {
+    //             $promotionCartTotalDiscountValue = $amount * ($promotionCartTotal->discount_value / 100);
+    //         }
+    //     }
+
+    //     $promotionFreeShipping = Promotion::where('type', 'shipping')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+
+    //     if ($promotionFreeShipping) {
+    //         $shippingFees = 0;
+    //     }
+
+    //     $subtotal = $amount + $shippingFees - $couponDiscountValue - $promotionCartTotalDiscountValue;
+    //     $paymentFeesValue = $subtotal * ($paymentFeesPercentage / 100);
+
+
+
+
+    //     return [
+    //         'amount' => round($amount, 2),
+    //         'promotion_cart_total_discount_value' => round($promotionCartTotal ? $promotionCartTotalDiscountValue : null, 2),
+    //         'amount_after_promotion_cart_total' => round($amount - ($promotionCartTotal ? $promotionCartTotalDiscountValue : 0), 2),
+    //         'promotion_cart_total' => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
+    //         'shipping_fees' => $shippingFees,
+    //         'promotion_free_shipping' => $promotionFreeShipping ? new PromotionResource($promotionFreeShipping) : null,
+    //         'amount_with_shipping' => round($amount + $shippingFees - $promotionCartTotalDiscountValue, 2),
+    //         'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
+    //         'amount_with_shipping_after_coupon' => round($subtotal, 2),
+    //         'payment_fees_percentage' => $paymentFeesPercentage,
+    //         'payment_fees_value' => round($paymentFeesValue, 2),
+    //         'amount_with_shipping_after_coupon_and_payment_fees' => round($subtotal + $paymentFeesValue, 2),
+    //         'installment_count' => $paymentMethod == 'installment' ? 10 : null,
+    //     ];
+    // }
+
+
+    public function checkOrderDetails(array $data)
     {
-        $productsData = $data['products'];
-        $paymentMethod = $data['payment_method'];
+        $items         = $data['products'] ?? [];
+        $paymentMethod = $data['payment_method'] ?? null;
+        $couponCode    = trim($data['coupon_code'] ?? '');
 
-        $paymentFeesPercentage = 0;
-        if ($paymentMethod === 'qi') {
-            $paymentFeesPercentage = config('services.qi.fees', 10);
-        } elseif ($paymentMethod === 'installment') {
-            $paymentFeesPercentage = config('services.aqsati.aqsati_installment_fees', 15) + config('services.aqsati.our_fees', 5);
-        }
+        // Helpers: cents <-> float(2)
+        $toCents = fn($v) => (int) round(((float) $v) * 100);
+        $fromCents = fn($c) => round($c / 100, 2);
+        $roundOrNull = fn($v) => $v === null ? null : round($v, 2);
 
-        $amount = 0;
-        $shippingFees = 0;
+        // 1) جلب المنتجات دفعة واحدة وتحقق أساسي
+        $ids = array_map(fn($i) => (int) ($i['product_id'] ?? 0), $items);
+        $products = Product::whereIn('id', $ids)->get()->keyBy('id');
 
-        foreach ($productsData as $item) {
-            $product = Product::find($item['product_id']);
-            if (!$product) {
-                MessageService::abort(404, 'messages.product.not_found');
+        foreach ($items as $it) {
+            $pid = (int) ($it['product_id'] ?? 0);
+            $qty = (int) ($it['quantity'] ?? 0);
+            if ($qty <= 0 || !$products->has($pid)) {
+                MessageService::abort(422, 'messages.cart.invalid_item');
             }
-
-            $products[] = $product;
-            $amount += $product->final_price * $item['quantity'];
-            $shippingFees += $product->getShippingRateAttribute($item['quantity']) * $item['quantity'];
+            // TODO: تحقق المخزون/التوفّر إن لزم
         }
 
+        // 2) مبالغ أولية (بالسنتات)
+        $amountCents       = 0; // مجموع أسعار المنتجات فقط
+        $shippingFeesCents = 0;
+
+        foreach ($items as $it) {
+            $p   = $products[$it['product_id']];
+            $qty = (int) $it['quantity'];
+
+            $lineProductsCents = $toCents($p->final_price) * $qty;
+            $amountCents += $lineProductsCents;
+
+            // ملاحظة: دالة الشحن تُعيد قيمة بوحدات العملة؛ نُحوّل ونضرب بالكمية
+            $rate = (float) $p->getShippingRateAttribute($qty);
+            $shippingFeesCents += $toCents($rate) * $qty;
+        }
+
+        // 3) عروض السلة (cart_total) — تُطبّق أولًا على مبلغ المنتجات فقط
+        $now = now();
+        $promotionCartTotal = Promotion::where('type', 'cart_total')
+            ->where('status', 'active')
+            ->where('start_at', '<=', $now)
+            ->where('end_at', '>=', $now)
+            ->orderByDesc('id') // إن وجدت priority أضفها هنا
+            ->first();
+
+        $promoCartDiscountCents = 0;
+        if ($promotionCartTotal && $amountCents >= $toCents($promotionCartTotal->min_cart_total)) {
+            if ($promotionCartTotal->discount_type === 'fixed') {
+                $promoCartDiscountCents = $toCents($promotionCartTotal->discount_value);
+            } else {
+                // نسبة من مبلغ المنتجات
+                $promoCartDiscountCents = (int) floor($amountCents * ((float)$promotionCartTotal->discount_value) / 100);
+            }
+            // لا تتجاوز الأساس
+            $promoCartDiscountCents = max(0, min($promoCartDiscountCents, $amountCents));
+        }
+
+        // 4) كوبون — يُطبّق بعد عرض السلة وعلى المنتجات فقط
         $coupon = null;
-        $couponDiscountValue = 0;
-        if (!empty($data['coupon_code'])) {
-            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+        $couponDiscountCents = 0;
+        if ($couponCode !== '') {
+            $coupon = Coupon::where('code', $couponCode)->first();
             if (!$coupon || !$coupon->is_active) {
                 MessageService::abort(404, 'messages.coupon.invalid');
             }
+            // قاعدة: الأساس = مبلغ المنتجات بعد خصم عرض السلة
+            $couponBaseCents = max(0, $amountCents - $promoCartDiscountCents);
 
-            $couponDiscountValue = $coupon->type === 'percentage'
-                ? $amount * ($coupon->amount / 100)
-                : $coupon->amount;
-        }
-
-        $subtotal = $amount + $shippingFees - $couponDiscountValue;
-        $paymentFeesValue = $subtotal * ($paymentFeesPercentage / 100);
-
-
-        $promotionCartTotal = Promotion::where('type', 'cart_total')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
-
-        $promotionCartTotalDiscountValue = null;
-
-        if ($promotionCartTotal && $amount >= $promotionCartTotal->min_cart_total) {
-
-            if ($promotionCartTotal->discount_type == 'fixed') {
-                $promotionCartTotalDiscountValue = $promotionCartTotal->discount_value;
+            if ($coupon->type === 'percentage') {
+                $couponDiscountCents = (int) floor($couponBaseCents * ((float)$coupon->amount) / 100);
             } else {
-                $promotionCartTotalDiscountValue = $amount * ($promotionCartTotal->discount_value / 100);
+                $couponDiscountCents = $toCents($coupon->amount);
             }
+            $couponDiscountCents = max(0, min($couponDiscountCents, $couponBaseCents));
         }
 
-        $promotionFreeShipping = Promotion::where('type', 'shipping')->where('status', 'active')->where('start_at', '<=', now())->where('end_at', '>=', now())->get()->last();
+        // 5) الشحن المجاني — بلا شروط حاليًا
+        $promotionFreeShipping = Promotion::where('type', 'shipping')
+            ->where('status', 'active')
+            ->where('start_at', '<=', $now)
+            ->where('end_at', '>=', $now)
+            ->orderByDesc('id')
+            ->first();
 
         if ($promotionFreeShipping) {
-            $shippingFees = 0;
+            $shippingFeesCents = 0;
         }
 
+        // 6) المجموع الجزئي قبل رسوم الدفع
+        // ملاحظة: الكوبون لا يطال الشحن بحسب قاعدتك
+        $subtotalCents = max(0, ($amountCents - $promoCartDiscountCents - $couponDiscountCents) + $shippingFeesCents);
+
+        // 7) رسوم الدفع — تُحتسب أخيرًا على subtotal (بعد كل شيء)
+        $feesPct = 0.0;
+        if ($paymentMethod === 'qi') {
+            $feesPct = (float) config('services.qi.fees', 10);
+        } elseif ($paymentMethod === 'installment') {
+            $feesPct = (float) config('services.aqsati.aqsati_installment_fees', 15)
+                + (float) config('services.aqsati.our_fees', 5);
+        }
+        // value = نسبة من subtotal
+        $paymentFeesCents = (int) floor($subtotalCents * $feesPct / 100);
+
+        $grandTotalCents = $subtotalCents + $paymentFeesCents;
+
+        // 8) عدد أقساط التقسيط من services
+        $installmentCount = $paymentMethod === 'installment'
+            ? (int) config('services.aqsati.count_of_month', 10)
+            : null;
+
+        // 9) إرجاع منسّق (خانتان فقط) مع nulls حقيقية عند اللزوم
         return [
-            'amount' => round($amount - ($promotionCartTotal ? $promotionCartTotalDiscountValue : 0), 2),
-            'promotion_cart_total_discount_value' => round($promotionCartTotal ? $promotionCartTotalDiscountValue : null, 2),
-            'promotion_cart_total' => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
-            'shipping_fees' => $shippingFees,
-            'promotion_free_shipping' => $promotionFreeShipping ? new PromotionResource($promotionFreeShipping) : null,
-            'amount_with_shipping' => round($amount + $shippingFees, 2),
-            'coupon_discount_value' => $coupon ? $couponDiscountValue : null,
-            'amount_with_shipping_after_coupon' => round($subtotal, 2),
-            'payment_fees_percentage' => $paymentFeesPercentage,
-            'payment_fees_value' => round($paymentFeesValue, 2),
-            'amount_with_shipping_after_coupon_and_payment_fees' => round($subtotal + $paymentFeesValue, 2),
-            'installment_count' => $paymentMethod == 'installment' ? 10 : null,
+            'amount'                                   => $fromCents($amountCents),
+            'promotion_cart_total_discount_value'      => $promotionCartTotal ? $fromCents($promoCartDiscountCents) : null,
+            'amount_after_promotion_cart_total'        => $fromCents($amountCents - $promoCartDiscountCents),
+
+            'promotion_cart_total'                     => $promotionCartTotal ? new PromotionResource($promotionCartTotal) : null,
+
+            'shipping_fees'                            => $fromCents($shippingFeesCents),
+            'promotion_free_shipping'                  => $promotionFreeShipping ? new PromotionResource($promotionFreeShipping) : null,
+
+            'amount_with_shipping'                     => $fromCents(($amountCents - $promoCartDiscountCents) + $shippingFeesCents),
+
+            'coupon_discount_value'                    => $coupon ? $fromCents($couponDiscountCents) : null,
+            'amount_with_shipping_after_coupon'        => $fromCents($subtotalCents),
+
+            'payment_fees_percentage'                  => round($feesPct, 6), // تبقى كنسبة كما هي
+            'payment_fees_value'                       => $fromCents($paymentFeesCents),
+            'amount_with_shipping_after_coupon_and_payment_fees' => $fromCents($grandTotalCents),
+
+            'installment_count'                        => $installmentCount,
         ];
     }
 
