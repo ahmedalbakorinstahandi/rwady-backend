@@ -17,7 +17,7 @@ class AddressService
 
         $query = AddressPermission::filterIndex($query);
 
-        $searchFields = ['name', 'address', 'exstra_address', 'country', 'city', 'state', 'zipe_code'];
+        $searchFields = ['name', 'address', 'extra_address', 'country', 'city', 'state', 'zipe_code'];
         $numericFields = ['longitude', 'latitude'];
         $dateFields = [];
         $exactMatchFields = ['is_default'];
