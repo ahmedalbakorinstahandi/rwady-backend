@@ -469,9 +469,6 @@ class ProductBulkController extends Controller
                 } else {
                     // Create: لو الاسم العربي ما وصل بنعطيه قيمة افتراضية مسبقاً فوق
                     // ملاحظة: Service عندك يولّد SKU إن لم يُرسل، ثم يستبدله بـ id
-                    if (isset($sku)) {
-                        $payload['sku'] = $sku;
-                    }
                     $new = $productService->create($payload);
                     $created++;
                     $report[] = "Row #" . ($i + 2) . ": created (ID={$new->id})";
