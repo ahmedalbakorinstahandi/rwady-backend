@@ -54,4 +54,26 @@ class AuthController extends Controller
             'message' => 'messages.user_logged_out_successfully',
         ]);
     }
+
+    public function requestDeleteAccount()
+    {
+        $user = $this->authService->requestDeleteAccount();
+
+        return ResponseService::response([
+            'status' => 200,
+            'message' => 'messages.user.delete_account_code_sent',
+            'data' => $user,
+        ]);
+    }
+
+    public function confirmDeleteAccount()
+    {
+        $user = $this->authService->confirmDeleteAccount();
+
+        return ResponseService::response([
+            'status' => 200,
+            'message' => 'messages.user.account_deleted_successfully',
+            'data' => $user,
+        ]);
+    }
 }

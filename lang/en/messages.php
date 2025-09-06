@@ -131,5 +131,8 @@ return [
         'created_successfully' => 'User created successfully',
         'updated_successfully' => 'User updated successfully',
         'deleted_successfully' => 'User deleted successfully',
+        'account_deleted_successfully' => 'Your account deleted successfully',
+        'delete_account_code_sent' => 'Delete account code sent to phone',
+        'delete_account_code' => 'Your delete account code is :code',
     ]
 ];

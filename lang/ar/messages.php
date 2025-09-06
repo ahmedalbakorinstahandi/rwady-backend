@@ -130,5 +130,8 @@ return [
         'created_successfully' => 'تم إنشاء المستخدم بنجاح',
         'updated_successfully' => 'تم تحديث المستخدم بنجاح',
         'deleted_successfully' => 'تم حذف المستخدم بنجاح',
+        'account_deleted_successfully' => 'تم حذف حسابك بنجاح',
+        'delete_account_code_sent' => 'تم إرسال رمز حذف حسابك إلى رقم الهاتف',
+        'delete_account_code' => 'رمز حذف حسابك هو :code',
     ]
 ];

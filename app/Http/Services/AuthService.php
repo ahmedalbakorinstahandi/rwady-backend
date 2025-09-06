@@ -108,4 +108,39 @@ class AuthService
 
         return $personalAccessToken->delete();
     }
+
+
+    public function requestDeleteAccount()
+    {
+
+
+        $user = User::auth();
+
+        $verify_code = rand(10000, 99999);
+
+        $otp_expire_at = now()->addMinutes(10);
+
+        $message = __('messages.user.delete_account_code', ['code' => $verify_code]);
+
+        BulkSMSIraqService::send($user->phone, $message, 'whatsapp', $user->language);
+
+        $user->update([
+            'otp' => $verify_code,
+            'otp_expire_at' => $otp_expire_at,
+        ]);
+
+        return $user;
+    }
+
+    // confirm delete account
+    public function confirmDeleteAccount()
+    {
+        $user = User::auth();
+
+        $user->delete();
+
+        return $user;
+    }
+
+
 }
