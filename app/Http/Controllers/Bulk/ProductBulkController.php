@@ -27,7 +27,7 @@ class ProductBulkController extends Controller
 
         //request all products or products with products for export  : products_ids as array or null => validate if is array
         $request->validate([
-            'products_ids' => 'nullable|array|exists:products,id,deleted_at,NULL|distinct,min:1',
+            'products_ids' => 'nullable|array|exists:products,id,deleted_at,NULL|distinct|min:1',
         ]);
 
 
