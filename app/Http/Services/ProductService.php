@@ -117,10 +117,14 @@ class ProductService
             $user = $this->getCurrentUser();
 
             if ($user) {
-                $query->whereHas('favorites', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
+                $user_id = $user->id;
+            } else {
+                $user_id = 0;
             }
+            
+            $query->whereHas('favorites', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
         }
 
         if (isset($filters['is_new'])) {

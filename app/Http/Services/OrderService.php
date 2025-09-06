@@ -319,6 +319,8 @@ class OrderService
         $user = User::auth();
 
 
+        $direct_order =   empty($data['direct_order']) && $data['direct_order'] == true;
+
 
         $data['user_id'] = $user->id;
         $data['code'] = Str::random(10);
@@ -443,6 +445,7 @@ class OrderService
             $order->metadata = $paymentSession;
 
             $order->payment_session_id =  'qi-' . $paymentSession['requestId'];
+            
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;
@@ -450,7 +453,10 @@ class OrderService
 
             OrderNotification::newOrder($order);
 
-            $user->cartItems()->delete();
+
+            if (!$direct_order) {
+                $user->cartItems()->delete();
+            }
         } elseif ($data['payment_method'] == 'transfer') {
             $order->payment_method = 'transfer';
             $order->payment_fees = 0;
@@ -470,7 +476,9 @@ class OrderService
                 ]);
             }
 
-            $user->cartItems()->delete();
+            if (!$direct_order) {
+                $user->cartItems()->delete();
+            }
 
             OrderNotification::newOrder($order);
         } elseif ($data['payment_method'] == 'installment') {
