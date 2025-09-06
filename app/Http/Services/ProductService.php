@@ -119,7 +119,7 @@ class ProductService
             if ($user) {
                 $user_id = $user->id;
             } else {
-                $user_id = 0;  
+                $user_id = 0;
             }
 
             $query->whereHas('favorites', function ($query) use ($user_id) {
@@ -227,8 +227,10 @@ class ProductService
         $product = Product::create($data);
 
         OrderHelper::assign($product);
+        if (!isset($data['sku']) || empty($data['sku'])) {
+            $data['sku'] = 'SKU-' . $product->sku = $product->id;
+        }
 
-        $product->sku = $product->id;
         $product->save();
 
         // Handle media (images and videos in one array)
