@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bulk;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\ProductService;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -23,8 +24,25 @@ class ProductBulkController extends Controller
      */
     public function export(Request $request)
     {
-        $q = Product::query()
-            ->with(['categories:id', 'brands:id', 'media:id,product_id,path,type,source', 'seo']);
+
+        //request all products or products with products for export  : products_ids as array or null => validate if is array
+        $request->validate([
+            'products_ids' => 'nullable|array|exists:products,id,deleted_at,NULL|distinct,min:1',
+        ]);
+
+
+        $products_ids = $request->input('products_ids', null);
+
+
+        if ($products_ids) {
+            $query = Product::whereIn('id', $products_ids);
+        } else {
+            $query = Product::query();
+        }
+
+
+
+        $q = $query->with(['categories:id', 'brands:id', 'media:id,product_id,path,type,source', 'seo']);
 
         // فلاتر اختيارية
         if ($request->filled('ids')) {
@@ -209,152 +227,274 @@ class ProductBulkController extends Controller
      */
     public function import(Request $request)
     {
+        // 1) استلام الملف
         $request->validate([
             'file' => 'required|file|mimes:csv,txt',
-            'dry_run' => 'sometimes|in:0,1',
-            'fallback_missing_relations' => 'sometimes|in:ignore,detach',
-            'match_by' => 'sometimes|in:sku,internal_url',
         ]);
 
-        $dryRun = (bool) $request->boolean('dry_run', false);
-        $fallbackMissing = $request->input('fallback_missing_relations', 'ignore');
-        $matchBy = $request->input('match_by', 'sku');
+        $file = $request->file('file')->getRealPath();
 
-        $csv = Reader::createFromPath($request->file('file')->getRealPath(), 'r');
+        // 2) قراءة CSV بهيدر ديناميكي
+        $csv = Reader::createFromPath($file, 'r');
         $csv->setHeaderOffset(0);
         $rows = $csv->getRecords();
 
+        // 3) عدادات وتقارير
         $created = 0;
         $updated = 0;
         $skipped = 0;
-        $errors = [];
+        $report = [];
 
-        foreach ($rows as $idx => $row) {
+        // 4) Helpers محلية
+        $toBool = function ($val) {
+            if (is_bool($val)) return $val;
+            $val = strtolower(trim((string)$val));
+            return in_array($val, ['1', 'true', 'yes', 'y', 'on'], true);
+        };
+        $nullIfEmpty = function ($val) {
+            return (is_null($val) || $val === '') ? null : $val;
+        };
+        $numOrNull = function ($val) {
+            $val = trim((string)$val);
+            return ($val === '') ? null : (float)$val;
+        };
+        $intOrNull = function ($val) {
+            $val = trim((string)$val);
+            return ($val === '') ? null : (int)$val;
+        };
+        $numOrZero = function ($val) {
+            $val = trim((string)$val);
+            return ($val === '') ? 0 : (float)$val;
+        };
+        $intOrZero = function ($val) {
+            $val = trim((string)$val);
+            return ($val === '') ? 0 : (int)$val;
+        };
+        $parseIds = function ($val) {
+            if (is_null($val) || $val === '') return [];
+            return array_values(array_filter(array_map('intval', preg_split('/[,\s]+/', (string)$val))));
+        };
+        // تحويل روابط /storage الداخلية إلى مسار نسبي ليُخزن كـ file
+        $normalizeMedia = function ($raw) {
+            $raw = trim((string)$raw);
+            if ($raw === '') return null;
+            // مثال backend: https://rwady-backend.ahmed-albakor.com/storage/...
+            // لو بدأ بـ http ويحتوي /storage/ ناخذ الجزء بعد /storage/
+            if (preg_match('~^https?://[^/]+/storage/(.+)$~i', $raw, $m)) {
+                return $m[1]; // path داخل storage
+            }
+            return $raw; // رابط خارجي كما هو
+        };
+
+        foreach ($rows as $i => $row) {
             try {
+                // لو فيه type واعمدته فيها product بس، تجاهل غير ذلك
+                if (isset($row['type']) && strtolower(trim($row['type'])) !== 'product') {
+                    $skipped++;
+                    $report[] = "Row #" . ($i + 2) . ": skipped (type != product)";
+                    continue;
+                }
+
+                // قراءة الحقول (مع تحمّل غياب أعمدة)
                 $sku = trim((string)($row['sku'] ?? ''));
-                $internalUrl = trim((string)($row['internal_url'] ?? ''));
 
-                // محاولة إيجاد المنتج
+                // الأسماء والوصف (نصوص فارغة لو ناقصة)
+                $name_ar = (string)($row['name_ar'] ?? '');
+                $name_en = (string)($row['name_en'] ?? '');
+                $desc_ar = (string)($row['description_ar'] ?? '');
+                $desc_en = (string)($row['description_en'] ?? '');
+
+                // شرطك: إذا ما في SKU وكان الاسم العربي فاضي، بننشئ باسم عربي افتراضي
+                if ($sku === '' && $name_ar === '') {
+                    $name_ar = 'منتج بدون اسم';
+                }
+
+                // أرقام "nullable" نخليها null لو فاضية
+                $price                     = $numOrNull($row['price'] ?? null);
+                $price_after_discount      = $numOrNull($row['price_after_discount'] ?? null);
+                $price_discount_start      = $nullIfEmpty($row['price_discount_start'] ?? null);
+                $price_discount_end        = $nullIfEmpty($row['price_discount_end'] ?? null);
+
+                $cost_price                = $numOrNull($row['cost_price'] ?? null);
+                $cost_price_after_discount = $numOrNull($row['cost_price_after_discount'] ?? null);
+                $cost_price_discount_start = $nullIfEmpty($row['cost_price_discount_start'] ?? null);
+                $cost_price_discount_end   = $nullIfEmpty($row['cost_price_discount_end'] ?? null);
+
+                $availability              = isset($row['availability']) ? $toBool($row['availability']) : null;
+                $stock                     = $intOrNull($row['stock'] ?? null);
+                $stock_unlimited           = isset($row['stock_unlimited']) ? $toBool($row['stock_unlimited']) : null;
+
+                $out_of_stock = $row['out_of_stock'] ?? null;
+                if ($out_of_stock !== null && !in_array($out_of_stock, ['show_on_storefront', 'hide_from_storefront', 'show_and_allow_pre_order'], true)) {
+                    // قيمة غير صالحة -> خليها null
+                    $out_of_stock = null;
+                }
+
+                $minimum_purchase          = $intOrNull($row['minimum_purchase'] ?? null);
+                $maximum_purchase          = $intOrNull($row['maximum_purchase'] ?? null);
+
+                $weight = $numOrNull($row['weight'] ?? null);
+                $length = $numOrNull($row['length'] ?? null);
+                $width  = $numOrNull($row['width'] ?? null);
+                $height = $numOrNull($row['height'] ?? null);
+
+                $requires_shipping = isset($row['requires_shipping']) ? $toBool($row['requires_shipping']) : null;
+
+                $shipping_type = $row['shipping_type'] ?? null;
+                if ($shipping_type !== null && !in_array($shipping_type, ['default', 'fixed_shipping', 'free_shipping'], true)) {
+                    $shipping_type = null;
+                }
+
+                $shipping_rate_single = $numOrNull($row['shipping_rate_single'] ?? null);
+
+                $is_recommended = isset($row['is_recommended']) ? $toBool($row['is_recommended']) : null;
+
+                $ribbon_text_ar = (string)($row['ribbon_text_ar'] ?? '');
+                $ribbon_text_en = (string)($row['ribbon_text_en'] ?? '');
+                $ribbon_color   = (string)($row['ribbon_color'] ?? '');
+
+                // علاقات
+                $category_ids = $parseIds($row['category_ids'] ?? '');
+                $brand_ids    = $parseIds($row['brand_ids'] ?? '');
+                $related_ids  = $parseIds($row['related_products'] ?? '');
+
+                // فلترة IDs غير الموجودة (نترك الموجودة فقط)
+                if (!empty($category_ids)) {
+                    $category_ids = Category::whereIn('id', $category_ids)->pluck('id')->all();
+                }
+                if (!empty($brand_ids)) {
+                    $brand_ids = Brand::whereIn('id', $brand_ids)->pluck('id')->all();
+                }
+                if (!empty($related_ids)) {
+                    $related_ids = Product::whereIn('id', $related_ids)->pluck('id')->all();
+                }
+
+                $related_category_id    = $intOrNull($row['related_category_id'] ?? null);
+                $related_category_limit = $intOrNull($row['related_category_limit'] ?? null);
+
+                // ميديا: سطور متعددة في خلية واحدة (newline)
+                $media_raw = (string)($row['media'] ?? '');
+                $media_list = [];
+                if ($media_raw !== '') {
+                    // نفصل بالسطر (يدعم \n أو \r\n)
+                    $media_lines = preg_split("/\r\n|\n|\r/", $media_raw);
+                    foreach ($media_lines as $m) {
+                        $m = trim($m);
+                        if ($m !== '') {
+                            $norm = $normalizeMedia($m);
+                            if ($norm !== null) {
+                                $media_list[] = $norm;
+                            }
+                        }
+                    }
+                }
+
+                // SEO
+                $seo_meta_title       = $nullIfEmpty($row['seo_meta_title'] ?? null);
+                $seo_meta_description = $nullIfEmpty($row['seo_meta_description'] ?? null);
+                $seo_keywords         = $nullIfEmpty($row['seo_keywords'] ?? null);
+
+                // sort_order
+                $sort_order = $intOrNull($row['sort_order'] ?? null);
+
+                // بناء payload حسب Service تبعك (create / update)
+                $payload = [
+                    'sku'                   => $sku ?: null,
+                    'name'                  => ['ar' => $name_ar, 'en' => $name_en],
+                    'description'           => ['ar' => $desc_ar, 'en' => $desc_en],
+
+                    'price'                 => $price,
+                    'price_after_discount'  => $price_after_discount,
+                    'price_discount_start'  => $price_discount_start,
+                    'price_discount_end'    => $price_discount_end,
+
+                    'cost_price'                => $cost_price,
+                    'cost_price_after_discount' => $cost_price_after_discount,
+                    'cost_price_discount_start' => $cost_price_discount_start,
+                    'cost_price_discount_end'   => $cost_price_discount_end,
+
+                    'availability'          => $availability,
+                    'stock'                 => $stock,
+                    'stock_unlimited'       => $stock_unlimited,
+                    'out_of_stock'          => $out_of_stock,
+                    'minimum_purchase'      => $minimum_purchase,
+                    'maximum_purchase'      => $maximum_purchase,
+
+                    'weight'                => $weight,
+                    'length'                => $length,
+                    'width'                 => $width,
+                    'height'                => $height,
+
+                    'requires_shipping'     => $requires_shipping,
+                    'shipping_type'         => $shipping_type,
+                    'shipping_rate_single'  => $shipping_rate_single,
+
+                    'is_recommended'        => $is_recommended,
+                    'ribbon_text'           => ['ar' => $ribbon_text_ar, 'en' => $ribbon_text_en],
+                    'ribbon_color'          => $ribbon_color,
+
+                    'categories'            => $category_ids ?: null,
+                    'brands'                => $brand_ids ?: null,
+
+                    'media'                 => $media_list ?: null,
+
+                    'related_category_id'   => $related_category_id,
+                    'related_category_limit' => $related_category_limit,
+                    'related_products'      => $related_ids ?: null,
+
+                    'seo' => [
+                        'meta_title'       => $seo_meta_title,
+                        'meta_description' => $seo_meta_description,
+                        'keywords'         => $seo_keywords,
+                        'image'            => null,
+                    ],
+                ];
+
+                // تنظيف: لو بعض المفاتيح null وما بدك تبعثها
+                $payload = array_filter($payload, fn($v) => !is_null($v));
+
+                // 5) وجود SKU؟ حدّث، وإلا أنشئ
                 $product = null;
-
-                if ($matchBy === 'sku' && $sku !== '') {
+                if ($sku !== '') {
                     $product = Product::where('sku', $sku)->first();
                 }
 
-                if (!$product && $internalUrl !== '') {
-                    $slug = $this->extractSlugFromUrl($internalUrl);
-                    if ($slug) {
-                        // عدّل هذا حسب حقلك: slug أو custom_url_slug
-                        $product = Product::where('slug', $slug)->first();
-                    }
+                $productService = new ProductService();
+
+                if ($product) {
+                    // Update (يمر عبر UpdateProductRequest داخل Service)
+                    $productService->update($payload, $product);
+                    $updated++;
+                    $report[] = "Row #" . ($i + 2) . ": updated (SKU={$sku})";
+                } else {
+                    // Create: لو الاسم العربي ما وصل بنعطيه قيمة افتراضية مسبقاً فوق
+                    // ملاحظة: Service عندك يولّد SKU إن لم يُرسل، ثم يستبدله بـ id
+                    $new = $productService->create($payload);
+                    $created++;
+                    $report[] = "Row #" . ($i + 2) . ": created (ID={$new->id})";
                 }
 
-                // بناء الداتا
-                $data = [
-                    // الاسم مطلوب بالعربي عند الإنشاء فقط:
-                    'name' => [
-                        'ar' => $row['name_ar'] ?? ($product ? $product->getTranslation('name', 'ar') : 'منتج بدون اسم'),
-                        'en' => $row['name_en'] ?? ($product ? $product->getTranslation('name', 'en') : ''),
-                    ],
-                    'description' => [
-                        'ar' => $row['description_ar'] ?? ($product ? $product->getTranslation('description', 'ar') : ''),
-                        'en' => $row['description_en'] ?? ($product ? $product->getTranslation('description', 'en') : ''),
-                    ],
-                    'price' => $this->toNumber($row['price'] ?? null),
-                    'price_after_discount' => $this->toNumber($row['price_after_discount'] ?? null),
-                    'cost_price' => $this->toNumber($row['cost_price'] ?? null),
-                    'availability' => $this->toBool($row['availability'] ?? null),
-                    'stock' => $this->toInt($row['stock'] ?? null),
-                    'stock_unlimited' => $this->toBool($row['stock_unlimited'] ?? null),
-                    'out_of_stock' => $row['out_of_stock'] ?? ($product->out_of_stock ?? 'show_on_storefront'),
-                    'minimum_purchase' => $this->toInt($row['minimum_purchase'] ?? null),
-                    'maximum_purchase' => $this->toInt($row['maximum_purchase'] ?? null),
-                    'weight' => $this->toNumber($row['weight'] ?? null),
-                    'length' => $this->toNumber($row['length'] ?? null),
-                    'width' => $this->toNumber($row['width'] ?? null),
-                    'height' => $this->toNumber($row['height'] ?? null),
-                    'shipping_type' => $row['shipping_type'] ?? ($product->shipping_type ?? 'default'),
-                    'shipping_rate_single' => $this->toNumber($row['shipping_rate_single'] ?? null),
-                    'is_recommended' => $this->toBool($row['is_recommended'] ?? null),
-                    'ribbon_text' => [
-                        'ar' => $row['ribbon_text_ar'] ?? ($product ? $product->getTranslation('ribbon_text', 'ar') : ''),
-                        'en' => $row['ribbon_text_en'] ?? ($product ? $product->getTranslation('ribbon_text', 'en') : ''),
-                    ],
-                    'ribbon_color' => $row['ribbon_color'] ?? ($product->ribbon_color ?? null),
-                    'related_category_id' => $this->toIntOrNull($row['related_category_id'] ?? null),
-                ];
-
-                // علاقات: أقسام، براندات، ميديا، منتجات مرتبطة
-                $categoryIds = $this->splitIds($row['category_ids'] ?? '');
-                $brandIds    = $this->splitIds($row['brand_ids'] ?? '');
-                $media       = $this->splitStrings($row['media'] ?? '');
-                $relatedIds  = $this->splitIds($row['related_products'] ?? '');
-
-                // تأكد أن IDs موجودة فعلاً
-                $categoryIds = Category::whereIn('id', $categoryIds)->pluck('id')->all();
-                $brandIds    = Brand::whereIn('id', $brandIds)->pluck('id')->all();
-                $relatedIds  = Product::whereIn('id', $relatedIds)->pluck('id')->all();
-
-                // SEO
-                $seo = [
-                    'meta_title' => $row['seo_meta_title'] ?? null,
-                    'meta_description' => $row['seo_meta_description'] ?? null,
-                ];
-
-                // تنفيذ
-                if ($product) {
-                    if ($dryRun) {
-                        $updated++;
-                        continue;
-                    }
-
-                    // تحديث باستخدام سيرفيسك الحالي
-                    $payload = array_merge($data, [
-                        'categories' => $categoryIds,
-                        'brands'     => $brandIds,
-                        'media'      => $media,
-                        'related_products' => $relatedIds,
-                        'seo'        => $seo,
-                    ]);
-
-                    // Request-layer validation عندك بتتقبل null/"" وتتعامل معهم
-                    app('App\Services\ProductService')->update($payload, $product);
-                    $updated++;
-                } else {
-                    if ($dryRun) {
-                        $created++;
-                        continue;
-                    }
-
-                    // إنشاء جديد
-                    $payload = array_merge($data, [
-                        'sku'        => $sku ?: null, // ممكن فاضي، وسيرفيسك يولّد واحد
-                        'categories' => $categoryIds,
-                        'brands'     => $brandIds,
-                        'media'      => $media,
-                        'related_products' => $relatedIds,
-                        'seo'        => $seo,
-                    ]);
-
-                    app('App\Services\ProductService')->create($payload);
-                    $created++;
+                // ترتيب اختياري (orders)
+                if (!is_null($sort_order)) {
+                    // لو عندك OrderHelper::assign يقبل custom
+                    // أو مباشرة:
+                    $target = isset($product) && $product ? $product->fresh() : $new->fresh();
+                    $target->orders = $sort_order;
+                    $target->save();
                 }
             } catch (\Throwable $e) {
                 $skipped++;
-                $errors[] = [
-                    'row' => $idx + 1,
-                    'error' => $e->getMessage(),
-                ];
+                $report[] = "Row #" . ($i + 2) . ": error => " . $e->getMessage();
+                continue;
             }
         }
 
         return response()->json([
-            'ok' => true,
-            'dry_run' => $dryRun,
+            'success' => true,
             'created' => $created,
             'updated' => $updated,
             'skipped' => $skipped,
-            'errors'  => $errors,
+            'report'  => $report,
         ]);
     }
 

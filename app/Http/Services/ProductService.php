@@ -119,7 +119,7 @@ class ProductService
             if ($user) {
                 $user_id = $user->id;
             } else {
-                $user_id = 0;
+                $user_id = 0;  
             }
 
             $query->whereHas('favorites', function ($query) use ($user_id) {
