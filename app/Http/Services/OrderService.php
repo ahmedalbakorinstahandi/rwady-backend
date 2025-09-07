@@ -534,6 +534,7 @@ class OrderService
 
             $address = $data['address'];
 
+            $address['phone'] = $data['address']['phone'];
             $address['name'] = 'Order Address ' . $order->id;
             $address['addressable_id'] = $order->id;
             $address['addressable_type'] = Order::class;

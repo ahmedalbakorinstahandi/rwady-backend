@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Country;
+use App\Models\City;
 
 class Address extends Model
 {
@@ -13,6 +15,7 @@ class Address extends Model
 
     protected $fillable = [
         'name',
+        'phone',
         'address',
         'extra_address',
         'country',
@@ -43,5 +46,15 @@ class Address extends Model
     public function billingOrders(): HasMany
     {
         return $this->hasMany(Order::class, 'billing_address_id');
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 } 

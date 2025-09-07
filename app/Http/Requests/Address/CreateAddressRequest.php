@@ -10,14 +10,13 @@ class CreateAddressRequest extends BaseFormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            // 'address' => 'required|string|max:255',
+            'phone' => 'required|phone',
+            'country' => 'required|exists:countries,id,deleted_at,NULL',
+            'city' => 'required|exists:cities,id,deleted_at,NULL',
+            'address' => 'required|string|max:255',
             'exstra_address' => 'nullable|string|max:255',
-            // 'country' => 'required|string|max:255',
-            // 'city' => 'required|string|max:255',
-            // 'state' => 'nullable|string|max:255',
-            // 'zipe_code' => 'nullable|string|max:255',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|string',
+            'longitude' => 'nullable|numeric',
+            'latitude' => 'nullable|string',
             'is_default' => 'nullable|boolean',
         ];
     }

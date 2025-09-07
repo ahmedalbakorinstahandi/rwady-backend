@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->string('phone')->nullable();
+            // $table->string('phone')->nullable();
             $table->string('address');
             $table->text('extra_address')->nullable();
             $table->string('country');

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\CityResource;
+use App\Http\Resources\CountryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,14 +14,15 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'phone' => $this->phone,
             'address' => $this->address,
             'extra_address' => $this->exstra_address,
-            'country' => $this->country,
-            'city' => $this->city,
-            'state' => $this->state,
-            'zipe_code' => $this->zipe_code,
-            'longitude' => $this->longitude,
-            'latitude' => $this->latitude,
+            'country' => new CountryResource($this->country),
+            'city' => new CityResource($this->city),
+            'state' => $this->state ?? null,
+            'zipe_code' => $this->zipe_code ?? null,
+            'longitude' => $this->longitude ?? null,
+            'latitude' => $this->latitude ?? null,
             'addressable_id' => $this->addressable_id,
             'addressable_type' => $this->addressable_type,
             'is_default' => $this->is_default,

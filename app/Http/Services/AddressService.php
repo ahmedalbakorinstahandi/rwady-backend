@@ -13,7 +13,7 @@ class AddressService
 {
     public function index($filters)
     {
-        $query = Address::query();
+        $query = Address::query()->with('country', 'city');
 
         $query = AddressPermission::filterIndex($query);
 
@@ -45,6 +45,8 @@ class AddressService
             MessageService::abort(404, 'messages.address.not_found');
         }
 
+        $address->load('country', 'city');
+
         return $address;
     }
 
@@ -53,19 +55,18 @@ class AddressService
 
         $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
 
-        $data['address'] = $locationData['address'] ?? "";
-        $data['city'] = $locationData['city'] ?? "";
-        $data['country'] = $locationData['country'] ?? "";
-        $data['state'] = $locationData['state'] ?? null;
-        $data['zipe_code'] = $locationData['postal_code'] ?? null;
-        $data['extra_address'] = $data['extra_address'] ?? $locationData['address_secondary'] ?? null;
-
-      
-
+        $data['address'] = $locationData['address'];
+        $data['city'] = $locationData['city'];
+        $data['country'] = $locationData['country'];
+        // $data['state'] = $locationData['state'] ?? null;
+        // $data['zipe_code'] = $locationData['postal_code'] ?? null;
+        // $data['extra_address'] = $data['extra_address'] ?? $locationData['address_secondary'] ?? null;
 
 
 
         $address = Address::create($data);
+
+        $address->load('country', 'city');
 
         return $address;
     }
@@ -73,6 +74,8 @@ class AddressService
     public function update($address, $data)
     {
         $address->update($data);
+
+        $address->load('country', 'city');
 
         return $address;
     }

@@ -23,10 +23,13 @@ class CreateOrderRequest extends BaseFormRequest
 
             'direct_order' => 'nullable|boolean',
 
-            'address' => 'nullable|array',
-            'address.extra_address' => 'nullable|string|max:255',
-            'address.longitude' => 'required|numeric',
-            'address.latitude' => 'required|string',
+            'address' => 'required|array',
+            'address.phone' => 'required|phone',
+            'address.address' => 'required|string|max:255',
+            'address.country' => 'required|exists:countries,id,deleted_at,NULL',
+            'address.city' => 'required|exists:cities,id,deleted_at,NULL',
+            'address.longitude' => 'nullable|numeric',
+            'address.latitude' => 'nullable|string',
             'address.is_default' => 'nullable|boolean',
         ];
     }
