@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->bigInteger('longitude')->nullable()->change();
+            $table->string('longitude')->nullable()->change();
             $table->string('latitude')->nullable()->change();
 
             $table->string('phone', 20)->after('name');
@@ -25,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->bigInteger('longitude')->nullable(false)->change();
+            $table->string('longitude')->nullable(false)->change();
             $table->string('latitude')->nullable(false)->change();
 
             $table->string('phone', 20)->nullable(false)->change();

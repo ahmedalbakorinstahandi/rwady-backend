@@ -31,8 +31,6 @@ class Address extends Model
 
     protected $casts = [
         'is_default' => 'boolean',
-        'country' => 'integer',
-        'city' => 'integer',
     ];
 
     public function user(): BelongsTo
