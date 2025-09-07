@@ -53,11 +53,11 @@ class AddressService
     public function create($data)
     {
 
-        $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
+        // $locationData = LocationService::getLocationData($data['latitude'], $data['longitude']);
 
-        $data['address'] = $locationData['address'];
-        $data['city'] = $locationData['city'];
-        $data['country'] = $locationData['country'];
+        // $data['address'] = $locationData['address'];
+        // $data['city'] = $locationData['city'];
+        // $data['country'] = $locationData['country'];
         // $data['state'] = $locationData['state'] ?? null;
         // $data['zipe_code'] = $locationData['postal_code'] ?? null;
         // $data['extra_address'] = $data['extra_address'] ?? $locationData['address_secondary'] ?? null;
