@@ -14,11 +14,10 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-
             'address' => $this->address,
             'extra_address' => $this->exstra_address,
-            'country' => new CountryResource('country'),
-            'city' => new CityResource('city'),
+            'country' => new CountryResource($this->whenLoaded('country')),
+            'city' => new CityResource($this->whenLoaded('city')),
             'state' => $this->state ?? null,
             'zipe_code' => $this->zipe_code ?? null,
             'longitude' => $this->longitude ?? null,
