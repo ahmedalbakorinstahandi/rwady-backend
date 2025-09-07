@@ -50,12 +50,12 @@ class Address extends Model
         return $this->hasMany(Order::class, 'billing_address_id');
     }
 
-    public function country(): BelongsTo
+    public function countryInfo(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'country', 'id');
     }
 
-    public function city(): BelongsTo
+    public function cityInfo(): BelongsTo
     {
         return $this->belongsTo(City::class, 'city', 'id');
     }
