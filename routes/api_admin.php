@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\FeaturedSectionController;
 use App\Http\Controllers\HomeSectionController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Bulk\ProductBulkController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -123,5 +126,26 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::post('/', [UserController::class, 'create']);
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'delete']);
+    });
+
+
+    Route::prefix('addresses')->group(function () {
+        Route::get('/countries', [CountryController::class, 'index']);
+        Route::get('/countries/{id}', [CountryController::class, 'show']);
+        Route::post('/countries', [CountryController::class, 'create']);
+        Route::put('/countries/{id}', [CountryController::class, 'update']);
+        Route::delete('/countries/{id}', [CountryController::class, 'delete']);
+
+        Route::get('/cities', [CityController::class, 'index']);
+        Route::get('/cities/{id}', [CityController::class, 'show']);
+        Route::post('/cities', [CityController::class, 'create']);
+        Route::put('/cities/{id}', [CityController::class, 'update']);
+        Route::delete('/cities/{id}', [CityController::class, 'delete']);
+
+        Route::get('/areas', [AreaController::class, 'index']);
+        Route::get('/areas/{id}', [AreaController::class, 'show']);
+        Route::post('/areas', [AreaController::class, 'create']);
+        Route::put('/areas/{id}', [AreaController::class, 'update']);
+        Route::delete('/areas/{id}', [AreaController::class, 'delete']);
     });
 });
