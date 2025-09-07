@@ -13,7 +13,7 @@ class AddressService
 {
     public function index($filters)
     {
-        $query = Address::query()->with('country', 'city');
+        $query = Address::query()->with(['country', 'city']);
 
         $query = AddressPermission::filterIndex($query);
 
@@ -45,7 +45,7 @@ class AddressService
             MessageService::abort(404, 'messages.address.not_found');
         }
 
-        $address->load('country', 'city');
+        $address->load(['country', 'city']);
 
         return $address;
     }
@@ -66,7 +66,7 @@ class AddressService
 
         $address = Address::create($data);
 
-        $address->load('country', 'city');
+        $address->load(['country', 'city']);
 
         return $address;
     }
@@ -75,7 +75,7 @@ class AddressService
     {
         $address->update($data);
 
-        $address->load('country', 'city');
+        $address->load(['country', 'city']);
 
         return $address;
     }
