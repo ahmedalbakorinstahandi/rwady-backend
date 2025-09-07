@@ -11,7 +11,7 @@ class AreaService
 
     public function index($filters = [])
     {
-        $query = Area::query();
+        $query = Area::query()->with('city');
 
         $query = FilterService::applyFilters(
             $query,
@@ -33,12 +33,15 @@ class AreaService
             MessageService::abort(404, 'messages.area.not_found');
         }
 
+        $area->load('city');
+
         return $area;
     }
 
     public function create($data)
     {
         $area = Area::create($data);
+        $area->load('city');
         return $area;
     }
 
@@ -46,6 +49,7 @@ class AreaService
     public function update($area, $data)
     {
         $area->update($data);
+        $area->load('city');
         return $area;
     }
 
@@ -53,6 +57,7 @@ class AreaService
     public function delete($area)
     {
         $area->delete();
+        $area->load('city');
         return $area;
     }
 }

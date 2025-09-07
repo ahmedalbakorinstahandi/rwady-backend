@@ -10,7 +10,7 @@ class CityService
 {
     public function index($filters = [])
     {
-        $query = City::query();
+        $query = City::query()->with('country');
 
         $query = FilterService::applyFilters(
             $query,
@@ -32,12 +32,16 @@ class CityService
             return MessageService::abort(404, 'messages.city.not_found');
         }
 
+        $city->load('country');
+
         return $city;
     }
 
     public function create($data)
     {
         $city = City::create($data);
+
+        $city->load('country');
 
         return $city;
     }
@@ -46,6 +50,8 @@ class CityService
     {
         $city->update($data);
 
+        $city->load('country');
+
         return $city;
     }
     
@@ -53,6 +59,8 @@ class CityService
     public function delete($city)
     {
         $city->delete();
+
+        $city->load('country');
 
         return $city;
     }

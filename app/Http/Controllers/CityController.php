@@ -58,7 +58,8 @@ class CityController extends Controller
     public function update(UpdateCityRequest $request, $id)
     {
         $city = $this->cityService->show($id);
-        $city = $this->cityService->update($request->validated(), $city);
+        
+        $city = $this->cityService->update($city, $request->validated());
 
         return ResponseService::response([
             'success' => true,
