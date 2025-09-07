@@ -16,7 +16,7 @@ class CreateAreaRequest extends BaseFormRequest
         return [
             'name' => LanguageService::translatableFieldRules('required|string|max:255'),
             'place_id' => 'nullable|string|max:255',
-            'city_id' => 'exists:cities,id,deleted_at,NULL',
+            'city_id' => 'exists:cities,id,deleted_at,NULL|required',
         ];
     }
 }
