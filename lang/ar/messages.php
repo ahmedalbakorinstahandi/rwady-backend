@@ -133,5 +133,33 @@ return [
         'account_deleted_successfully' => 'تم حذف حسابك بنجاح',
         'delete_account_code_sent' => 'تم إرسال رمز حذف حسابك إلى رقم الهاتف',
         'delete_account_code' => 'رمز حذف حسابك هو :code',
-    ]
+    ],
+
+    'country' => [
+        'not_found' => 'الدولة غير موجودة',
+        'created_successfully' => 'تم إنشاء الدولة بنجاح',
+        'updated_successfully' => 'تم تحديث الدولة بنجاح',
+        'deleted_successfully' => 'تم حذف الدولة بنجاح',
+    ],
+    
+    'city' => [
+        'not_found' => 'المدينة غير موجودة',
+        'created_successfully' => 'تم إنشاء المدينة بنجاح',
+        'updated_successfully' => 'تم تحديث المدينة بنجاح',
+        'deleted_successfully' => 'تم حذف المدينة بنجاح',
+    ],
+    
+    'area' => [
+        'not_found' => 'المنطقة غير موجودة',
+        'created_successfully' => 'تم إنشاء المنطقة بنجاح',
+        'updated_successfully' => 'تم تحديث المنطقة بنجاح',
+        'deleted_successfully' => 'تم حذف المنطقة بنجاح',
+    ],      
+
+    'general' => [
+        'not_found' => 'العنصر غير موجود',
+        'created_successfully' => 'تم إنشاء العنصر بنجاح',
+        'updated_successfully' => 'تم تحديث العنصر بنجاح',
+        'deleted_successfully' => 'تم حذف العنصر بنجاح',
+    ],
 ];

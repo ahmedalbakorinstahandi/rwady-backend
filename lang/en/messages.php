@@ -134,5 +134,26 @@ return [
         'account_deleted_successfully' => 'Your account deleted successfully',
         'delete_account_code_sent' => 'Delete account code sent to phone',
         'delete_account_code' => 'Your delete account code is :code',
-    ]
+    ],
+
+    'country' => [
+        'not_found' => 'Country not found',
+        'created_successfully' => 'Country created successfully',
+        'updated_successfully' => 'Country updated successfully',
+        'deleted_successfully' => 'Country deleted successfully',
+    ],
+
+    'city' => [
+        'not_found' => 'City not found',
+        'created_successfully' => 'City created successfully',
+        'updated_successfully' => 'City updated successfully',
+        'deleted_successfully' => 'City deleted successfully',
+    ],
+
+    'area' => [
+        'not_found' => 'Area not found',
+        'created_successfully' => 'Area created successfully',
+        'updated_successfully' => 'Area updated successfully',
+        'deleted_successfully' => 'Area deleted successfully',
+    ],
 ];
