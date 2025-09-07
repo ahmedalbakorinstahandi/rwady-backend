@@ -12,6 +12,10 @@ class CityService
     {
         $query = City::query()->with('country');
 
+        $filters['sort_order'] = $filters['sort_order'] ?? 'asc';
+        $filters['limit'] = $filters['limit'] ?? 100;
+
+
         $query = FilterService::applyFilters(
             $query,
             $filters,
@@ -45,7 +49,7 @@ class CityService
 
         return $city;
     }
-    
+
     public function update($city, $data)
     {
         $city->update($data);
@@ -54,8 +58,8 @@ class CityService
 
         return $city;
     }
-    
-    
+
+
     public function delete($city)
     {
         $city->delete();
@@ -64,6 +68,4 @@ class CityService
 
         return $city;
     }
-    
-    
 }
