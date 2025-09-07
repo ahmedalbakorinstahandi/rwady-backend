@@ -14,11 +14,11 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'phone' => $this->phone,
+
             'address' => $this->address,
             'extra_address' => $this->exstra_address,
-            'country' => new CountryResource($this->country()),
-            'city' => new CityResource($this->city()),
+            'country' => new CountryResource('country'),
+            'city' => new CityResource('city'),
             'state' => $this->state ?? null,
             'zipe_code' => $this->zipe_code ?? null,
             'longitude' => $this->longitude ?? null,
@@ -30,4 +30,4 @@ class AddressResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
-} 
+}
