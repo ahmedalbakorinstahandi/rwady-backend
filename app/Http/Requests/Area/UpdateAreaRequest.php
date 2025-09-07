@@ -13,6 +13,7 @@ class UpdateAreaRequest extends BaseFormRequest
         return [
             'name' => LanguageService::translatableFieldRules('nullable|string|max:255'),
             'place_id' => 'nullable|string|max:255',
+            'city_id' => 'exists:cities,id,deleted_at,NULL|nullable',
         ];
     }
 }
