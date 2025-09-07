@@ -17,8 +17,8 @@ class AddressResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
             'extra_address' => $this->exstra_address,
-            'country' => new CountryResource($this-> whenLoaded('country')  ),
-            'city' => new CityResource($this->  whenLoaded( 'city')),
+            'country' => new CountryResource($this->whenLoaded('country')),
+            'city' => new CityResource($this->whenLoaded('city')),
             'state' => $this->state ?? null,
             'zipe_code' => $this->zipe_code ?? null,
             'longitude' => $this->longitude ?? null,
@@ -30,4 +30,4 @@ class AddressResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
-} 
+}
