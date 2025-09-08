@@ -17,6 +17,7 @@ use App\Http\Services\AqsatiInstallmentService;
 use App\Models\CouponUsage;
 use App\Models\Promotion;
 use App\Models\Status;
+use App\Services\LanguageService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -381,7 +382,7 @@ class OrderService
                 'shipping_rate' => $product->getShippingRateAttribute($productData['quantity']) * $productData['quantity'],
                 'color_id' => $productData['color_id'] ?? null,
                 'promotion_id' => $promotion ? $promotion->id : null,
-                'promotion_title' => $promotion ? $promotion->title : null,
+                'promotion_title' => $promotion ? $promotion->title[LanguageService::getLocale()] : null,
                 'promotion_discount_type' => $promotion ? $promotion->discount_type : null,
                 'promotion_discount_value' => $promotion ? $promotion->discount_value : null,
             ]);
@@ -392,7 +393,7 @@ class OrderService
 
         if ($promotionCartTotal && $order->total_amount >= $promotionCartTotal->min_cart_total) {
             $order->promotion_cart_id = $promotionCartTotal->id;
-            $order->promotion_cart_title = $promotionCartTotal->title;
+            $order->promotion_cart_title = $promotionCartTotal->title[LanguageService::getLocale()];
             $order->promotion_cart_discount_type = $promotionCartTotal->discount_type;
             $order->promotion_cart_discount_value = $promotionCartTotal->discount_value;
         }
@@ -401,7 +402,7 @@ class OrderService
 
         if ($promotionFreeShipping) {
             $order->promotion_shipping_id = $promotionFreeShipping->id;
-            $order->promotion_shipping_title = $promotionFreeShipping->title;
+            $order->promotion_shipping_title = $promotionFreeShipping->title[LanguageService::getLocale()];
             $order->promotion_free_shipping = true;
         }
 
