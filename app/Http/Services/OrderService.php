@@ -25,7 +25,7 @@ class OrderService
 {
     public function index($filters = [])
     {
-        $query = Order::query()->with(['couponUsage.coupon', 'address']);
+        $query = Order::query()->with(['couponUsage.coupon', 'address.countryInfo', 'address.cityInfo']);
 
 
         $searchFields = ['name', 'description'];
@@ -66,7 +66,8 @@ class OrderService
             'couponUsage.coupon',
             'payments',
             'statuses',
-            'address',
+            'address.countryInfo',
+            'address.cityInfo',
             'promotionCart',
             'promotionShipping',
         ];
