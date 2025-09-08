@@ -49,6 +49,7 @@ class ProductResource extends JsonResource
             'related_category_id' => $this->related_category_id,
             'related_category_limit' => $this->related_category_limit,
             'is_favorite' => $user ? $user->favorites()->where('product_id', $this->id)->exists() : false,
+            'is_in_cart' => $user ? $user->cartItems()->where('product_id', $this->id)->exists() : false,
             'discount_percentage_text' => $this->discount_percentage,
             'sort_orders' => $this->orders,
             'total_orders' => $this->total_orders,
@@ -60,17 +61,17 @@ class ProductResource extends JsonResource
                 try {
                     // First: Get manually related products
                     $manualRelatedProducts = collect($this->relatedProducts ?? []);
-                    
+
                     // Second: Get products from same lowest level categories
                     $sameLevelProducts = collect($this->sameLevelProducts ?? []);
-                    
+
                     // Merge both collections
                     $merged = $manualRelatedProducts->merge($sameLevelProducts);
-                    
+
                     // Remove duplicates and apply limit
                     $limit = $this->related_category_limit ?: 10;
                     $merged = $merged->unique('id')->take($limit);
-                    
+
                     return ProductResource::collection($merged);
                 } catch (\Exception $e) {
                     return ProductResource::collection(collect([]));
