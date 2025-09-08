@@ -319,7 +319,7 @@ class OrderService
         $user = User::auth();
 
 
-        $direct_order =   empty($data['direct_order']) && $data['direct_order'] == true;
+        $direct_order =   isset($data['direct_order']) && $data['direct_order'] == true;
 
 
         $data['user_id'] = $user->id;
