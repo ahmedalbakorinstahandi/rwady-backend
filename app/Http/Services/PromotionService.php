@@ -27,13 +27,17 @@ class PromotionService
             false,
         );
 
-        $promotionsTypeOne = clone $promotions->get();
-        $promotionsTypeTwo = clone $promotions->get();
-        $promotionsTypeThree = clone $promotions->get();
+        $promotionsTypeOne = $promotions->get()->filter(function($promotion) {
+            return in_array($promotion->type, ['product', 'category']);
+        });
 
-        $promotionsTypeOne->where('type', 'product')->orWhere('type', 'category');
-        $promotionsTypeTwo->where('type', 'cart_total') ->latest();
-        $promotionsTypeThree->where('type', 'shipping') ->latest();
+        $promotionsTypeTwo = $promotions->get()->filter(function($promotion) {
+            return $promotion->type === 'cart_total';
+        })->sortByDesc('created_at');
+
+        $promotionsTypeThree = $promotions->get()->filter(function($promotion) {
+            return $promotion->type === 'shipping';
+        })->sortByDesc('created_at');
 
         $promotions = $promotionsTypeOne->merge($promotionsTypeTwo)->merge($promotionsTypeThree);
 
