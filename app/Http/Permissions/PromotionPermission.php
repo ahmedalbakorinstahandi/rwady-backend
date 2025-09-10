@@ -25,6 +25,8 @@ class PromotionPermission
                 });
         }
 
+       
+
         return $query;
     }
 

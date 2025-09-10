@@ -72,7 +72,7 @@ class QiPaymentWebhookController extends Controller
 
         // clear cart
         $user = User::find($order->user_id);
-        if ($user) {
+        if ($user && ($order->metadata['direct_order'] ?? false) == false) {
             $user->cartItems()->delete();
         }
 

@@ -43,7 +43,7 @@ class OrderService
             $numericFields,
             $dateFields,
             $exactMatchFields,
-            $inFields
+            $inFields,
         );
 
         return $query;
@@ -412,6 +412,9 @@ class OrderService
 
             $order->payment_method = 'qi';
             $order->payment_fees = config('services.qi.fees', 3);
+            $order->metadata = [
+                'direct_order' => $direct_order,
+            ];
 
             $order->save();
 
@@ -504,6 +507,7 @@ class OrderService
 
             // metadata
             $order->metadata =   [
+                "direct_order" => $direct_order,
                 'check_eligibility' => $eligibility,
             ];
 
@@ -612,9 +616,13 @@ class OrderService
             'method' => 'installment',
         ]);
 
+        // if direct order
+        if ($order->metadata['direct_order'] ?? false) {
+            $user = User::auth();
+            $user->cartItems()->delete();
+        }
 
-        $user = User::auth();
-        $user->cartItems()->delete();
+       
 
         return $order;
     }

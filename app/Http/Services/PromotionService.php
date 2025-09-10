@@ -16,8 +16,6 @@ class PromotionService
 
         $query = PromotionPermission::filterIndex($query);
 
-
-
         $promotions = FilterService::applyFilters(
             $query,
             $filters,
@@ -26,9 +24,20 @@ class PromotionService
             ['start_at', 'end_at', 'created_at'],
             ['type', 'discount_type', 'status'],
             ['type', 'discount_type', 'status'],
+            false,
         );
 
-        return $promotions;
+        $promotionsTypeOne = clone $promotions->get();
+        $promotionsTypeTwo = clone $promotions->get();
+        $promotionsTypeThree = clone $promotions->get();
+
+        $promotionsTypeOne->where('type', 'product')->orWhere('type', 'category');
+        $promotionsTypeTwo->where('type', 'cart_total') ->latest();
+        $promotionsTypeThree->where('type', 'shipping') ->latest();
+
+        $promotions = $promotionsTypeOne->merge($promotionsTypeTwo)->merge($promotionsTypeThree);
+
+        return $promotions->paginate($filters['limit'] ?? 20);
     }
 
     public function show($id)
@@ -47,8 +56,8 @@ class PromotionService
     public function create($data)
     {
         $data = LanguageService::prepareTranslatableData($data, new Promotion);
-        
-        
+
+
         // if type is shipping, set discount_type to fixed and discount_value to 0
         if ($data['type'] == 'shipping') {
             $data['discount_type'] = 'percentage';
