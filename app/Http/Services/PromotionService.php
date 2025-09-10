@@ -35,7 +35,7 @@ class PromotionService
         $promotionsTypeTwo->where('type', 'cart_total')->latest();
         $promotionsTypeThree->where('type', 'shipping')->latest();
 
-        $promotions = $promotionsTypeOne->merge($promotionsTypeTwo)->merge($promotionsTypeThree);
+        $promotions = $promotionsTypeOne->union($promotionsTypeTwo)->union($promotionsTypeThree);
 
         return $promotions->paginate($filters['limit'] ?? 20);
     }
