@@ -13,64 +13,88 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PromotionService
 {
 
-    public function index(array $filters = [])
+    public function index(array $filters = []): LengthAwarePaginator
     {
-        // 1. base promotion query + permissions + apply filters (تأكد أن applyFilters يرجع Builder)
+        // 1) بناء base query + صلاحيات
         $base = Promotion::query();
         $base = PromotionPermission::filterIndex($base);
-    
+
+        // 2) تطبيق الفلاتر (نفترض FilterService::applyFilters يرجع Eloquent\Builder)
         $filtered = FilterService::applyFilters(
             $base,
             $filters,
+            // searchable columns
             ['title'],
+            // numeric filters (min/max)
             ['discount_value', 'min_cart_total'],
+            // date filters
             ['start_at', 'end_at', 'created_at'],
+            // allowed filters (exact match)
             ['type', 'discount_type', 'status'],
+            // allowed sorts (same as filters here)
             ['type', 'discount_type', 'status'],
+            // use pagination inside service? false => return builder
             false
         )->select('promotions.*');
-    
-        // 2. اختصاصي لكل مجموعة
-        $qTypeAll = (clone $filtered)->whereIn('type', ['product', 'category']); // كل النتائج
+
+        // 3) استعلامات كل نوع
+        $qTypeAll = (clone $filtered)->whereIn('type', ['product', 'category']);
         $qCartLatest = (clone $filtered)->where('type', 'cart_total')->orderByDesc('created_at')->limit(1);
         $qShippingLatest = (clone $filtered)->where('type', 'shipping')->orderByDesc('created_at')->limit(1);
-    
-        // 3. unionAll (toBase() => Query\Builder)
+
+        // 4) unionAll (toBase => Query\Builder)
         $union = $qTypeAll->toBase()
             ->unionAll($qCartLatest->toBase())
             ->unionAll($qShippingLatest->toBase());
-    
-        // 4. غلف union في subquery حتى يعمل paginate() و order النهائي
+
+        // 5) غلف union في subquery حتى يعمل paginate و order نهائي
         $sub = DB::query()->fromSub($union, 'promotions_union')->select('promotions_union.*');
-    
-        // ترتيب نهائي حسب نوع (ضع ترتيبك المطلوب هنا)
-        // MySQL: FIELD — يضع المنتج/القسم أولًا ثم cart_total ثم shipping
+
+        // ترتيب نهائي: وضع product/category أولاً ثم cart_total ثم shipping، ثم الأنسب حسب created_at
+        // (MySQL FIELD) — لو PostgreSQL استبدل بـ CASE WHEN
         $sub = $sub->orderByRaw("FIELD(type, 'product','category','cart_total','shipping')")
                    ->orderByDesc('created_at');
-    
-        // 5. صفحة (pagination) على الـ subquery
-        $perPage = $filters['limit'] ?? 20;
+
+        // 6) paginate
+        $perPage = (int) ($filters['limit'] ?? 20);
         $page = $sub->paginate($perPage);
-    
-        // 6. eager load للعلاقات الحقيقية على موديل Eloquent وترتيب النتائج حسب الصفحة
+
+        // 7) eager load للعلاقات الحقيقية على Eloquent بعد paginate للحفاظ على الأداء وتجنب union-with()
         $ids = collect($page->items())->pluck('id')->filter()->values()->all();
-    
+
         if (!empty($ids)) {
-            // عدّل قائمة العلاقات هنا إن احتجت
-            $with = ['category', 'product', 'media']; // مثال
-    
-            $models = Promotion::with($with)
+            // علاقات متوقعة — عدّل حسب موديلك الفعلي
+            $possibleRelations = [
+                'categories', // لديك relation as BelongsToMany
+                'products',   // لديك relation as BelongsToMany
+                'media',      // مثال: morphMany
+                // أضف هنا أي relation أخرى متوقعة مثل 'creator', 'translations' ...
+            ];
+
+            // احتياط: خذ فقط العلاقات المعرفة فعلياً في الموديل لتفادي RelationNotFoundException
+            $with = array_values(array_filter($possibleRelations, function ($relation) {
+                return method_exists(Promotion::class, $relation);
+            }));
+
+            // جلب النماذج الحقيقية مع الحفاظ على ترتيب الصفحات
+            $orderedIds = implode(',', $ids); // آمن لأن ids من قاعدة بيانات (أرقام صحيحة)
+            $modelsQuery = Promotion::query();
+
+            if (!empty($with)) {
+                $modelsQuery = $modelsQuery->with($with);
+            }
+
+            $models = $modelsQuery
                 ->whereIn('id', $ids)
-                // نحافظ على ترتيب الـ ids كما جت من الصفحة
-                ->orderByRaw('FIELD(id, ' . implode(',', $ids) . ')')
+                ->orderByRaw("FIELD(id, {$orderedIds})")
                 ->get();
-    
-            // استبدال مجموعة العناصر في الـ paginator بالنماذج المحمّلة
+
+            // استبدال collection داخل paginator بالنماذج المحمّلة
             if ($page instanceof LengthAwarePaginator) {
                 $page->setCollection($models);
             }
         }
-    
+
         return $page;
     }
     
