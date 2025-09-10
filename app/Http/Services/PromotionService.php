@@ -27,13 +27,13 @@ class PromotionService
             false,
         );
 
-        $promotionsTypeOne = clone $promotions->get();
-        $promotionsTypeTwo = clone $promotions->get();
-        $promotionsTypeThree = clone $promotions->get();
+        $promotionsTypeOne = clone $promotions;
+        $promotionsTypeTwo = clone $promotions;
+        $promotionsTypeThree = clone $promotions;
 
         $promotionsTypeOne->whereIn('type', ['product', 'category']);
-        $promotionsTypeTwo->where('type', 'cart_total')->latest()->get();
-        $promotionsTypeThree->where('type', 'shipping')->latest()->get();
+        $promotionsTypeTwo->where('type', 'cart_total')->latest();
+        $promotionsTypeThree->where('type', 'shipping')->latest();
 
         $promotions = $promotionsTypeOne->merge($promotionsTypeTwo)->merge($promotionsTypeThree);
 
