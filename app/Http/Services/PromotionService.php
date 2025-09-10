@@ -32,8 +32,8 @@ class PromotionService
         $promotionsTypeThree = clone $promotions->get();
 
         $promotionsTypeOne->whereIn('type', ['product', 'category']);
-        $promotionsTypeTwo->where('type', 'cart_total')->latest();
-        $promotionsTypeThree->where('type', 'shipping')->latest();
+        $promotionsTypeTwo->where('type', 'cart_total')->latest()->get();
+        $promotionsTypeThree->where('type', 'shipping')->latest()->get();
 
         $promotions = $promotionsTypeOne->merge($promotionsTypeTwo)->merge($promotionsTypeThree);
 
