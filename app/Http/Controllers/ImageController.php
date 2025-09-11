@@ -16,7 +16,7 @@ class ImageController extends Controller
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:8192',
-            'folder' => 'required|string|in:users,banners,featured_sections,products,categories,brands,home_sections',
+            'folder' => 'required|string|in:users,banners,featured_sections,products,categories,brands,home_sections,orders',
         ]);
 
         $imageName = ImageService::storeImage($request->image, $request->folder);
@@ -37,7 +37,7 @@ class ImageController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:20480',
-            'folder' => 'required|string|in:users,listings',
+            'folder' => 'required|string|in:users,listings,orders',
         ]);
 
         $fileName = FileService::storeFile($request->file, $request->folder);
