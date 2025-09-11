@@ -99,7 +99,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
     Route::prefix('order-payments')->group(function () {
         Route::get('/', [OrderPaymentController::class, 'index']);
         Route::get('/{id}', [OrderPaymentController::class, 'show']);
-        Route::post('/{orderId}', [OrderPaymentController::class, 'create']);
+        Route::post('/', [OrderPaymentController::class, 'create']);
         Route::put('/{id}', [OrderPaymentController::class, 'update']);
         Route::delete('/{id}', [OrderPaymentController::class, 'delete']);
     });
