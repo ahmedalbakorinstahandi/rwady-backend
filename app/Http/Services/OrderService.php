@@ -715,6 +715,7 @@ class OrderService
                     'amount' => $qiResponse['amount'],
                     'status' => 'completed',
                     'metadata' => $qiResponse,
+                    'created_by' => 'system',
                 ]);
             } else {
                 $payment->update([

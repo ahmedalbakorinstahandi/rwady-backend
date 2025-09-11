@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('order_payments', function (Blueprint $table) {
-            $table->enum('created_by', ['user', 'admin'])->nullable()->default('user')->after('order_id');
+            $table->enum('created_by', ['user', 'admin', 'system'])->nullable()->default('user')->after('order_id');
         });
     }
 
