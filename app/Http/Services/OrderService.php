@@ -699,7 +699,7 @@ class OrderService
                     'orderId' => $order->id,
                 ],
             ];
-            $qiResponse = $qiPaymentService->refundPayment($payment->metadata['paymentId'], $qiData);
+            $qiResponse = $qiPaymentService->refundPayment($order->metadata['paymentId'], $qiData);
 
             // abort(
             //     response()->json(
