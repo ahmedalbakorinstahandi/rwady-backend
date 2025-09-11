@@ -47,8 +47,8 @@ class OrderPaymentService
             'order_id' => $data['order_id'],
             'amount' => $data['amount'],
             'description' => [
-                'ar' =>  'تم إضافة دفعة جديدة بمبلغ ' . $data['amount'] . ' بواسطة الأدمن ملاحظات ' . $data['message'],
-                'en' => 'A new payment was added with an amount of ' . $data['amount'] . ' by the admin with notes ' . $data['message'],
+                'ar' =>  'تم إضافة دفعة جديدة بمبلغ ' . $data['amount'] . ' بواسطة الأدمن، ملاحظات: ' . $data['message'],
+                'en' => 'A new payment was added with an amount of ' . $data['amount'] . ' by the admin, notes: ' . $data['message'],
             ],
             'status' => $data['status'],
             'method' => $data['method'],
