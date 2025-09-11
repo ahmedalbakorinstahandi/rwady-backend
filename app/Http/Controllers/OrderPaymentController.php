@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Permissions\OrderPaymentPermission;
 use App\Http\Requests\OrderPayment\CreateOrderPaymentRequest;
 use App\Http\Requests\OrderPayment\UpdateOrderPaymentRequest;
 use App\Http\Resources\OrderPaymentResource;
@@ -64,6 +65,8 @@ class OrderPaymentController extends Controller
 
         $orderPayment = $this->orderPaymentService->show($id);
 
+        $orderPayment = OrderPaymentPermission::update($orderPayment);
+
         $orderPayment = $this->orderPaymentService->update($orderPayment, $request->validated());
 
         return ResponseService::response([
@@ -77,6 +80,8 @@ class OrderPaymentController extends Controller
     public function delete($id)
     {
         $orderPayment = $this->orderPaymentService->show($id);
+
+        $orderPayment = OrderPaymentPermission::delete($orderPayment);
 
 
         $this->orderPaymentService->delete($orderPayment);

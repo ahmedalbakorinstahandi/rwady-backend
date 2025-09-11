@@ -162,4 +162,14 @@ return [
         'updated_successfully' => 'تم تحديث العنصر بنجاح',
         'deleted_successfully' => 'تم حذف العنصر بنجاح',
     ],
+
+    'order_payment' => [
+        'not_found' => 'الدفعة غير موجودة',
+        'created_successfully' => 'تم إنشاء الدفعة بنجاح',
+        'updated_successfully' => 'تم تحديث الدفعة بنجاح',
+        'deleted_successfully' => 'تم حذف الدفعة بنجاح',
+        'update_not_allowed' => 'لا يمكن تحديث الدفعة',
+        'delete_not_allowed' => 'لا يمكن حذف الدفعة',
+        'create_not_allowed' => 'لا يمكن إنشاء الدفعة',
+    ],
 ];

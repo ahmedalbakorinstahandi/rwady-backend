@@ -156,4 +156,14 @@ return [
         'updated_successfully' => 'Area updated successfully',
         'deleted_successfully' => 'Area deleted successfully',
     ],
+
+    'order_payment' => [
+        'not_found' => 'Order payment not found',
+        'created_successfully' => 'Order payment created successfully',
+        'updated_successfully' => 'Order payment updated successfully',
+        'deleted_successfully' => 'Order payment deleted successfully',
+        'update_not_allowed' => 'Update not allowed',
+        'delete_not_allowed' => 'Delete not allowed',
+        'create_not_allowed' => 'Create not allowed',
+    ],
 ];
