@@ -701,7 +701,14 @@ class OrderService
             ];
             $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
 
-            abort(response()->json($qiResponse));
+            abort(
+                response()->json(
+                    [
+                        'response' => $qiResponse,
+                        'qiData' => $qiData,
+                    ]
+                )
+            );
             if ($qiResponse['status'] == 'SUCCESS') {
                 $payment->update([
                     'amount' => $qiResponse['amount'],
