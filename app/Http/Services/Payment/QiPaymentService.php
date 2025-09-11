@@ -87,4 +87,61 @@ class QiPaymentService
             return ['error' => 'request_failed'];
         }
     }
+
+    /**
+     * استرداد مبلغ الدفع (Refund Payment) - كامل أو جزئي
+     *
+     * @param string $paymentId - معرف معاملة الدفع المراد استردادها
+     * @param array $refundData - بيانات الاسترداد: requestId, amount, message, extParams
+     * @return array
+     */
+    public function refundPayment(string $paymentId, array $refundData): array
+    {
+        try {
+            $response = Http::withBasicAuth($this->username, $this->password)
+                ->withHeaders([
+                    'X-Terminal-Id' => $this->terminalId,
+                    'Content-Type' => 'application/json',
+                ])
+                ->post($this->baseUrl . "payment/{$paymentId}/refund", $refundData);
+
+            return $response->json();
+        } catch (RequestException $e) {
+            Log::error('QI Refund Payment Failed', [
+                'paymentId' => $paymentId,
+                'refundData' => $refundData,
+                'error' => $e->getMessage()
+            ]);
+            return ['error' => 'request_failed'];
+        }
+    }
+
+    /**
+     * إنشاء بيانات الاسترداد مع التحقق من صحة البيانات
+     *
+     * @param string $requestId - معرف فريد للطلب
+     * @param float $amount - مبلغ الاسترداد
+     * @param string|null $message - رسالة توضيحية للاسترداد
+     * @param array|null $extParams - معاملات إضافية اختيارية
+     * @return array
+     */
+    public function createRefundData(string $requestId, float $amount, ?string $message = null, ?array $extParams = null): array
+    {
+        $refundData = [
+            'requestId' => $requestId,
+            'amount' => $amount,
+        ];
+
+        if ($message !== null) {
+            $refundData['message'] = $message;
+        }
+
+        if ($extParams !== null && !empty($extParams)) {
+            $refundData['extParams'] = $extParams;
+        }
+
+        return $refundData;
+    }
+
+    
 }

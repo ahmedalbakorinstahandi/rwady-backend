@@ -450,7 +450,6 @@ class OrderService
             $order->metadata = $paymentSession;
 
             $order->payment_session_id =  'qi-' . $paymentSession['requestId'];
-            
         } elseif ($data['payment_method'] == 'cash') {
             $order->payment_method = 'cash';
             $order->payment_fees = 0;
@@ -622,7 +621,7 @@ class OrderService
             $user->cartItems()->delete();
         }
 
-       
+
 
         return $order;
     }
@@ -658,5 +657,75 @@ class OrderService
         $order->payments()->delete();
         $order->statuses()->delete();
         $order->delete();
+    }
+
+    public function refund($order, $data)
+    {
+
+
+
+        $order->statuses()->create([
+            'status' => 'refunded',
+            'statusable_type' => Order::class,
+            'statusable_id' => $order->id,
+        ]);
+
+        $payment = $order->payments()->create([
+            'order_id' => $order->id,
+            'amount' => $data['amount'],
+            'description' => [
+                'ar' => 'استرداد الدفع السبب ' . $data['reason'],
+                'en' => 'Refund Payment Reason ' . $data['reason'],
+            ],
+            'status' => 'pending',
+            'is_refund' => true,
+            'method' => $data['method'],
+            'attached' => $data['attached'] ?? null,
+            'metadata' => [],
+        ]);
+
+        if ($data['method'] == 'qi') {
+            $qiPaymentService = new QiPaymentService();
+            $qiData = [
+                'requestId' => $payment->metadata['requestId'],
+                'amount' => $data['amount'],
+                'message' => $data['reason'],
+                'extParams' => [],
+            ];
+            $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
+            if ($qiResponse['status'] == 'SUCCESS') {
+                $payment->update([
+                    'amount' => $qiResponse['amount'],
+                    'status' => 'completed',
+                    'metadata' => $qiResponse,
+                ]);
+            } else {
+                $payment->update([
+                    'status' => 'failed',
+                ]);
+            }
+        } elseif ($data['method'] == 'transfer') {
+            $payment->update([
+                'status' => 'completed',
+            ]);
+        } elseif ($data['method'] == 'cash') {
+            $payment->update([
+                'status' => 'completed',
+            ]);
+        } elseif ($data['method'] == 'installment') {
+            $payment->update([
+                'status' => 'completed',
+            ]);
+        } else {
+            MessageService::abort(400, 'messages.order.payment_method_not_found');
+        }
+
+        $order->save();
+
+
+        //     $table->enum('status', ["pending", "completed", "failed"]);
+
+
+        return $order;
     }
 }

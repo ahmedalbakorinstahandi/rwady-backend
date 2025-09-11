@@ -6,6 +6,7 @@ use App\Http\Permissions\OrderPermission;
 use App\Http\Requests\Order\CheckOrderDeailsRequest;
 use App\Http\Requests\Order\ConfirmOtpRequest;
 use App\Http\Requests\Order\CreateOrderRequest;
+use App\Http\Requests\Order\RefundOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Services\OrderService;
@@ -124,4 +125,18 @@ class OrderController extends Controller
             'status' => 200,
         ]);
     }
+
+    public function refund($id, RefundOrderRequest $request)
+    {
+        $order = $this->orderService->show($id);
+
+        $this->orderService->refund($order, $request->validated());
+    
+
+        return ResponseService::response([
+            'success' => true,
+            'message' => 'messages.order.refunded_successfully',
+            'status' => 200,
+        ]);
+    }   
 }
