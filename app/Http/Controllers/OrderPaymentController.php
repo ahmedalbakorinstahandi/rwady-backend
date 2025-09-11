@@ -65,7 +65,7 @@ class OrderPaymentController extends Controller
 
         $orderPayment = $this->orderPaymentService->show($id);
 
-        $orderPayment = OrderPaymentPermission::update($orderPayment);
+        OrderPaymentPermission::update($orderPayment);
 
         $orderPayment = $this->orderPaymentService->update($orderPayment, $request->validated());
 
@@ -81,7 +81,7 @@ class OrderPaymentController extends Controller
     {
         $orderPayment = $this->orderPaymentService->show($id);
 
-        $orderPayment = OrderPaymentPermission::delete($orderPayment);
+        OrderPaymentPermission::delete($orderPayment);
 
 
         $this->orderPaymentService->delete($orderPayment);
