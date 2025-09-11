@@ -94,4 +94,26 @@ class CartItemController extends Controller
             'status' => 200,
         ]);
     }
+
+    public function deleteByProductId(int $productId)
+    {
+        $this->cartItemService->deleteByProductId($productId);
+
+        return ResponseService::response([
+            'success' => true,
+            'message' => trans('messages.cart_item.deleted'),
+            'status' => 200,
+        ]);
+    }
+
+    public function deleteByProductIdAndColorId(int $productId, int $colorId)
+    {
+        $this->cartItemService->deleteByProductId($productId, $colorId);
+
+        return ResponseService::response([
+            'success' => true,
+            'message' => trans('messages.cart_item.deleted'),
+            'status' => 200,
+        ]);
+    }
 }

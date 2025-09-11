@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Http\Permissions\CartItemPermission;
 use App\Models\CartItem;
+use App\Models\User;
 use App\Services\FilterService;
 use App\Services\MessageService;
 use Illuminate\Support\Facades\DB;
@@ -94,5 +95,21 @@ class CartItemService
         $cartItem->load('product.media', 'product.colors', 'product.categories', 'product.brands', 'color');
 
         return $cartItem;
+    }
+
+    public function deleteByProductId($productId, $colorId = null)
+    {
+
+        $user = User::auth();
+
+        
+        if ($colorId) {
+            CartItem::where('user_id', $user->id)->where('product_id', $productId)->where('color_id', $colorId)->delete();
+        }
+        else {
+            CartItem::where('user_id', $user->id)->where('product_id', $productId)->delete();
+        }
+
+        return true;
     }
 }

@@ -68,6 +68,8 @@ Route::prefix('user')->group(function () {
             Route::post('/', [CartItemController::class, 'create']);
             Route::put('/{id}', [CartItemController::class, 'update']);
             Route::delete('/{id}', [CartItemController::class, 'delete']);
+            Route::delete('/product/{productId}', [CartItemController::class, 'deleteByProductId']);
+            Route::delete('/product/{productId}/color/{colorId}', [CartItemController::class, 'deleteByProductIdAndColorId']);
         });
     });
 
