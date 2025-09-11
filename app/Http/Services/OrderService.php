@@ -704,6 +704,7 @@ class OrderService
             abort(
                 response()->json(
                     [
+                        'payment_id' => explode('-', $order->payment_session_id)[1],
                         'response' => $qiResponse,
                         'qiData' => $qiData,
                     ]
