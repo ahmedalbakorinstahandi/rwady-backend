@@ -12,7 +12,7 @@ class RefundOrderRequest extends BaseFormRequest
             'amount' => 'required|numeric|min:0',
             'reason' => 'required|string|max:255',
             'method' => 'required|string|in:qi,transfer,cash',
-            'attached' => 'required|string|max:255|required_if:method,transfer',
+            'attached' => 'string|max:255',
         ];
     }
 }
