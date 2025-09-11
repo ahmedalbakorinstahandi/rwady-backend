@@ -690,7 +690,7 @@ class OrderService
         if ($data['method'] == 'qi') {
             $qiPaymentService = new QiPaymentService();
             $qiData = [
-                'requestId' => $payment->metadata['requestId'],
+                'requestId' => $payment->order->metadata['requestId'],
                 'amount' => $data['amount'],
                 'message' => $data['reason'],
                 'extParams' => [],
