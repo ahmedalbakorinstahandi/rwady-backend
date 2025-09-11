@@ -699,17 +699,17 @@ class OrderService
                     'orderId' => $order->id,
                 ],
             ];
-            $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
+            $qiResponse = $qiPaymentService->refundPayment($payment->metadata['paymentId'], $qiData);
 
-            abort(
-                response()->json(
-                    [
-                        'payment_id' => explode('-', $order->payment_session_id)[1],
-                        'response' => $qiResponse,
-                        'qiData' => $qiData,
-                    ]
-                )
-            );
+            // abort(
+            //     response()->json(
+            //         [
+            //             'payment_id' => $order->metadata['paymentId'],
+            //             'response' => $qiResponse,
+            //             'qiData' => $qiData,
+            //         ]
+            //     )
+            // );
             if ($qiResponse['status'] == 'SUCCESS') {
                 $payment->update([
                     'amount' => $qiResponse['amount'],
