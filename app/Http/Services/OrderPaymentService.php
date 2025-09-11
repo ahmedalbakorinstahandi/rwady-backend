@@ -33,9 +33,11 @@ class OrderPaymentService
     public function show($id)
     {
         $orderPayment = OrderPayment::where('id', $id)->first();
+
         if (!$orderPayment) {
             MessageService::abort(404, 'messages.order_payment.not_found');
         }
+        
         return $orderPayment;
     }
 
