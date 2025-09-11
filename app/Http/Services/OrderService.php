@@ -663,7 +663,7 @@ class OrderService
     {
 
 
-        if($data['method'] == 'qi' && $order->payment_method != 'qi') {
+        if ($data['method'] == 'qi' && $order->payment_method != 'qi') {
             MessageService::abort(400, 'messages.order.payment_method_not_qi');
         }
 
@@ -684,19 +684,21 @@ class OrderService
             'is_refund' => true,
             'method' => $data['method'],
             'attached' => $data['attached'] ?? null,
-            'metadata' => [],
+            'metadata' => [
+                'requestId' => 'qi-refund-' . $order->id . '-' . Str::random(10),
+            ],
         ]);
 
         if ($data['method'] == 'qi') {
             $qiPaymentService = new QiPaymentService();
             $qiData = [
-                'requestId' => $payment->order->metadata['requestId'],
+                'requestId' => $payment->metadata['requestId'],
                 'amount' => $data['amount'],
                 'message' => $data['reason'],
                 'extParams' => [],
             ];
             $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
-           
+
             abort(response()->json($qiResponse));
             if ($qiResponse['status'] == 'SUCCESS') {
                 $payment->update([
