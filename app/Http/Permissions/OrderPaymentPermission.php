@@ -23,7 +23,7 @@ class OrderPaymentPermission
     public static function update($orderPayment)
     {
 
-        if ($orderPayment->method != 'transfer' || $orderPayment->method != 'cash') {
+        if ($orderPayment->method != 'transfer' && $orderPayment->method != 'cash') {
             MessageService::abort(403, 'messages.order_payment.update_not_allowed');
         }
 
