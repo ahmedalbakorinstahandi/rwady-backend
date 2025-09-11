@@ -93,6 +93,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::put('/{id}', [OrderController::class, 'update']);
         // Route::delete('/{id}', [OrderController::class, 'delete']);
+        
+
+        Route::post('/{id}/refund', [OrderController::class, 'refund']);
+
 
     });
 

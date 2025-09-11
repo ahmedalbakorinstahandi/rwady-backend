@@ -86,7 +86,6 @@ Route::prefix('user')->group(function () {
         Route::post('/check-details', [OrderController::class, 'checkOrderDetails']);
         Route::post('/{id}/confirm-otp', [OrderController::class, 'confirmOtp']);
 
-        Route::post('/{id}/refund', [OrderController::class, 'refund']);
     });
 
     Route::prefix('promotions')->group(function () {
