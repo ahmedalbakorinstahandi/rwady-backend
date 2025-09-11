@@ -695,7 +695,9 @@ class OrderService
                 'requestId' => $payment->metadata['requestId'],
                 'amount' => $data['amount'],
                 'message' => $data['reason'],
-                'extParams' => [],
+                'extParams' => [
+                    'orderId' => $order->id,
+                ],
             ];
             $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
 
