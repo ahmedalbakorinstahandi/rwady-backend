@@ -37,8 +37,8 @@ class QiPaymentWebhookController extends Controller
 
 
         // order id split  requestId by -  and get index 1 
-        $orderId = explode('-', $payload['requestId'])[0];
-        $order = Order::where('payment_session_id', $orderId)
+        $payment_session_id = explode('-', $payload['requestId'])[1];
+        $order = Order::where('payment_session_id', 'qi-' . $payment_session_id)
             ->first();
 
         if (!$order) {
