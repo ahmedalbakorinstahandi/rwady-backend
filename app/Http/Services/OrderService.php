@@ -663,7 +663,7 @@ class OrderService
     {
 
 
-        if($order->payment_method == 'qi' && $data['method'] == 'qi') {
+        if($data['method'] == 'qi' && $order->payment_method != 'qi') {
             MessageService::abort(400, 'messages.order.payment_method_not_qi');
         }
 
