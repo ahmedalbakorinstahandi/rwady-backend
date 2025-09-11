@@ -696,6 +696,8 @@ class OrderService
                 'extParams' => [],
             ];
             $qiResponse = $qiPaymentService->refundPayment(explode('-', $order->payment_session_id)[1], $qiData);
+           
+            abort(response()->json($qiResponse));
             if ($qiResponse['status'] == 'SUCCESS') {
                 $payment->update([
                     'amount' => $qiResponse['amount'],
