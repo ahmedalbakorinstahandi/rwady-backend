@@ -3,6 +3,7 @@
 namespace App\Http\Permissions;
 
 use App\Models\User;
+use App\Services\MessageService;
 
 class OrderPaymentPermission
 {
@@ -17,5 +18,24 @@ class OrderPaymentPermission
         }
 
         return $query;
+    }
+
+    public static function update($orderPayment)
+    {
+
+        if ($orderPayment->method != 'transfer' || $orderPayment->method != 'cash') {
+            MessageService::abort(403, 'messages.order_payment.update_not_allowed');
+        }
+
+        return true;
+    }
+
+    public static function delete($orderPayment)
+    {
+        if ($orderPayment->created_by != 'admin') {
+            MessageService::abort(403, 'messages.order_payment.delete_not_allowed');
+        }
+
+        return true;
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Bulk\ProductBulkController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -92,6 +93,15 @@ Route::prefix('admin')->middleware(['auth:sanctum', AdminMiddleware::class])->gr
         Route::get('/{id}', [OrderController::class, 'show']);
         Route::put('/{id}', [OrderController::class, 'update']);
         // Route::delete('/{id}', [OrderController::class, 'delete']);
+
+    });
+
+    Route::prefix('order-payments')->group(function () {
+        Route::get('/', [OrderPaymentController::class, 'index']);
+        Route::get('/{id}', [OrderPaymentController::class, 'show']);
+        Route::post('/{orderId}', [OrderPaymentController::class, 'create']);
+        Route::put('/{id}', [OrderPaymentController::class, 'update']);
+        Route::delete('/{id}', [OrderPaymentController::class, 'delete']);
     });
 
     Route::prefix('settings')->group(function () {

@@ -19,7 +19,8 @@ class OrderPayment extends Model
         'is_refund',
         'method',
         'attached',
-        'metadata'
+        'metadata',
+        'created_by',
     ];
 
     protected $casts = [
@@ -29,6 +30,7 @@ class OrderPayment extends Model
         'description' => 'string',
         'status' => 'string',
         'method' => 'string',
+        'created_by' => 'string',
     ];
 
     public function order(): BelongsTo

@@ -8,6 +8,8 @@ class UpdateOrderPaymentRequest extends BaseFormRequest
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'status' => 'required|string|in:pending,completed,failed',
+        ];
     }
-} 
+}
