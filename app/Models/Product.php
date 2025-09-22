@@ -328,34 +328,34 @@ class Product extends Model
     {
         // Get all categories this product belongs to
         $productCategories = $this->categories()->with('children')->get();
-        
+
         if ($productCategories->isEmpty()) {
             return collect();
         }
-        
+
         // Find the lowest level categories (categories with no children)
         $lowestCategories = collect();
-        
+
         foreach ($productCategories as $category) {
             if ($category->children->isEmpty()) {
                 $lowestCategories->push($category);
             }
         }
-        
+
         if ($lowestCategories->isEmpty()) {
             return collect();
         }
-        
+
         $lowestCategoryIds = $lowestCategories->pluck('id');
-        
+
         // Get products from the same lowest level categories
         $query = Product::query()
             ->where('id', '!=', $this->id)
-            ->whereHas('categories', function($q) use ($lowestCategoryIds) {
+            ->whereHas('categories', function ($q) use ($lowestCategoryIds) {
                 $q->whereIn('category_id', $lowestCategoryIds);
             })
             ->with(['media', 'colors']);
-        
+
         $limit = $this->related_category_limit ?: 10;
         return $query->inRandomOrder()
             ->limit($limit)
@@ -391,6 +391,13 @@ class Product extends Model
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
+    }
+    public function userCartItems(): HasMany
+    {
+
+        $user = User::auth();
+        
+        return $this->hasMany(CartItem::class)->where('user_id', $user->id);
     }
 
     public function orderProducts(): HasMany

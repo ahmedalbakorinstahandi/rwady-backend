@@ -161,7 +161,7 @@ class ProductService
             MessageService::abort(404, 'messages.product.not_found');
         }
 
-        $product->load(['brands', 'colors', 'relatedProducts', 'categories.children', 'media', 'seo', 'relatedCategory']);
+        $product->load(['brands', 'colors', 'relatedProducts', 'categories.children', 'media', 'seo', 'relatedCategory', 'userCartItems']);
 
         return $product;
     }
@@ -319,6 +319,8 @@ class ProductService
         }
 
         // Clear cache after update
+        $product = $this->show($product->id);
+
 
         return $product;
     }
