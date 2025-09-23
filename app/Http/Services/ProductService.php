@@ -27,7 +27,7 @@ class ProductService
         $searchFields = ['name', 'description', 'sku'];
         $numericFields = [
             'price',
-            'price_after_discount',
+            'compare_price',
             'cost_price',
             'cost_price_after_discount',
             'stock',
@@ -41,8 +41,8 @@ class ProductService
             'shipping_rate_multi'
         ];
         $dateFields = [
-            'price_discount_start',
-            'price_discount_end',
+            'compare_price_start',
+            'compare_price_end',
             'cost_price_discount_start',
             'cost_price_discount_end',
             'created_at',

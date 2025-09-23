@@ -84,9 +84,9 @@ class ProductBulkController extends Controller
             'description_ar',
             'description_en',
             'price',
-            'price_after_discount',
-            'price_discount_start',
-            'price_discount_end',
+            'compare_price',
+            'compare_price_start',
+            'compare_price_end',
             'cost_price',
             'cost_price_after_discount',
             'cost_price_discount_start',
@@ -162,9 +162,9 @@ class ProductBulkController extends Controller
                 $p->description['ar'],
                 $p->description['en'],
                 $p->price,
-                $p->price_after_discount,
-                $p->price_discount_start,
-                $p->price_discount_end,
+                $p->compare_price,
+                $p->compare_price_start,
+                $p->compare_price_end,
                 $p->cost_price,
                 $p->cost_price_after_discount,
                 $p->cost_price_discount_start,
@@ -311,9 +311,9 @@ class ProductBulkController extends Controller
 
                 // أرقام "nullable" نخليها null لو فاضية
                 $price                     = $numOrNull($row['price'] ?? null);
-                $price_after_discount      = $numOrNull($row['price_after_discount'] ?? null);
-                $price_discount_start      = $nullIfEmpty($row['price_discount_start'] ?? null);
-                $price_discount_end        = $nullIfEmpty($row['price_discount_end'] ?? null);
+                $compare_price             = $numOrNull($row['compare_price'] ?? null);
+                $compare_price_start       = $nullIfEmpty($row['compare_price_start'] ?? null);
+                $compare_price_end         = $nullIfEmpty($row['compare_price_end'] ?? null);
 
                 $cost_price                = $numOrNull($row['cost_price'] ?? null);
                 $cost_price_after_discount = $numOrNull($row['cost_price_after_discount'] ?? null);
@@ -404,9 +404,9 @@ class ProductBulkController extends Controller
                     'description'           => ['ar' => $desc_ar, 'en' => $desc_en],
 
                     'price'                 => $price,
-                    'price_after_discount'  => $price_after_discount,
-                    'price_discount_start'  => $price_discount_start,
-                    'price_discount_end'    => $price_discount_end,
+                    'compare_price'         => $compare_price,
+                    'compare_price_start'   => $compare_price_start,
+                    'compare_price_end'     => $compare_price_end,
 
                     'cost_price'                => $cost_price,
                     'cost_price_after_discount' => $cost_price_after_discount,

@@ -23,9 +23,9 @@ class Product extends Model
         'description',
         'sku',
         'price',
-        'price_after_discount',
-        'price_discount_start',
-        'price_discount_end',
+        'compare_price',
+        'compare_price_start',
+        'compare_price_end',
         'cost_price',
         'cost_price_after_discount',
         'cost_price_discount_start',
@@ -56,7 +56,6 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'float',
-        'price_after_discount' => 'float',
         'cost_price' => 'float',
         'cost_price_after_discount' => 'float',
         'stock' => 'integer',
@@ -72,8 +71,8 @@ class Product extends Model
         'is_recommended' => 'boolean',
         'availability' => 'boolean',
         'stock_unlimited' => 'boolean',
-        'price_discount_start' => 'datetime',
-        'price_discount_end' => 'datetime',
+        'compare_price_start' => 'datetime',
+        'compare_price_end' => 'datetime',
         'cost_price_discount_start' => 'datetime',
         'cost_price_discount_end' => 'datetime',
         'out_of_stock' => 'string',
@@ -143,9 +142,6 @@ class Product extends Model
     // current price after discount if exists and is between start and end date
     public function getFinalPriceAttribute()
     {
-        if ($this->price_after_discount > 0 && $this->price_discount_start && $this->price_discount_end && $this->price_discount_start <= now() && $this->price_discount_end >= now()) {
-            return $this->price_after_discount;
-        }
         return $this->price;
     }
 
@@ -272,8 +268,8 @@ class Product extends Model
 
     public function getDiscountPercentageAttribute()
     {
-        if (($this->price_after_discount > 0 || $this->price_after_discount !=  null) && $this->price_discount_start && $this->price_discount_end && $this->price_discount_start <= now() && $this->price_discount_end >= now()) {
-            $value = round($this->price - $this->price_after_discount, 2);
+        if (($this->compare_price > 0 || $this->compare_price !=  null) && $this->compare_price_start && $this->compare_price_end && $this->compare_price_start <= now() && $this->compare_price_end >= now()) {
+            $value = round($this->compare_price - $this->price, 2);
             return [
                 'ar' => "وفر {$value}",
                 'en' => "Save {$value}",

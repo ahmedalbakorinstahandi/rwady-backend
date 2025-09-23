@@ -97,7 +97,7 @@ class ImportProductsSeeder extends Seeder
                 ],
                 // 'internal_id' => $row['product_internal_id'],
                 'price' => (float) $row['product_price'],
-                'price_after_discount' => (float) $row['product_compare_to_price'] ?: null,
+                'compare_price' => (float) $row['product_compare_to_price'] ?: null,
                 'cost_price' => (float) $row['product_cost_price'],
                 // 'cost_price_after_discount' => (float) $row['product_sale_price'] ?: null, // product_sale_price not found
                 // 'cost_price_discount_start' => $row['product_sale_start'] ?: null, // product_sale_start not found

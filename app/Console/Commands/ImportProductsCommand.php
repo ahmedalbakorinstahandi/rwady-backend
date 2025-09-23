@@ -51,16 +51,16 @@ class ImportProductsCommand extends Command
 
             $categoryIds = collect();
 
-             for ($i = 1; $i <= 8; $i++) {
+            for ($i = 1; $i <= 8; $i++) {
                 $rawValue = trim($row["product_category_{$i}"] ?? '');
-            
+
                 if (!$rawValue) {
                     continue;
                 }
-            
-                 $parts = array_map('trim', explode('/', $rawValue));
-            
-                 foreach ($parts as $part) {
+
+                $parts = array_map('trim', explode('/', $rawValue));
+
+                foreach ($parts as $part) {
                     if ($part) {
                         $category = Category::where('name->ar', $part)->first();
                         if ($category) {
@@ -71,7 +71,7 @@ class ImportProductsCommand extends Command
             }
 
             $categoryIds = $categoryIds->unique()->values()->toArray();
-            
+
 
             $brandId = null;
             $brandName = trim($row['product_brand'] ?? '');
@@ -88,7 +88,7 @@ class ImportProductsCommand extends Command
                 'name' => ['ar' => trim($row['product_name']), 'en' => trim($row['product_name'])],
                 'description' => ['ar' => trim($row['product_description']), 'en' => trim($row['product_description'])],
                 'price' => (float) $row['product_price'],
-                'price_after_discount' => (float) $row['product_compare_to_price'] ?: null,
+                'compare_price' => (float) $row['product_compare_to_price'] ?: null,
                 'cost_price' => (float) $row['product_cost_price'],
                 'stock_unlimited' =>  $row['product_is_inventory_tracked'] == 'true' ? true : false,
                 'stock' => (int) $row['product_quantity'],
@@ -150,10 +150,10 @@ class ImportProductsCommand extends Command
         try {
             $tempFile = tempnam(sys_get_temp_dir(), 'img_');
             file_put_contents($tempFile, file_get_contents($url));
-            
+
             // استخراج اسم الصورة من الرابط
             $imageName = $this->extractImageNameFromUrl($url);
-            
+
             $imagePath = ImageService::storeImageWithOriginalName($tempFile, 'products', $imageName);
             unlink($tempFile);
 
@@ -179,23 +179,23 @@ class ImportProductsCommand extends Command
         // استخراج اسم الملف من الرابط
         $parsedUrl = parse_url($url);
         $path = $parsedUrl['path'] ?? '';
-        
+
         // استخراج اسم الملف مع اللاحقة
         $fileName = basename($path);
-        
+
         // إزالة اللاحقة (.png, .jpg, .jpeg, .webp, إلخ)
         $nameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-        
+
         // تنظيف الاسم من الأحرف الخاصة
         $cleanName = preg_replace('/[^a-zA-Z0-9\-\_\s]/', '_', $nameWithoutExtension);
         $cleanName = preg_replace('/\s+/', '_', $cleanName); // استبدال المسافات بـ _
         $cleanName = trim($cleanName, '._-');
-        
+
         // إذا كان الاسم فارغاً، استخدم اسم افتراضي
         if (empty($cleanName)) {
             $cleanName = 'product_image';
         }
-        
+
         return $cleanName;
     }
 }
