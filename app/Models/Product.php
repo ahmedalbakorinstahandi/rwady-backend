@@ -396,8 +396,8 @@ class Product extends Model
     {
 
         $user = User::auth();
-        
-        return $this->hasMany(CartItem::class)->where('user_id', $user->id);
+
+        return $this->hasMany(CartItem::class)->where('user_id', $user?->id ?? 0);
     }
 
     public function orderProducts(): HasMany
