@@ -637,6 +637,12 @@ class OrderService
                     if ($qiResponse['status'] != 'SUCCESS' && !$qiResponse['canceled']) {
                         MessageService::abort(400, 'messages.order.cancel_failed');
                     }
+
+                    $order->metadata = array_merge($order->metadata, [
+                        'cancel_payment' => $qiResponse,
+                    ]);
+
+                    $order->save();
                 } catch (\Throwable $th) {
                     MessageService::response([
                         'success' => false,
