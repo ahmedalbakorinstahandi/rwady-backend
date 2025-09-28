@@ -29,4 +29,14 @@ class MessageService
             'message' => trans($message, $replace),
         ], 200);
     }
+
+    public static function response($data, $status = 200)
+    {
+        abort(
+            response()->json(
+                $data,
+                $status
+            )
+        );
+    }
 }
