@@ -25,7 +25,8 @@ class ProductResource extends JsonResource
             'compare_price' => $this->compare_price,
             'compare_price_start' => $this->compare_price_start,
             'compare_price_end' => $this->compare_price_end,
-            'price_after_discount' => $this->price_after_discount,
+            //getDiscountPercentageAttribute
+             'price_after_discount' => $this->price_after_discount,
             'price_discount_start' => $this->price_discount_start,
             'price_discount_end' => $this->price_discount_end,
             'cost_price' => $user && $user->isAdmin() ? $this->cost_price : 0.0,

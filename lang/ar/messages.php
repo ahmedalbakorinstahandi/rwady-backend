@@ -107,6 +107,7 @@ return [
         'payment_method_not_installment' => 'طريقة الدفع ليست قسط',
         'payment_method_not_qi' => 'طريقة الدفع ليست QI',
         'refunded_successfully' => 'تم استرداد الدفع بنجاح',
+        'cancel_failed' => 'فشل إلغاء الدفع',
         'هنالك سلوك غير طبيعي في فحص البطاقة تم حجب الفحص مؤقتاً ولمدة ثلاث ساعات' => 'هنالك سلوك غير طبيعي في فحص البطاقة تم حجب الفحص مؤقتاً ولمدة ثلاث ساعات',
     ],
 
@@ -143,20 +144,20 @@ return [
         'updated_successfully' => 'تم تحديث الدولة بنجاح',
         'deleted_successfully' => 'تم حذف الدولة بنجاح',
     ],
-    
+
     'city' => [
         'not_found' => 'المدينة غير موجودة',
         'created_successfully' => 'تم إنشاء المدينة بنجاح',
         'updated_successfully' => 'تم تحديث المدينة بنجاح',
         'deleted_successfully' => 'تم حذف المدينة بنجاح',
     ],
-    
+
     'area' => [
         'not_found' => 'المنطقة غير موجودة',
         'created_successfully' => 'تم إنشاء المنطقة بنجاح',
         'updated_successfully' => 'تم تحديث المنطقة بنجاح',
         'deleted_successfully' => 'تم حذف المنطقة بنجاح',
-    ],      
+    ],
 
     'general' => [
         'not_found' => 'العنصر غير موجود',
