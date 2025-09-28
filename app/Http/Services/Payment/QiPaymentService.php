@@ -72,14 +72,17 @@ class QiPaymentService
      * @param string $paymentId
      * @return array
      */
-    public function cancelPayment(string $paymentId): array
+    public function cancelPayment(string $paymentId, $requestId): array
     {
         try {
             $response = Http::withBasicAuth($this->username, $this->password)
                 ->withHeaders([
                     'X-Terminal-Id' => $this->terminalId,
                 ])
-                ->post($this->baseUrl . "payment/{$paymentId}/cancel");
+                ->post(
+                    $this->baseUrl . "payment/{$paymentId}/cancel",
+                    ['requestId' => $requestId],
+                );
 
             return $response->json();
         } catch (RequestException $e) {
@@ -142,6 +145,4 @@ class QiPaymentService
 
         return $refundData;
     }
-
-    
 }

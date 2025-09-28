@@ -632,7 +632,7 @@ class OrderService
 
             if ($data['status'] == 'cancelled' && $order->payment_method == 'qi') {
                 $qiPaymentService = new QiPaymentService();
-                $qiResponse = $qiPaymentService->cancelPayment($order->metadata['paymentId']);
+                $qiResponse = $qiPaymentService->cancelPayment($order->metadata['paymentId'], $order->metadata['requestId']);
 
                 MessageService::response($qiResponse);
 
