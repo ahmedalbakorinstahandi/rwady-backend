@@ -638,7 +638,10 @@ class OrderService
                         MessageService::abort(400, 'messages.order.cancel_failed');
                     }
                 } catch (\Throwable $th) {
-                    MessageService::response($qiResponse);
+                    MessageService::response([
+                        'success' => false,
+                        'message' => $qiResponse['error']['description'],
+                    ], 400);
                 }
             }
 
