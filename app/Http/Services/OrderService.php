@@ -634,9 +634,9 @@ class OrderService
                 $qiPaymentService = new QiPaymentService();
                 $qiResponse = $qiPaymentService->cancelPayment($order->metadata['paymentId'], $order->metadata['requestId'] . '-cancel');
 
-                MessageService::response($qiResponse);
+                // MessageService::response($qiResponse);
 
-                if ($qiResponse['status'] != 'SUCCESS') {
+                if ($qiResponse['status'] != 'SUCCESS' && !$qiResponse['canceled']) {
                     MessageService::abort(400, 'messages.order.cancel_failed');
                 }
             }
